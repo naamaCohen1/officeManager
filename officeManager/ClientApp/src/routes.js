@@ -49,7 +49,7 @@ const dashboardRoutes = [
   },
   {
     path: "/table",
-    name: "Table List",
+    name: "Health Check",
     icon: "nc-icon nc-notes",
     component: TableList,
     layout: "/admin",
@@ -70,7 +70,7 @@ const dashboardRoutes = [
   },
   {
     path: "/maps",
-    name: "Maps",
+    name: "Comming To The Office",
     icon: "nc-icon nc-pin-3",
     component: Maps,
     layout: "/admin",

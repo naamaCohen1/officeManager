@@ -15,6 +15,7 @@
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.11" />
     <PackageReference Include="react-dom.TypeScript.DefinitelyTyped" Version="0.0.2" />
     <PackageReference Include="react.js" Version="0.14.7" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
   </ItemGroup>
 
   <ItemGroup>
