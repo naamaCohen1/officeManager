@@ -1,6 +1,7 @@
+using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-
+using System.Data.SqlClient;
 
 namespace officeManager
 {
@@ -8,13 +9,19 @@ namespace officeManager
     {
         public static void Main(string[] args)
         {
-            //string connetionString;
-            //SqlConnection cnn;
-            //connetionString = @"Data Source=DESKTOP-U9FO5L4";
-            //connetionString = @"Data Source=DESKTOP-U9FO5L4;Initial Catalog=Demodb;User ID=DESKTOP-U9FO5L4\Chen;Password=demol23";
-            //cnn = new SqlConnection(connetionString);
-            //cnn.Open();
-            //cnn.Close();
+            string connetionString = @"Data Source=DESKTOP-U9FO5L4;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
+            SqlConnection connection = new SqlConnection(connetionString);
+            connection.Open();
+            string sql = "select * from tlbEmployees"; 
+            SqlCommand command = new SqlCommand(sql, connection);
+            SqlDataReader dataReader = command.ExecuteReader();
+            while (dataReader.Read())
+            {
+                Console.WriteLine (dataReader.GetValue(0) + " - " + dataReader.GetValue(1) + " - " + dataReader.GetValue(2));
+            }
+            dataReader.Close();
+            command.Dispose();
+            connection.Close();
             CreateHostBuilder(args).Build().Run();
         }
 
