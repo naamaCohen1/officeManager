@@ -81,7 +81,7 @@ light-bootstrap-dashboard-react
 │   ├── img
 │   └── tutorial-components.html
 ├── public
-│   ├── favicon.ico
+│   ├── logo.ico
 │   ├── index.html
 │   └── manifest.json
 └── src
