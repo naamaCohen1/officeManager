@@ -2,6 +2,7 @@ using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using System.Data.SqlClient;
+using System.Collections.Generic;
 
 namespace officeManager
 {
@@ -9,19 +10,48 @@ namespace officeManager
     {
         public static void Main(string[] args)
         {
-            string connetionString = @"Data Source=DESKTOP-U9FO5L4;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
-            SqlConnection connection = new SqlConnection(connetionString);
-            connection.Open();
-            string sql = "select * from tlbEmployees"; 
-            SqlCommand command = new SqlCommand(sql, connection);
-            SqlDataReader dataReader = command.ExecuteReader();
-            while (dataReader.Read())
+            string connetionString = null;
+            SqlConnection connection;
+            SqlCommand command;
+            SqlDataReader dataReader;
+            string sql = null;
+
+            connetionString = @"Data Source=DESKTOP-U9FO5L4;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
+            connection = new SqlConnection(connetionString);
+            try
             {
-                Console.WriteLine (dataReader.GetValue(0) + " - " + dataReader.GetValue(1) + " - " + dataReader.GetValue(2));
+                connection.Open();
+                sql = "insert into tlbEmployees (ID,Name,CarNumber,Floor,RoomNumber,Role,PermissionLevel) values (205666415,'Chen Tevet',7753954,11,13,'Developer',0)";
+                command = new SqlCommand(sql, connection);
+                command.ExecuteNonQuery();
+                command.Dispose();
+
+                List<Employee> employees = new List<Employee>();
+                sql = "select * from tlbEmployees where ID=205666415";
+                command = new SqlCommand(sql, connection);
+                dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    int ID = (int)dataReader["ID"];
+                    string Name = dataReader["Name"].ToString() ;
+                    int CarNumber = (int)dataReader["CarNumber"];
+                    int Floor = (int)dataReader["Floor"];
+                    int RoomNumber = (int)dataReader["RoomNumber"];
+                    string Role = dataReader["Role"].ToString();
+                    int PermissionLevel = (int)dataReader["PermissionLevel"];
+
+                    employees.Add(new Employee(ID, Name, CarNumber, Floor, RoomNumber, Role, PermissionLevel));
+                }
+                dataReader.Close();
+                command.Dispose();
+
+                connection.Close();
             }
-            dataReader.Close();
-            command.Dispose();
-            connection.Close();
+            catch (Exception ex)
+            {
+                Console.WriteLine("Failed to open connection due to: " + ex.Message);
+            }
+
             CreateHostBuilder(args).Build().Run();
         }
 
