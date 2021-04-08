@@ -21,7 +21,8 @@ namespace officeManager
             try
             {
                 connection.Open();
-                sql = "insert into tlbEmployees (ID,Name,CarNumber,Floor,RoomNumber,Role,PermissionLevel) values (205666415,'Chen Tevet',7753954,11,13,'Developer',0)";
+                sql = "insert into tlbEmployees (ID,Name,CarNumber,Floor,RoomNumber,Role,PermissionLevel) " +
+                    "values (205666415,'Chen Tevet',7753954,11,13,'Developer',0)";
                 command = new SqlCommand(sql, connection);
                 command.ExecuteNonQuery();
                 command.Dispose();
@@ -33,7 +34,7 @@ namespace officeManager
                 while (dataReader.Read())
                 {
                     int ID = (int)dataReader["ID"];
-                    string Name = dataReader["Name"].ToString() ;
+                    string Name = dataReader["Name"].ToString();
                     int CarNumber = (int)dataReader["CarNumber"];
                     int Floor = (int)dataReader["Floor"];
                     int RoomNumber = (int)dataReader["RoomNumber"];
