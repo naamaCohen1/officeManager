@@ -3,7 +3,7 @@ import React from "react";
 // react-bootstrap components
 import { Badge, Button, Navbar, Nav, Container } from "react-bootstrap";
 
-function Maps() {
+function CommingToOffice() {
   const mapRef = React.useRef(null);
   React.useEffect(() => {
     let google = window.google;
@@ -48,7 +48,7 @@ function Maps() {
   );
 }
 
-export default Maps;
+export default CommingToOffice;
 
 
 ////import React, { useState } from "react";
@@ -56,7 +56,7 @@ export default Maps;
 ////import "react-calendar/dist/Calendar.css";
 ////import moment from "moment";
 
-//function Maps() {
+//function CommingToOffice() {
     //const [dateState, setDateState] = useState(new Date())
     //const changeDate = (e) => {
     //    setDateState(e)
@@ -72,4 +72,4 @@ export default Maps;
     //)
 //}
 
-//export default Maps;
+//export default CommingToOffice;

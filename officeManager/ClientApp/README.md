@@ -39,7 +39,7 @@ It comes with 6 filter colors for the sidebar (`black`, `azure`,`green`,`orange`
 
 ## Demo
 
-| Dashboard | User Profile | Tables | Maps |
+| Dashboard | User Profile | Tables | CommingToOffice |
 | --- | --- | --- | --- | --- |
 | [![Start page](https://raw.githubusercontent.com/creativetimofficial/public-assets/master/light-bootstrap-dashboard-react/dashboard-page.png)](https://demos.creative-tim.com/light-bootstrap-dashboard-react/#/admin/dashboard?ref=lbdr-readme) | [![User profile page](https://raw.githubusercontent.com/creativetimofficial/public-assets/master/light-bootstrap-dashboard-react/user-page.png)](https://demos.creative-tim.com/light-bootstrap-dashboard-react/#/admin/user-page?ref=lbdr-readme) | [![Health Check page ](https://raw.githubusercontent.com/creativetimofficial/public-assets/master/light-bootstrap-dashboard-react/tables-page.png)](https://demos.creative-tim.com/light-bootstrap-dashboard-react/#/admin/table-list?ref=lbdr-readme) | [![Notifications Page](https://raw.githubusercontent.com/creativetimofficial/public-assets/master/light-bootstrap-dashboard-react/notifications-page.png)](https://demos.creative-tim.com/light-bootstrap-dashboard-react/#/admin/notifications?ref=lbdr-readme) |
 
@@ -125,7 +125,7 @@ light-bootstrap-dashboard-react
     └── views
         ├── Dashboard.js
         ├── Icons.js
-        ├── Maps.js
+        ├── CommingToOffice.js
         ├── Notifications.js
         ├── HealthCheck.js
         ├── Typography.js

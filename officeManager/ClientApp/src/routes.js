@@ -18,7 +18,7 @@
 import Dashboard from "views/Dashboard.js";
 import UserProfile from "views/UserProfile.js";
 import HealthCheck from "views/HealthCheck.js";
-import Maps from "views/Maps.js";
+import CommingToOffice from "views/CommingToOffice.js";
 import OfficeEmployees from "./views/OfficeEmployees";
 import OfficeInfo from "./views/OfficeInfo";
 import Login from "./views/Login";
@@ -58,10 +58,10 @@ const dashboardRoutes = [
         layout: "/admin",
     },
     {
-        path: "/maps",
+        path: "/comming-to-office",
         name: "Comming To The Office",
         icon: "nc-icon nc-pin-3",
-        component: Maps,
+        component: CommingToOffice,
         layout: "/admin",
     },
     {
