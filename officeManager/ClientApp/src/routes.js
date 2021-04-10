@@ -39,7 +39,7 @@ const dashboardRoutes = [
     {
         path: "/table",
         name: "Health Check",
-        icon: "nc-icon nc-notes",
+        icon: "nc-favourite-28",
         component: TableList,
         layout: "/admin",
     },
@@ -53,8 +53,7 @@ const dashboardRoutes = [
     {
         path: "/employees",
         name: "Office Employees",
-        //icon: "nc-icon nc-album-2",
-        icon: "AiOutlineAlignRight",
+        icon: "nc-icon nc-notes",
         component: OfficeEmployees,
         layout: "/admin",
     },

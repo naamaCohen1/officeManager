@@ -100,7 +100,7 @@ function User() {
                                     <Button
                                         className="btn-fill pull-right"
                                         type="submit"
-                                        variant="info"
+                                        variant="success"
                                     >
                                         Update Profile
                   </Button>
