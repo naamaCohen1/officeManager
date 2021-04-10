@@ -20,6 +20,7 @@ import UserProfile from "views/UserProfile.js";
 import TableList from "views/TableList.js";
 import Maps from "views/Maps.js";
 import OfficeEmployees from "./views/OfficeEmployees";
+import OfficeInfo from "./views/OfficeInfo";
 
 const dashboardRoutes = [
     {
@@ -55,6 +56,13 @@ const dashboardRoutes = [
         name: "Office Employees",
         icon: "nc-icon nc-notes",
         component: OfficeEmployees,
+        layout: "/admin",
+    },
+    {
+        path: "/office-info",
+        name: "Office Information",
+        icon: "nc-bank",
+        component: OfficeInfo,
         layout: "/admin",
     },
 ];

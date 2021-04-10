@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "moment": "^2.29.1",
-    "react-calendar": "^3.3.1"
+    "react-calendar": "^3.3.1",
+    "react-dropdown": "^1.9.2"
   }
 }
