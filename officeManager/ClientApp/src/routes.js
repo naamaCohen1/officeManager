@@ -21,8 +21,21 @@ import TableList from "views/TableList.js";
 import Maps from "views/Maps.js";
 import OfficeEmployees from "./views/OfficeEmployees";
 import OfficeInfo from "./views/OfficeInfo";
+import Login from "./views/Login";
+
+//import {
+//    AiFillCheckSquare,
+//} from "react-icons";
 
 const dashboardRoutes = [
+    {
+        path: "/login",
+        name: "Login",
+        icon: "nc-send",
+        //icon: AiFillCheckSquare,
+        component: Login,
+        layout: "/admin",
+    },
     {
         path: "/dashboard",
         name: "Dashboard",
