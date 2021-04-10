@@ -17,7 +17,7 @@
 */
 import Dashboard from "views/Dashboard.js";
 import UserProfile from "views/UserProfile.js";
-import TableList from "views/TableList.js";
+import HealthCheck from "views/HealthCheck.js";
 import Maps from "views/Maps.js";
 import OfficeEmployees from "./views/OfficeEmployees";
 import OfficeInfo from "./views/OfficeInfo";
@@ -51,10 +51,10 @@ const dashboardRoutes = [
         layout: "/admin",
     },
     {
-        path: "/table",
+        path: "/health-check",
         name: "Health Check",
         icon: "nc-favourite-28",
-        component: TableList,
+        component: HealthCheck,
         layout: "/admin",
     },
     {
