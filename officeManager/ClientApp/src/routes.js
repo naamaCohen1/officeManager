@@ -31,7 +31,7 @@ const dashboardRoutes = [
     {
         path: "/login",
         name: "Login",
-        icon: "nc-send",
+        icon: "nc-icon nc-send",
         //icon: AiFillCheckSquare,
         component: Login,
         layout: "/admin",
@@ -53,7 +53,7 @@ const dashboardRoutes = [
     {
         path: "/health-check",
         name: "Health Check",
-        icon: "nc-favourite-28",
+        icon: "nc-icon nc-favourite-28",
         component: HealthCheck,
         layout: "/admin",
     },
@@ -74,7 +74,7 @@ const dashboardRoutes = [
     {
         path: "/office-info",
         name: "Office Information",
-        icon: "nc-bank",
+        icon: "nc-icon nc-bank",
         component: OfficeInfo,
         layout: "/admin",
     },

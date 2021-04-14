@@ -35,7 +35,7 @@ function User() {
                                         </Col>
                                         <Col className="pl-1" md="6">
                                             <Form.Group>
-                                                <label> ID (disabled) </label>
+                                                <label>ID (disabled) </label>
                                                 <Form.Control
                                                     disabled
                                                     placeholder="ID"
@@ -56,12 +56,16 @@ function User() {
                                         </Col>
                                         <Col className="pl-1" md="6">
                                             <Form.Group>
-                                                <label>Role (disabled)</label>
+                                                <label for="validationCustom01" class="form-label">Role</label>
                                                 <Form.Control
-                                                    disabled
                                                     placeholder="Role"
                                                     type="text"
+                                                    class="form-control"
+                                                    id="validationCustom01"
                                                 ></Form.Control>
+                                            {/*    <div class="valid-feedback">*/}
+                                            {/*        Looks good!*/}
+                                            {/*    </div>*/}
                                             </Form.Group>
                                         </Col>
                                     </Row>
@@ -102,9 +106,8 @@ function User() {
                                         type="submit"
                                         variant="success"
                                     >
-                                        Update Profile
+                                            Update Profile
                   </Button>
-                                    <div className="clearfix"></div>
                                 </Form>
                             </Card.Body>
                         </Card>

@@ -16,6 +16,7 @@ namespace officeManager
             SqlDataReader dataReader;
             string sql = null;
 
+            //connetionString = @"Data Source=DESKTOP-U9FO5L4;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
             connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
             connection = new SqlConnection(connetionString);
             try
@@ -46,12 +47,12 @@ namespace officeManager
                 dataReader.Close();
                 command.Dispose();
 
-                //sql = "DELETE FROM tlbEmployees WHERE ID = 205666415";
-                //command = new SqlCommand(sql, connection);
-                //command.ExecuteNonQuery();
-                //command.Dispose();
+                sql = "DELETE FROM tlbEmployees WHERE ID = 205666415";
+                command = new SqlCommand(sql, connection);
+                command.ExecuteNonQuery();
+                command.Dispose();
 
-                //connection.Close();
+                connection.Close();
             }
             catch (Exception ex)
             {
