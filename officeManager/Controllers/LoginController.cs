@@ -21,7 +21,10 @@ namespace officeManager.Controllers
         {
             if (Validation.CheckValidationUserLogin(loginUser.username, loginUser.password))
             {
-                loginUser.CheckUserName();
+                if (!loginUser.CheckUserName())
+                {
+                    return NotFound();
+                }
             }
             else
             {
