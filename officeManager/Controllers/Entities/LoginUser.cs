@@ -12,7 +12,7 @@ namespace officeManager
     {
 
         //https://localhost:44375/api/login
-
+        private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
         public string username { get; set; }
         public string password { get; set; }
        // private static CodeGrantOauth _tokens = null;
@@ -25,51 +25,50 @@ namespace officeManager
         {
 
         }
-        public bool CheckUserName()
+        public List<bool> CheckUserName()
         {
-
-            string connetionString = null;
-            SqlConnection connection;
-            SqlCommand command;
-            SqlDataReader dataReader;
-            string sql = null;
-
-            connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
-            connection = new SqlConnection(connetionString);
-            connection.Open();
-            sql = string.Format("select * from tlbEmployees where Name = {0}", username);
-            command = new SqlCommand(sql, connection);
-            dataReader = command.ExecuteReader();
-            while (dataReader.Read())
+            List<bool> isFound = new List<bool>();
+            isFound.Add( false);
+            isFound.Add(false);
+            string sql = string.Format("select *  from tlbEmployees where ID ={0}",password);
+            SqlConnection connection = new SqlConnection(connetionString);
+            SqlCommand command = new SqlCommand(sql, connection);
+            SqlDataReader dataReader; 
+            try
             {
-                string ID = dataReader["ID"].ToString();
-                string Name = dataReader["Name"].ToString();
+                //connection = new SqlConnection(connetionString);
+                connection.Open();
+                //command = new SqlCommand(sql, connection);
+                dataReader = command.ExecuteReader();
+                if (dataReader.Read())
+                {
+                    isFound[0] = true;
+                    string ID = dataReader["ID"].ToString();
+                    string Name = dataReader["Name"].ToString();
+                    Name = Name.Replace(" ",string.Empty);
+                    int res = string.Compare(Name, username);
+                    if (res == 0)
+                        isFound[1] = true;
+                }
+
+                dataReader.Close();
+                command.Dispose();
+                connection.Close();
+                return isFound;
+
             }
-            dataReader.Close();
-            command.Dispose();
-            //List<Employee> employees = new List<Employee>();
-            //sql = "select * from tlbEmployees where ID=205666415";
-            //command = new SqlCommand(sql, connection);
-            //dataReader = command.ExecuteReader();
-            //while (dataReader.Read())
-            //{
-            //    int ID = (int)dataReader["ID"];
-            //    string Name = dataReader["Name"].ToString();
-            //    int CarNumber = (int)dataReader["CarNumber"];
-            //    int Floor = (int)dataReader["Floor"];
-            //    int RoomNumber = (int)dataReader["RoomNumber"];
-            //    string Role = dataReader["Role"].ToString();
-            //    int PermissionLevel = (int)dataReader["PermissionLevel"];
 
-            //    employees.Add(new Employee(ID, Name, CarNumber, Floor, RoomNumber, Role, PermissionLevel));
-            //}
-            //dataReader.Close();
-            //command.Dispose();
+            catch (Exception)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+            return isFound;
+        }
 
-            //connection.Close();
-
+        public bool AddUser()
+        {
             return true;
-
         }
     }
 }
