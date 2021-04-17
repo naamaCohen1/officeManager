@@ -15,9 +15,9 @@ namespace officeManager.Controllers
 
         //GET https://localhost:44375/api/users
         [HttpGet]
-        public ActionResult<List<Employee>> Get()
+        public ActionResult<List<User>> Get()
         {
-            List<Employee> employees = new List<Employee>();
+            List<User> employees = new List<User>();
             string sql = "select * from tlbEmployees";
             try
             {
@@ -27,15 +27,15 @@ namespace officeManager.Controllers
                 SqlDataReader dataReader = command.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    int ID = (int)dataReader["ID"];
+                    string ID = dataReader["ID"].ToString();
                     string Name = dataReader["Name"].ToString();
-                    int CarNumber = (int)dataReader["CarNumber"];
-                    int Floor = (int)dataReader["Floor"];
-                    int RoomNumber = (int)dataReader["RoomNumber"];
+                    string CarNumber = dataReader["CarNumber"].ToString();
+                    string Floor = dataReader["Floor"].ToString();
+                    string RoomNumber = dataReader["RoomNumber"].ToString();
                     string Role = dataReader["Role"].ToString();
-                    int PermissionLevel = (int)dataReader["PermissionLevel"];
+                    string PermissionLevel = dataReader["PermissionLevel"].ToString();
 
-                    employees.Add(new Employee(ID, Name, CarNumber, Floor, RoomNumber, Role, PermissionLevel));
+                    employees.Add(new User(ID, Name, CarNumber, Floor, RoomNumber, Role, PermissionLevel));
                 }
                 dataReader.Close();
                 command.Dispose();
@@ -53,10 +53,10 @@ namespace officeManager.Controllers
 
         //GET https://localhost:44375/api/users/{id}
         [HttpGet("{id}")]
-        public ActionResult<Employee> Get(string id)
+        public ActionResult<User> Get(string id)
         {
             string sql = string.Format("select * from tlbEmployees where ID={0}", id);
-            var employee = new Employee();
+            var user = new User();
             try
             {
                 SqlConnection connection = new SqlConnection(connetionString);
@@ -65,21 +65,21 @@ namespace officeManager.Controllers
                 SqlDataReader dataReader = command.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    employee.ID = (int)dataReader["ID"];
-                    employee.Name = dataReader["Name"].ToString();
-                    employee.CarNumber = (int)dataReader["CarNumber"];
-                    employee.Floor = (int)dataReader["Floor"];
-                    employee.RoomNumber = (int)dataReader["RoomNumber"];
-                    employee.Role = dataReader["Role"].ToString();
-                    employee.PermissionLevel = (int)dataReader["PermissionLevel"];
+                    user.ID = dataReader["ID"].ToString();
+                    user.Name = dataReader["Name"].ToString();
+                    user.CarNumber = dataReader["CarNumber"].ToString();
+                    user.Floor = dataReader["Floor"].ToString();
+                    user.RoomNumber = dataReader["RoomNumber"].ToString();
+                    user.Role = dataReader["Role"].ToString();
+                    user.PermissionLevel = dataReader["PermissionLevel"].ToString();
                 }
                 dataReader.Close();
                 command.Dispose();
                 connection.Close();
 
-                if (employee.Name == null)
+                if (user.Name == null)
                     return NotFound();
-                return Ok(employee);
+                return Ok(user);
             }
             catch (Exception)
             {
@@ -89,9 +89,9 @@ namespace officeManager.Controllers
 
         //POST https://localhost:44375/api/users
         [HttpPost]
-        public ActionResult<Employee> Post([FromBody] User user)
+        public ActionResult<User> Post([FromBody] User user)
         {
-            string sql = string.Format("insert into tlbEmployees " +
+            string sql = string.Format("INSERT into tlbEmployees " +
                 "(ID,Name,CarNumber,Floor,RoomNumber,Role,PermissionLevel) " +
                 "values ('{0}','{1}','{2}','{3}','{4}','{5}','{6}')", user.ID, user.Name, user.CarNumber,
                 user.Floor, user.RoomNumber, user.Role, user.PermissionLevel);
@@ -114,22 +114,22 @@ namespace officeManager.Controllers
 
         //PUT https://localhost:44375/api/users/{id}
         [HttpPut("{id}")]
-        public ActionResult<Employee> Put([FromBody] User user, string id)
+        public IActionResult Put([FromBody] User updated_user, string id)
         {
-            if (id != user.ID)
+            if (id != updated_user.ID)
                 return BadRequest();
             
-            var employee = Get(id);
-           
-            if (employee.Result.ToString().Contains("NotFoundResult"))
+            var user = Get(id);
+            if (user.Result.ToString().Contains("NotFoundResult"))
                 return NotFound();
-            if (!employee.Result.ToString().Contains("OkObjectResult"))
+            if (!user.Result.ToString().Contains("OkObjectResult"))
                 return BadRequest();
             
             string sql = string.Format("UPDATE tlbEmployees " +
                 "SET ID = '{0}', Name = '{1}', CarNumber = '{2}', Floor = '{3}'," +
                 "RoomNumber = '{4}', Role = '{5}', PermissionLevel = '{6}' WHERE ID = {0}",
-                user.ID, user.Name, user.CarNumber, user.Floor, user.RoomNumber, user.Role, user.PermissionLevel);
+                updated_user.ID, updated_user.Name, updated_user.CarNumber, updated_user.Floor, 
+                updated_user.RoomNumber, updated_user.Role, updated_user.PermissionLevel);
             try
             {
                 SqlConnection connection = new SqlConnection(connetionString);
@@ -149,8 +149,14 @@ namespace officeManager.Controllers
 
         //DELETE https://localhost:44375/api/users/{id}
         [HttpDelete("{id}")]
-        public ActionResult<Employee> Delete(string id)
+        public IActionResult Delete(string id)
         {
+            var user = Get(id);
+            if (user.Result.ToString().Contains("NotFoundResult"))
+                return NotFound();
+            if (!user.Result.ToString().Contains("OkObjectResult"))
+                return BadRequest();
+
             string sql = string.Format("DELETE FROM tlbEmployees WHERE ID={0}", id);
             try
             {
