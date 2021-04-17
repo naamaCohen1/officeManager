@@ -26,6 +26,18 @@ namespace officeManager
             //        "values (205666415,'Chen Tevet',7753954,11,13,'Developer',0)";
             //    command = new SqlCommand(sql, connection);
             //    command.ExecuteNonQuery();
+            //connetionString = @"Data Source=DESKTOP-U9FO5L4;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
+            //connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
+            connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
+            connection = new SqlConnection(connetionString);
+            try
+            {
+                connection.Open();
+                sql = "insert into tlbEmployees (ID,Name,CarNumber,Floor,RoomNumber,Role,PermissionLevel) " +
+                    "values (205666415,'Chen Tevet',7753954,11,13,'Developer',0)";
+                command = new SqlCommand(sql, connection);
+                command.ExecuteNonQuery();
+                command.Dispose();
 
             //    //            sql = "insert into tlbEmployees (ID,Name,CarNumber,Floor,RoomNumber,Role,PermissionLevel) " +
             //    //"values (205488349 ,'Naama Cohen',1212312,10,12,'Developer',0)";
