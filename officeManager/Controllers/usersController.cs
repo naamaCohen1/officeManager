@@ -9,7 +9,7 @@ namespace officeManager.Controllers
     [Route("api/[controller]")]
     [Route("users")]
     [ApiController]
-    public class usersController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
 
