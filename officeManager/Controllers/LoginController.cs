@@ -1,13 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Net.Http;
+using System.IO;
 using System.Threading.Tasks;
-using officeManager.Controllers;
-
-
+using System.Collections.Generic;
 
 namespace officeManager.Controllers
 {
@@ -16,21 +12,45 @@ namespace officeManager.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-        [HttpGet]
-        public ActionResult Get([FromBody] LoginUser loginUser)
+        [HttpPost]
+        //[ResponseType(typeof(User))]
+        public async Task<ActionResult<string>> Post([FromBody] LoginUser loginUser)
         {
             if (Validation.CheckValidationUserLogin(loginUser.username, loginUser.password))
             {
-                if (!loginUser.CheckUserName())
+                List<bool> res = loginUser.CheckUserName();
+                if (res[0] == true && res[1] == false)
                 {
-                    return NotFound();
+                    return new NotFoundObjectResult("user name is incorrent"); 
                 }
+                if (res[0] == false && res[1] == false)
+                {
+                    return new NotFoundObjectResult("user password is incorrent");
+                }
+                return new OkResult();
             }
             else
             {
-                return BadRequest();
+                return new BadRequestResult();
             }
-            return Ok(loginUser);
+            //return new OkResult();
         }
+
+        //[HttpPost]
+        //public ActionResult Post([FromBody] LoginUser loginUser)
+        //{
+        //    if (Validation.CheckValidationUserLogin(loginUser.username, loginUser.password))
+        //    {
+        //        if (!loginUser.AddUser())
+        //        {
+        //            return NotFound();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return BadRequest();
+        //    }
+        //    return Ok(loginUser);
+        //}
     }
 }
