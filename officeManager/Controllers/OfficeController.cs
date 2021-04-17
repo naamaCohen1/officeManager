@@ -3,7 +3,10 @@ using officeManager.Controllers.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-
+using System.Net;
+using System.Net.Http;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace officeManager.Controllers
 {
@@ -48,11 +51,11 @@ namespace officeManager.Controllers
 
                 if (offices.Count == 0)
                     return NotFound();
-                return Ok(offices);
+                return new OkObjectResult(offices);
             }
             catch (Exception)
             {
-                return BadRequest();
+                return new BadRequestResult();
             }
         }
 
@@ -88,11 +91,11 @@ namespace officeManager.Controllers
 
                 if (office.Name == null)
                     return NotFound();
-                return Ok(office);
+                return new OkObjectResult(office);
             }
             catch (Exception)
             {
-                return BadRequest();
+                return new BadRequestResult();
             }
         }
 
@@ -120,7 +123,7 @@ namespace officeManager.Controllers
             }
             catch (Exception)
             {
-                return BadRequest();
+                return new BadRequestResult();
             }
         }
 
@@ -132,7 +135,7 @@ namespace officeManager.Controllers
             if (office.Result.ToString().Contains("NotFoundResult"))
                 return NotFound();
             if (!office.Result.ToString().Contains("OkObjectResult"))
-                return BadRequest();
+                return new BadRequestResult();
 
             string sql = string.Format("UPDATE tlbOffice " +
                 "SET NumOfEmployees = '{0}', ParkingAmount = '{1}', FloorsAmount = '{2}', RoomsAmount = '{3}'," +
@@ -154,7 +157,7 @@ namespace officeManager.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest();
+                return new BadRequestResult();
             }
         }
 
@@ -166,7 +169,7 @@ namespace officeManager.Controllers
             if (office.Result.ToString().Contains("NotFoundResult"))
                 return NotFound();
             if (!office.Result.ToString().Contains("OkObjectResult"))
-                return BadRequest();
+                return new BadRequestResult();
 
             name = name.Replace(" ", "-");
             string sql = string.Format("DELETE FROM tlbOffice WHERE CONVERT(VARCHAR, Name) = '{0}'", name);
@@ -183,7 +186,7 @@ namespace officeManager.Controllers
             }
             catch (Exception)
             {
-                return BadRequest();
+                return new BadRequestResult();
             }
         }
     }

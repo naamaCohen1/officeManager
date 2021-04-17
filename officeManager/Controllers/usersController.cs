@@ -2,7 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-
+using System.Net;
+using System.Net.Http;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace officeManager.Controllers
 {
@@ -42,12 +45,12 @@ namespace officeManager.Controllers
                 connection.Close();
 
                 if (employees.Count == 0)
-                    return NotFound();
-                return Ok(employees);
+                    return new NotFoundObjectResult("No users were found");
+                return new OkObjectResult(employees);
             }
             catch (Exception)
             {
-                return BadRequest();
+                return new BadRequestResult();
             }
         }
 
@@ -78,12 +81,12 @@ namespace officeManager.Controllers
                 connection.Close();
 
                 if (user.Name == null)
-                    return NotFound();
-                return Ok(user);
+                return new NotFoundObjectResult("User with ID [" + id + "] was not found");
+                return new OkObjectResult(user);
             }
             catch (Exception)
             {
-                return BadRequest();
+                return new BadRequestResult();
             }
         }
 
@@ -108,7 +111,7 @@ namespace officeManager.Controllers
             }
             catch (Exception)
             {
-                return BadRequest();
+                return new BadRequestResult();
             }
         }
 
@@ -117,13 +120,13 @@ namespace officeManager.Controllers
         public IActionResult Put([FromBody] User updated_user, string id)
         {
             if (id != updated_user.ID)
-                return BadRequest();
+                return new BadRequestResult();
             
             var user = Get(id);
             if (user.Result.ToString().Contains("NotFoundResult"))
-                return NotFound();
+                return new NotFoundObjectResult("User with ID ["+id+"] was not found");
             if (!user.Result.ToString().Contains("OkObjectResult"))
-                return BadRequest();
+                return new BadRequestResult();
             
             string sql = string.Format("UPDATE tlbEmployees " +
                 "SET ID = '{0}', Name = '{1}', CarNumber = '{2}', Floor = '{3}'," +
@@ -143,7 +146,7 @@ namespace officeManager.Controllers
             }
             catch (Exception)
             {
-                return BadRequest();
+                return new BadRequestResult();
             }
         }
 
@@ -153,9 +156,9 @@ namespace officeManager.Controllers
         {
             var user = Get(id);
             if (user.Result.ToString().Contains("NotFoundResult"))
-                return NotFound();
+                return new NotFoundObjectResult("User with ID ["+id+"] was not found");
             if (!user.Result.ToString().Contains("OkObjectResult"))
-                return BadRequest();
+                return new BadRequestResult();
 
             string sql = string.Format("DELETE FROM tlbEmployees WHERE ID={0}", id);
             try
@@ -171,7 +174,7 @@ namespace officeManager.Controllers
             }
             catch (Exception)
             {
-                return BadRequest();
+                return new BadRequestResult();
             }
         }
     }
