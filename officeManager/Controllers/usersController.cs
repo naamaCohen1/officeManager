@@ -13,6 +13,7 @@ namespace officeManager.Controllers
     {
         private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
 
+        //GET https://localhost:44375/api/users
         [HttpGet]
         public ActionResult<List<Employee>> Get()
         {
@@ -50,6 +51,7 @@ namespace officeManager.Controllers
             }
         }
 
+        //GET https://localhost:44375/api/users/{id}
         [HttpGet("{id}")]
         public ActionResult<Employee> Get(string id)
         {
@@ -85,6 +87,7 @@ namespace officeManager.Controllers
             }
         }
 
+        //POST https://localhost:44375/api/users
         [HttpPost]
         public ActionResult<Employee> Post([FromBody] User user)
         {
@@ -109,6 +112,7 @@ namespace officeManager.Controllers
             }
         }
 
+        //PUT https://localhost:44375/api/users/{id}
         [HttpPut("{id}")]
         public ActionResult<Employee> Put([FromBody] User user, string id)
         {
@@ -143,7 +147,7 @@ namespace officeManager.Controllers
             }
         }
 
-
+        //DELETE https://localhost:44375/api/users/{id}
         [HttpDelete("{id}")]
         public ActionResult<Employee> Delete(string id)
         {
