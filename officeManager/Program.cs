@@ -26,6 +26,12 @@ namespace officeManager
                     "values (205666415,'Chen Tevet',7753954,11,13,'Developer',0)";
                 command = new SqlCommand(sql, connection);
                 command.ExecuteNonQuery();
+
+                //            sql = "insert into tlbEmployees (ID,Name,CarNumber,Floor,RoomNumber,Role,PermissionLevel) " +
+                //"values (205488349 ,'Naama Cohen',1212312,10,12,'Developer',0)";
+                //            command = new SqlCommand(sql, connection);
+                //            command.ExecuteNonQuery();
+
                 command.Dispose();
 
                 List<Employee> employees = new List<Employee>();
