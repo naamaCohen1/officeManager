@@ -34,6 +34,7 @@ namespace officeManager.Controllers
                 return new BadRequestResult();
             }
             //return new OkResult();
+            //return ObjectResult(loginUser);
         }
 
         //[HttpPost]
