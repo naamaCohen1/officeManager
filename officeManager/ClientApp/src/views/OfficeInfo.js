@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-//import React from "react";
+import React from "react";
+
 // react-bootstrap components
 import {
     Button,
@@ -7,35 +7,10 @@ import {
     Form,
     Container,
     Row,
-    Col,
+    Col
 } from "react-bootstrap";
 
-function User() {
-    const [carNumber, setCarNumber] = useState(0);
-    const [role, setRole] = useState("");
-    const [floor, setFloor] = useState(0);
-    const [roomNumber, setRoomNumber] = useState(0);
-
-    function handleSubmit(event) {
-        //const requestOptions = {
-        //    method: 'POST',
-        //    headers: {
-        //        'Content-Type': 'application/json',
-        //        'Accept': 'application/json'
-        //    },
-        //    body: JSON.stringify({
-        //        username: username,
-        //        password: password
-        //    })
-        //};
-        //console.log(requestOptions);
-        //fetch("https://localhost:44375/api/login/", requestOptions).then(response => console.log(response.status));
-        //console.log(data);
-        console.log("on handel submit" + carNumber);
-        console.log("on handel submit" + role);
-        event.preventDefault();
-    }
-
+function OfficeInfo() {
     return (
         <>
             <Container fluid>
@@ -43,27 +18,25 @@ function User() {
                     <Col md="12">
                         <Card>
                             <Card.Header>
-                                <Card.Title as="h4">Edit Profile</Card.Title>
+                                <Card.Title as="h4">Office Information</Card.Title>
                             </Card.Header>
                             <Card.Body>
-                                <Form onSubmit={handleSubmit}>
+                                <Form>
                                     <Row>
                                         <Col className="pr-1" md="6">
                                             <Form.Group>
-                                                <label>Name (disabled)</label>
+                                                <label>Employees' Number</label>
                                                 <Form.Control
-                                                    disabled
-                                                    placeholder="Name"
-                                                    type="text"
+                                                    placeholder="Enter the number of employees"
+                                                    type="number"
                                                 ></Form.Control>
                                             </Form.Group>
                                         </Col>
                                         <Col className="pl-1" md="6">
                                             <Form.Group>
-                                                <label>ID (disabled) </label>
+                                                <label>Parking's Number</label>
                                                 <Form.Control
-                                                    disabled
-                                                    placeholder="ID"
+                                                    placeholder="Enter the umber of parking places"
                                                     type="number"
                                                 ></Form.Control>
                                             </Form.Group>
@@ -72,75 +45,85 @@ function User() {
                                     <Row>
                                         <Col className="pr-1" md="6">
                                             <Form.Group>
-                                                <label>Car Number</label>
+                                                <label>Floors' Number</label>
                                                 <Form.Control
-                                                    placeholder="Car Number"
+                                                    placeholder="Enter the number of floors"
                                                     type="number"
-                                                    value={carNumber}
-                                                    onChange={(e) => setCarNumber(e.target.value)}
                                                 ></Form.Control>
                                             </Form.Group>
                                         </Col>
                                         <Col className="pl-1" md="6">
                                             <Form.Group>
-                                                <label for="validationCustom01" class="form-label">Role</label>
+                                                <label>Rooms' Number</label>
                                                 <Form.Control
-                                                    placeholder="Role"
-                                                    type="text"
-                                                    class="form-control"
-                                                    id="validationCustom01"
-                                                    value={role}
-                                                    onChange={(e) => setRole(e.target.value)}
+                                                    placeholder="Enter the number of rooms in the office"
+                                                    type="number"
                                                 ></Form.Control>
-                                            {/*    <div class="valid-feedback">*/}
-                                            {/*        Looks good!*/}
-                                            {/*    </div>*/}
                                             </Form.Group>
                                         </Col>
                                     </Row>
                                     <Row>
                                         <Col className="pl-1" md="5">
                                             <Form.Group>
-                                                <label>Floor</label>
+                                                <label>Meetting Rooms' Number</label>
                                                 <Form.Control
-                                                    placeholder="Floor"
+                                                    placeholder="Enter the number of meetting rooms in the office"
                                                     type="number"
-                                                    value={floor}
-                                                    onChange={(e) => setFloor(e.target.value)}
                                                 ></Form.Control>
                                             </Form.Group>
                                         </Col>
                                         <Col className="pr-1" md="5">
                                             <Form.Group>
-                                                <label>Room Number</label>
+                                                <label>Office Capacity</label>
                                                 <Form.Control
-                                                    placeholder="Room Number"
+                                                    placeholder="Enter the allowed office capacity percentage"
                                                     type="number"
-                                                    value={roomNumber}
-                                                    onChange={(e) => setRoomNumber(e.target.value)}
+                                                    max="100"
                                                 ></Form.Control>
                                             </Form.Group>
                                         </Col>
                                     </Row>
                                     <Row>
-                                        <Col className="pl-1" md="6">
-                                            <Form.Group >
-                                                <label>Permission Level (disabled)</label>
+                                        <Col className="pl-1" md="5">
+                                            <Form.Group>
+                                                <label>Open Space</label>
                                                 <Form.Control
-                                                    disabled
-                                                    placeholder="Permission Level"
-                                                    type="number"
+                                                    as="select"
+                                                    className="openspace-select"
+                                                    id="openspace-select"
+                                                    style={{ width: '265px' }}
+                                                >
+                                                    <option value="0">Is the office is an open space?</option>
+                                                    <option value="1">Yse</option>
+                                                    <option value="2">No</option>
+                                                ></Form.Control>
+                                            </Form.Group>
+                                        </Col>
+                                        <Col className="pr-1" md="5">
+                                            <Form.Group>
+                                                <label>HotSpots</label>
+                                                <Form.Control
+                                                    as="select"
+                                                    className="hotspots-select"
+                                                    id="hotspots-select"
+                                                    style={{ width: '265px' }}
+                                                >
+                                                    <option value="0">Is there hotspots in the office?</option>
+                                                    <option value="1">Yse</option>
+                                                    <option value="2">No</option>
                                                 ></Form.Control>
                                             </Form.Group>
                                         </Col>
                                     </Row>
+
                                     <Button
                                         className="btn-fill pull-right"
                                         type="submit"
                                         variant="success"
                                     >
-                                            Update Profile
+                                        Save Changes
                   </Button>
+                                    <div className="clearfix"></div>
                                 </Form>
                             </Card.Body>
                         </Card>
@@ -151,4 +134,4 @@ function User() {
     );
 }
 
-export default User;
+export default OfficeInfo;
