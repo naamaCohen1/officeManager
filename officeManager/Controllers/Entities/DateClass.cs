@@ -5,14 +5,19 @@ using System.Threading.Tasks;
 
 namespace officeManager.Controllers.Entities
 {
-    public class Date
+    public class DateClass
     {
         public string date { get; set; }
     
-        public Date(string date)
+        public DateClass(string date)
         {
             this.date = date;
             
         }
+        public DateClass()
+        {
+
+        }
+      
     }
 }

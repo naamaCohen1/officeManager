@@ -3,43 +3,59 @@ using System;
 using System.Threading.Tasks;
 using officeManager.Controllers.Entities;
 using System.Data.SqlClient;
+using System.Globalization;
 
 namespace officeManager.Controllers
 {
     
 
     [Route("api/[controller]")]
+    [Route("calendar")]
     [ApiController]
     public class CalendarController : ControllerBase
     {
+        string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
+
         [HttpPost]
-        public async Task<ActionResult<string>> Post([FromBody] Calendar calendar)
+        public async Task<ActionResult<string>> Post()
         {
-            //if (Validation.CheckValidationUserLogin(loginUser.username, loginUser.password))
+            
+            //string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", dateClass.date);
+            //string capacity = null;
+            //try
             //{
-            //    List<bool> res = loginUser.CheckUserName();
-            //    if (res[0] == true && res[1] == false)
+            //    SqlConnection connection = new SqlConnection(connetionString);
+            //    connection.Open();
+            //    SqlCommand command = new SqlCommand(sql, connection);
+            //    SqlDataReader dataReader = command.ExecuteReader();
+            //    while (dataReader.Read())
             //    {
-            //        return new NotFoundObjectResult("user name is incorrent");
+            //        capacity = dataReader["SittingCapacity"].ToString();
             //    }
-            //    if (res[0] == false && res[1] == false)
+
+            //    dataReader.Close();
+            //    command.Dispose();
+            //    connection.Close();
+            //    int intCapacity = int.Parse(capacity);
+            //    if (intCapacity == 0)
+            //        return new OkObjectResult("there is no place in this day,please register to waiting list");
+            //    else
             //    {
-            //        return new NotFoundObjectResult("user password is incorrent");
+
             //    }
-            //    return new OkResult();
+            //    return new OkObjectResult(capacity.Trim());
             //}
-            //else
+            //catch (Exception)
             //{
             //    return new BadRequestResult();
             //}
             return new BadRequestResult();
         }
+        //GET https://localhost:44375/api/calendar
         [HttpGet]
-        public async Task<ActionResult<string>> Get([FromBody] Date date_la)
+        public async Task<ActionResult<string>> Get([FromBody] DateClass dateClass)
         {
-            DateTime date = DateTime.Parse(date_la.date);
-            string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
-            string sql = string.Format("select * from tblCalender WHERE Date = '{0}'", date);
+            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", dateClass.date);
             string CommingTotheOffice = null;
             try
             {
@@ -49,16 +65,16 @@ namespace officeManager.Controllers
                 SqlDataReader dataReader = command.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    CommingTotheOffice= dataReader["EmployeesArriving"].ToString();
-                
+                    CommingTotheOffice = dataReader["EmployeesArriving"].ToString();
                 }
+                              
                 dataReader.Close();
                 command.Dispose();
                 connection.Close();
 
                 if (CommingTotheOffice == null)
                     return NotFound();
-                return new OkResult();
+                 return new OkObjectResult(CommingTotheOffice.Trim());
             }
             catch (Exception)
             {

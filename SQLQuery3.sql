@@ -1,0 +1,1 @@
+﻿insert into tlbCalendar (Date,EmployeesArriving,SittingCapacity,ParkingCapacity,WaitingList) values ('09/05/2021','Chen Tevet',50,30,'naama cohen')
