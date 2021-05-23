@@ -17,38 +17,41 @@ namespace officeManager.Controllers
         string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
 
         [HttpPost]
-        public async Task<ActionResult<string>> Post()
+        public async Task<ActionResult<string>> Post([FromBody] CalendarUser calendarUser)
         {
             
-            //string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", dateClass.date);
-            //string capacity = null;
-            //try
-            //{
-            //    SqlConnection connection = new SqlConnection(connetionString);
-            //    connection.Open();
-            //    SqlCommand command = new SqlCommand(sql, connection);
-            //    SqlDataReader dataReader = command.ExecuteReader();
-            //    while (dataReader.Read())
-            //    {
-            //        capacity = dataReader["SittingCapacity"].ToString();
-            //    }
-
-            //    dataReader.Close();
-            //    command.Dispose();
-            //    connection.Close();
-            //    int intCapacity = int.Parse(capacity);
-            //    if (intCapacity == 0)
-            //        return new OkObjectResult("there is no place in this day,please register to waiting list");
-            //    else
-            //    {
-
-            //    }
-            //    return new OkObjectResult(capacity.Trim());
-            //}
-            //catch (Exception)
-            //{
-            //    return new BadRequestResult();
-            //}
+            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", calendarUser.date);
+            string capacity = null;
+            try
+            {
+                SqlConnection connection = new SqlConnection(connetionString);
+                connection.Open();
+                SqlCommand command = new SqlCommand(sql, connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    capacity = dataReader["SittingCapacity"].ToString();
+                }
+                int intCapacity = int.Parse(capacity);
+                if (intCapacity == 0)
+                    return new NotFoundObjectResult("there is no place in this day,please register to waiting list");
+                else
+                {
+                    dataReader.Close();
+                    intCapacity--;
+                    sql = string.Format("UPDATE tlbCalendar SET SittingCapacity = {0} where date = '{1}'",intCapacity.ToString(), calendarUser.date);
+                    command = new SqlCommand(sql, connection);
+                    dataReader = command.ExecuteReader();
+                }
+                dataReader.Close();
+                command.Dispose();
+                connection.Close();
+                return new OkObjectResult(capacity.Trim());
+            }
+            catch (Exception)
+            {
+                return new BadRequestResult();
+            }
             return new BadRequestResult();
         }
         //GET https://localhost:44375/api/calendar
