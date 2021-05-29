@@ -22,6 +22,7 @@ namespace officeManager.Controllers
             
             string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", calendarUser.date);
             string capacity = null;
+            string ArraivingName = null;
             try
             {
                 SqlConnection connection = new SqlConnection(connetionString);
@@ -30,29 +31,33 @@ namespace officeManager.Controllers
                 SqlDataReader dataReader = command.ExecuteReader();
                 while (dataReader.Read())
                 {
+                    ArraivingName = dataReader["EmployeesArriving"].ToString();
                     capacity = dataReader["SittingCapacity"].ToString();
                 }
+                dataReader.Close();
                 int intCapacity = int.Parse(capacity);
                 if (intCapacity == 0)
                     return new NotFoundObjectResult("there is no place in this day,please register to waiting list");
                 else
                 {
-                    dataReader.Close();
+                    string name = calendarUser.GetEmployeeName(connection);
+                    if(name == null)
+                        return new NotFoundObjectResult("there is no employee with this id");
                     intCapacity--;
-                    sql = string.Format("UPDATE tlbCalendar SET SittingCapacity = {0} where date = '{1}'",intCapacity.ToString(), calendarUser.date);
-                    command = new SqlCommand(sql, connection);
-                    dataReader = command.ExecuteReader();
+                    calendarUser.UpdateCapacity(connection, intCapacity);
+                    ArraivingName = ArraivingName.Trim();
+                    ArraivingName+=string.Format(", {0}", name);
+                    calendarUser.UpdateArrivingName(connection, ArraivingName);
                 }
-                dataReader.Close();
                 command.Dispose();
                 connection.Close();
-                return new OkObjectResult(capacity.Trim());
+                return new OkObjectResult(ArraivingName);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return new BadRequestResult();
+                return new BadRequestObjectResult(e.Message);
             }
-            return new BadRequestResult();
+           // return new BadRequestResult();
         }
         //GET https://localhost:44375/api/calendar
         [HttpGet]
