@@ -58,7 +58,6 @@ namespace officeManager.Controllers.Entities
             {
                 throw e;
             }
-
         }
 
         public void UpdateCapacity(SqlConnection connection, int capacity)
@@ -75,7 +74,6 @@ namespace officeManager.Controllers.Entities
             {
                 throw e;
             }
-
         }
     }
 }

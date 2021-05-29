@@ -3,6 +3,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import ListGroup from 'react-bootstrap/ListGroup';
 
 class NameForm extends React.Component {
     constructor(props) {
@@ -11,6 +12,7 @@ class NameForm extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.isClicked = false;
+
     }
 
     handleChange(event) {
@@ -27,23 +29,25 @@ class NameForm extends React.Component {
             <Form.Group>
                 <Form onSubmit={this.handleSubmit}>
                     <Form.Label>
-                    Name:
+                        Name:
           <input type="text" value={this.state.value} onChange={this.handleChange} />
                     </Form.Label>
-                <input type="submit" value="Search" />
+                    <input type="submit" value="Search" />
                 </Form>
              </Form.Group>
         );
     }
 }
 
+
 export default function Results() {
     // set states of calendar date
     const [calDate, setCalDate] = useState(new Date())
     const [DateIsClick, setDateIsClick] = useState(false);
+    const [people, setPeople] = useState([]);
+
 
     function showSearchBar() {
-        //const isLoggedIn = this.state.isLoggedIn;
         let button;
         if (DateIsClick) {
             button = <NameForm></NameForm>;
@@ -53,21 +57,102 @@ export default function Results() {
 
     function showAddButton() {
         if (DateIsClick) {
-            return <Button variant="primary">Submit</Button>
+            return <Button variant="primary" onClick={clickSubmit}>Submit</Button>
         } 
     }
    
-    function onChange(calDate) {
-        // change results based on calendar date click
-        //NameForm.handleCalendarClick();
-        console.log("naama")
-        setDateIsClick(true)
-        console.log(DateIsClick)
+    async function  onChange(calDate) {
         setCalDate(calDate)
+        var newCalDateFormat = calDate.toLocaleString().split(",")[0]   
+        setDateIsClick(true)
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        };
+        newCalDateFormat = newCalDateFormat.replace('/', '.')
+        newCalDateFormat = newCalDateFormat.replace('/', '.')
+        console.log(newCalDateFormat)
+        var url = "https://localhost:44375/api/calendar/" + newCalDateFormat;
+        handleRequest(url, requestOptions)
+        //var url = "https://localhost:44375/api/calendar/" + newCalDateFormat;
+        //console.log(url)
+        //setDateIsClick(true)
+        //var peopleList = []
+        //const response = await fetch(url, requestOptions);
+        //if (response.status == 200) {
+        //    console.log("in the if")
+        //    const data = await response.json();
+        //    peopleList = data.split(",")
+
+        //}
+        //else {
+
+        //}
+        //setPeople(peopleList)
+    }
+
+
+    async function handleRequest(url, requestOptions) {
+        var peopleList = []
+        const response = await fetch(url, requestOptions);
+        if (response.status == 200) {
+            console.log("in the if")
+            const data = await response.json();
+            peopleList = data.split(",")
+
+        }
+        else {
+
+        }
+        setPeople(peopleList)
+    }
+    async function clickSubmit() {
+        console.log("clickSubmit()")
+        const newCalDateFormat = calDate.toLocaleString().split(",")[0]  
+        console.log(newCalDateFormat)
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                "date": newCalDateFormat,
+                "id": "205488349"
+            })
+        };
+        setDateIsClick(true)
+        var peopleList = []
+        handleRequest("https://localhost:44375/api/calendar", requestOptions)
+        //const response = await fetch("https://localhost:44375/api/calendar", requestOptions);
+        //if (response.status == 200) {
+        //    console.log("in the if")
+        //    const data = await response.json();
+        //    peopleList = data.split(",")
+
+        //}
+        //else {
+
+        //}
+        //setPeople(peopleList)
     }
 
     function showPeopleCame() {
-
+        return (
+            < React.Fragment >
+                <ListGroup>
+                    {people.map(listitem => (
+                        <ListGroup.Item>
+                            {listitem}
+                        </ListGroup.Item>
+                    ))}
+                </ListGroup>
+            </React.Fragment >
+        );
+       
     }
 
     return (
@@ -75,28 +160,10 @@ export default function Results() {
             <Calendar onChange={onChange} value={calDate} />
             {showSearchBar()}
             {showAddButton()}
+            {showPeopleCame()}
         </div>
     )
 
 }
 
-function onChange(calDate) {
-    setCalDate(calDate)
-
-    const filteredResults = userResults.filter(result => {
-        const newResultFormat = new Date(result.created_at).toLocaleString().split(",")[0]
-        const newCalDateFormat = calDate.toLocaleString().split(",")[0]
-        return newResultFormat === newCalDateFormat
-    })
-}
-
-
-
-
-//naama
-
-
-
-
-//
 //export default CommingToOffice;

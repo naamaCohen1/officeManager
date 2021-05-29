@@ -3,7 +3,7 @@ using System;
 using System.Threading.Tasks;
 using officeManager.Controllers.Entities;
 using System.Data.SqlClient;
-using System.Globalization;
+using Newtonsoft.Json;
 
 namespace officeManager.Controllers
 {
@@ -49,21 +49,23 @@ namespace officeManager.Controllers
                     ArraivingName+=string.Format(", {0}", name);
                     calendarUser.UpdateArrivingName(connection, ArraivingName);
                 }
+                string json = JsonConvert.SerializeObject(ArraivingName);
                 command.Dispose();
                 connection.Close();
-                return new OkObjectResult(ArraivingName);
+                return new OkObjectResult(json);
             }
             catch (Exception e)
             {
                 return new BadRequestObjectResult(e.Message);
             }
-           // return new BadRequestResult();
         }
-        //GET https://localhost:44375/api/calendar
-        [HttpGet]
-        public async Task<ActionResult<string>> Get([FromBody] DateClass dateClass)
+
+        //GET https://localhost:44375/api/calendar/mm.dd.yyyy
+        [HttpGet("{date}")]
+        public ActionResult<string> Get(string date)
         {
-            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", dateClass.date);
+            date.Replace(".", "/");
+            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", date);
             string CommingTotheOffice = null;
             try
             {
