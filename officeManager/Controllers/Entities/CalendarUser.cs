@@ -9,7 +9,7 @@ namespace officeManager.Controllers.Entities
 {
     public class CalendarUser
     {
-        //string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
+        string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
         public string id { get; set; }
         public string date { get; set; }
         public CalendarUser(string date,string id)
@@ -32,7 +32,10 @@ namespace officeManager.Controllers.Entities
                 SqlDataReader dataReader = command.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    name = dataReader["Name"].ToString();
+                    name += dataReader["FirstName"].ToString();
+                    name = name.Trim();
+                    name +=" ";
+                    name += dataReader["LastName"].ToString();
                 }
                 dataReader.Close();
                 command.Dispose();

@@ -75,9 +75,9 @@ export default function Results() {
         newCalDateFormat = newCalDateFormat.replace('/', '.')
         newCalDateFormat = newCalDateFormat.replace('/', '.')
         console.log(newCalDateFormat)
-        var url = "https://localhost:44375/api/calendar/" + newCalDateFormat;
+        var url = "https://localhost:5001/api/calendar/" + newCalDateFormat;
         handleRequest(url, requestOptions)
-        //var url = "https://localhost:44375/api/calendar/" + newCalDateFormat;
+        //var url = "https://localhost:5001/api/calendar/" + newCalDateFormat;
         //console.log(url)
         //setDateIsClick(true)
         //var peopleList = []
@@ -121,13 +121,15 @@ export default function Results() {
             },
             body: JSON.stringify({
                 "date": newCalDateFormat,
-                "id": "205488349"
+                "id": "204049316"
             })
         };
         setDateIsClick(true)
         var peopleList = []
-        handleRequest("https://localhost:44375/api/calendar", requestOptions)
-        //const response = await fetch("https://localhost:44375/api/calendar", requestOptions);
+        console.log(requestOptions)
+        handleRequest("https://localhost:5001/api/calendar", requestOptions)
+
+        //const response = await fetch("https://localhost:5001/api/calendar", requestOptions);
         //if (response.status == 200) {
         //    console.log("in the if")
         //    const data = await response.json();
