@@ -49,7 +49,7 @@ namespace officeManager.Controllers
                     intCapacity--;
                     calendarUser.UpdateCapacity(connection, intCapacity);
                     ArraivingID = ArraivingID.Trim();
-                    ArraivingID += string.Format(", {0};", calendarUser.id);
+                    ArraivingID += string.Format("{0};", calendarUser.id);
                     calendarUser.UpdateArrivingName(connection, ArraivingID);
                 }
                 string json = JsonConvert.SerializeObject(ArraivingID);
@@ -70,7 +70,7 @@ namespace officeManager.Controllers
             date.Replace(".", "/");
             string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", date);
             string CommingTotheOffice = null;
-            string sendingEmployees = "";
+            List<string> sendingEmployees = new List<string>();
             try
             {
                 SqlConnection connection = new SqlConnection(connetionString);
@@ -95,7 +95,7 @@ namespace officeManager.Controllers
                         CalendarUser user = new CalendarUser();
                         user.id = employee;
                         string name = user.GetEmployeeName(connection);
-                        sendingEmployees += name.ToString();
+                        sendingEmployees.Add(name);
                     }
                     connection.Close();
                     string json = JsonConvert.SerializeObject(sendingEmployees);
