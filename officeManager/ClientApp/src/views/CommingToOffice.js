@@ -4,6 +4,7 @@ import 'react-calendar/dist/Calendar.css';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
+import Container from 'react-bootstrap/Container';
 
 class NameForm extends React.Component {
     constructor(props) {
@@ -57,7 +58,12 @@ export default function Results() {
 
     function showAddButton() {
         if (DateIsClick) {
-            return <Button variant="primary" onClick={clickSubmit}>Submit</Button>
+            return (
+            <>
+             <Button variant="primary" style={{margin: '10px'}}  onClick={clickSubmit} >Submit</Button>
+             <Button variant="dark" onClick={clickRemove} >Remove</Button>
+            </>
+            )
         } 
     }
    
@@ -77,21 +83,6 @@ export default function Results() {
         console.log(newCalDateFormat)
         var url = "https://localhost:5001/api/calendar/" + newCalDateFormat;
         handleRequest(url, requestOptions)
-        //var url = "https://localhost:5001/api/calendar/" + newCalDateFormat;
-        //console.log(url)
-        //setDateIsClick(true)
-        //var peopleList = []
-        //const response = await fetch(url, requestOptions);
-        //if (response.status == 200) {
-        //    console.log("in the if")
-        //    const data = await response.json();
-        //    peopleList = data.split(",")
-
-        //}
-        //else {
-
-        //}
-        //setPeople(peopleList)
     }
 
 
@@ -101,7 +92,10 @@ export default function Results() {
         if (response.status == 200) {
             console.log("in the if")
             const data = await response.json();
-            peopleList = data.split(",")
+            var dataChnage = data.replace('[', '')
+            dataChnage = dataChnage.replace(']', '')
+            dataChnage = dataChnage.replaceAll('"', '')     
+            peopleList = dataChnage.split(",")
 
         }
         else {
@@ -125,21 +119,28 @@ export default function Results() {
             })
         };
         setDateIsClick(true)
-        var peopleList = []
         console.log(requestOptions)
         handleRequest("https://localhost:5001/api/calendar", requestOptions)
+    }
 
-        //const response = await fetch("https://localhost:5001/api/calendar", requestOptions);
-        //if (response.status == 200) {
-        //    console.log("in the if")
-        //    const data = await response.json();
-        //    peopleList = data.split(",")
-
-        //}
-        //else {
-
-        //}
-        //setPeople(peopleList)
+    async function clickRemove() {
+        console.log("clickRemove()")
+        const newCalDateFormat = calDate.toLocaleString().split(",")[0]
+        console.log(newCalDateFormat)
+        const requestOptions = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                "date": newCalDateFormat,
+                "id": "204049316"
+            })
+        };
+        setDateIsClick(true)
+        console.log(requestOptions)
+        handleRequest("https://localhost:5001/api/calendar", requestOptions)
     }
 
     function showPeopleCame() {
@@ -147,9 +148,9 @@ export default function Results() {
             < React.Fragment >
                 <ListGroup>
                     {people.map(listitem => (
-                        <ListGroup.Item>
+                        <ListGroup.Item sm='4'>
                             {listitem}
-                        </ListGroup.Item>
+                        </ListGroup.Item >
                     ))}
                 </ListGroup>
             </React.Fragment >
@@ -158,11 +159,16 @@ export default function Results() {
     }
 
     return (
-        <div className="result-calendar">
+        <div className="result-calendar" style={{ display: 'flex', justifyContent: 'space-between'}}>
             <Calendar onChange={onChange} value={calDate} />
             {showSearchBar()}
+
+            <div style={{ position: 'absolute', left: '15px', top: '420px',width: '300px'}}>
+                <Container fluid="md">
             {showAddButton()}
             {showPeopleCame()}
+                </Container>
+            </div>
         </div>
     )
 

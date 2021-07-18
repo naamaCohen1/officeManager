@@ -47,7 +47,7 @@ namespace officeManager.Controllers.Entities
             }
         }
 
-        public void UpdateArrivingName(SqlConnection connection,string names)
+        public void UpdateArrivingID(SqlConnection connection,string names)
         {
             string sql = string.Format("UPDATE tlbCalendar SET EmployeesArriving = '{0}' where date = '{1}'", names,date);
             try
