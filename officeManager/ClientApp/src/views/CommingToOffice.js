@@ -5,6 +5,11 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Container from 'react-bootstrap/Container';
+import InputGroup from 'react-bootstrap/InputGroup';
+import DropdownButton from 'react-bootstrap/DropdownButton';
+import Dropdown from 'react-bootstrap/Dropdown';
+import FormControl from 'react-bootstrap/FormControl';
+import Row from 'react-bootstrap/Row';
 
 class NameForm extends React.Component {
     constructor(props) {
@@ -27,18 +32,34 @@ class NameForm extends React.Component {
 
     render() {
         return (
-            <Form.Group>
-                <Form onSubmit={this.handleSubmit}>
-                    <Form.Label>
-                        Name:
-          <input type="text" value={this.state.value} onChange={this.handleChange} />
-                    </Form.Label>
-                    <input type="submit" value="Search" />
-                </Form>
-             </Form.Group>
+            <Form onSubmit={this.handleSubmit}>
+                <Form.Group as={Row} className="mb-3">
+               
+                    <InputGroup >
+                        <DropdownButton
+                            variant="outline-secondary"
+                            title="Search By"
+                            id="input-group-dropdown-1"
+                        >
+                            <Dropdown.Item href="#">Employee Name</Dropdown.Item>
+                            <Dropdown.Item href="#">Department</Dropdown.Item>
+                            <Dropdown.Item href="#">Floor</Dropdown.Item>
+                        </DropdownButton>
+                        <FormControl aria-label="Text input with dropdown button" value={this.state.value} onChange={this.handleChange} />
+                    </InputGroup>
+
+                        
+                   
+               
+                </Form.Group>
+            </Form>
+
         );
     }
 }
+
+
+
 
 
 export default function Results() {
@@ -92,16 +113,24 @@ export default function Results() {
         if (response.status == 200) {
             console.log("in the if")
             const data = await response.json();
+            console.log(data)
             var dataChnage = data.replace('[', '')
             dataChnage = dataChnage.replace(']', '')
-            dataChnage = dataChnage.replaceAll('"', '')     
-            peopleList = dataChnage.split(",")
+            dataChnage = dataChnage.replaceAll('"', '')
+            console.log(dataChnage)
+            if (dataChnage != "null") {
+                console.log("naama")
+                peopleList = dataChnage.split(",")
+                setPeople(peopleList)
+            }
+                
+
 
         }
         else {
 
         }
-        setPeople(peopleList)
+        
     }
     async function clickSubmit() {
         console.log("clickSubmit()")

@@ -11,15 +11,15 @@ namespace officeManager
     public  class LoginUser
     {
 
-        //https://localhost:44375/api/login
+        //https://localhost:5001/api/login
         private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
-        public string username { get; set; }
-        public string password { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
        // private static CodeGrantOauth _tokens = null;
         public LoginUser(string username, string password)
         {
-            this.username = username;
-            this.password = password;
+            this.Username = username;
+            this.Password = password;
         }
         public LoginUser()
         {
@@ -27,27 +27,24 @@ namespace officeManager
         }
         public List<bool> CheckUserName()
         {
-            List<bool> isFound = new List<bool>();
-            isFound.Add( false);
-            isFound.Add(false);
-            string sql = string.Format("select *  from tlbEmployees where ID ={0}",password);
+            List<bool> isFound = new List<bool>() {false, false };
+            string sql = string.Format("select *  from tlbEmployees where ID ={0}",Password);
             SqlConnection connection = new SqlConnection(connetionString);
             SqlCommand command = new SqlCommand(sql, connection);
             SqlDataReader dataReader; 
             try
             {
-                //connection = new SqlConnection(connetionString);
                 connection.Open();
-                //command = new SqlCommand(sql, connection);
                 dataReader = command.ExecuteReader();
                 if (dataReader.Read())
                 {
                     isFound[0] = true;
                     string ID = dataReader["ID"].ToString();
-                    string Name = dataReader["Name"].ToString();
-                    Name = Name.Replace(" ",string.Empty);
-                    int res = string.Compare(Name, username);
-                    if (res == 0)
+                    string FirstName = dataReader["FirstName"].ToString().Trim();
+                    string LastName = dataReader["LastName"].ToString().Trim();
+
+                    string Name = FirstName + " " + LastName;
+                    if (string.Compare(Name, Username) == 0)
                         isFound[1] = true;
                 }
 

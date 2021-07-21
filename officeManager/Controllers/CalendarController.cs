@@ -18,15 +18,63 @@ namespace officeManager.Controllers
         string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
 
 
+        /// <summary>
+        /// Performs GET request to https://localhost:5001/api/calendar
+        /// Gets all calendar events
+        /// </summary>
+        /// <returns> List of all calendar events as <see cref="List{Calendar}"/> </returns>
+        [HttpGet]
+        public async Task<ActionResult<List<Calendar>>> Get()
+        {
+            List<Calendar> calendars = new List<Calendar>();
+            string sql = "select * from tlbCalendar";
+            try
+            {
+                SqlConnection connection = new SqlConnection(connetionString);
+                connection.Open();
+                SqlCommand command = new SqlCommand(sql, connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    string EmployeesArriving = dataReader["EmployeesArriving"].ToString().Trim();
+                    string SittingCapacity = dataReader["SittingCapacity"].ToString().Trim();
+                    string ParkingCapacity = dataReader["ParkingCapacity"].ToString().Trim();
+                    string WaitingList = dataReader["WaitingList"].ToString().Trim();
+                    string Date = dataReader["Date"].ToString().Trim();
+
+                    calendars.Add(new Calendar(
+                        Date, EmployeesArriving, SittingCapacity, ParkingCapacity, WaitingList));
+                }
+                dataReader.Close();
+                command.Dispose();
+                connection.Close();
+
+                if (calendars.Count == 0)
+                    return new NotFoundObjectResult("No Events on Calendar");
+                string json = JsonConvert.SerializeObject(calendars);
+                return new OkObjectResult(json);
+            }
+            catch (Exception)
+            {
+                return new BadRequestResult();
+            }
+        }
+
         //POST https://localhost:5001/api/calendar
         //{"date": "07/21/2021",
         //"id": "204049316"
         //}
+        /// <summary>
+        /// Performs GET request to https://localhost:5001/api/calendar/mm.dd.yyyy
+        /// Adding employee to EmployeesArriving in the requested day 
+        /// </summary>
+        /// <param name="calendarUser"> Employee to be added as <see cref="CalendarUser"/> </param>
+        /// <returns> ???????? </returns>
         [HttpPost]
     public async Task<ActionResult<string>> Post([FromBody] CalendarUser calendarUser)
         {
 
-            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", calendarUser.date);
+            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", calendarUser.Date);
             string capacity = null;
             string ArraivingID = null;
             List<string> sendingEmployees = new List<string>();
@@ -42,14 +90,15 @@ namespace officeManager.Controllers
                     capacity = dataReader["SittingCapacity"].ToString();
                 }
                 dataReader.Close();
-                ArraivingID = ArraivingID.Trim();
+                if(ArraivingID !=null)
+                    ArraivingID = ArraivingID.Trim();
                 string[] employees = ArraivingID.Split(';');
                 foreach (string employee in employees)
                 {
                     if (employee.Equals(""))
                         continue;
                     CalendarUser user = new CalendarUser();
-                    user.id = employee;
+                    user.Id = employee;
                     string name = user.GetEmployeeName(connection);
                     sendingEmployees.Add(name);
                 }
@@ -64,7 +113,7 @@ namespace officeManager.Controllers
                     intCapacity--;
                     calendarUser.UpdateCapacity(connection, intCapacity);
                     ArraivingID = ArraivingID.Trim();
-                    ArraivingID += string.Format("{0};", calendarUser.id);
+                    ArraivingID += string.Format("{0};", calendarUser.Id);
                     calendarUser.UpdateArrivingID(connection, ArraivingID);
                     sendingEmployees.Add(calendarUser.GetEmployeeName(connection));
                 }
@@ -83,7 +132,7 @@ namespace officeManager.Controllers
         public async Task<ActionResult<string>> DELETE([FromBody] CalendarUser calendarUser)
         {
 
-            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", calendarUser.date);
+            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", calendarUser.Date);
             string ArraivingID = null;
             string newArraivingID = null;
             List<string> sendingEmployees = new List<string>();
@@ -104,13 +153,13 @@ namespace officeManager.Controllers
                 {
                     if (employee.Equals(""))
                         continue;
-                    if(employee.Equals(calendarUser.id))
+                    if(employee.Equals(calendarUser.Id))
                         continue;
                     
                     
                         newArraivingID += employee +";";
                         CalendarUser user = new CalendarUser();
-                        user.id = employee;
+                        user.Id = employee;
                         string name = user.GetEmployeeName(connection);
                         sendingEmployees.Add(name);
                     
@@ -128,7 +177,12 @@ namespace officeManager.Controllers
             }
         }
 
-        //GET https://localhost:5001/api/calendar/mm.dd.yyyy
+        /// <summary>
+        /// Performs GET request to https://localhost:5001/api/calendar/mm.dd.yyyy
+        /// Adding employee to EmployeesArriving in the requested day 
+        /// </summary>
+        /// <param name="calendarUser"> Employee to be added as <see cref="CalendarUser"/> </param>
+        /// <returns> ???????? </returns>
         [HttpGet("{date}")]
         public ActionResult<string> Get(string date)
         {
@@ -158,7 +212,7 @@ namespace officeManager.Controllers
                         if (employee.Equals(""))
                             continue;
                         CalendarUser user = new CalendarUser();
-                        user.id = employee;
+                        user.Id = employee;
                         string name = user.GetEmployeeName(connection);
                         sendingEmployees.Add(name);
                     }

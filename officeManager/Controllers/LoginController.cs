@@ -16,16 +16,12 @@ namespace officeManager.Controllers
         //[ResponseType(typeof(User))]
         public async Task<ActionResult<string>> Post([FromBody] LoginUser loginUser)
         {
-            if (Validation.CheckValidationUserLogin(loginUser.username, loginUser.password))
+            if (Validation.CheckValidationUserLogin(loginUser.Username, loginUser.Password))
             {
                 List<bool> res = loginUser.CheckUserName();
-                if (res[0] == true && res[1] == false)
+                if (res[0] == false || res[1] == false)
                 {
-                    return new NotFoundObjectResult("user name is incorrent"); 
-                }
-                if (res[0] == false && res[1] == false)
-                {
-                    return new NotFoundObjectResult("user password is incorrent");
+                    return new NotFoundObjectResult("Invalid username or password"); 
                 }
                 return new OkResult();
             }

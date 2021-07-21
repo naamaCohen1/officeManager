@@ -10,21 +10,24 @@ namespace officeManager.Controllers.Entities
     public class CalendarUser
     {
         string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
-        public string id { get; set; }
-        public string date { get; set; }
+        public string Id { get; set; }
+        public string Date { get; set; }
+
         public CalendarUser(string date,string id)
         {
-            this.id = id;
-            this.date = date;
+            this.Id = id;
+            this.Date = date;
 
         }
+
         public CalendarUser()
         {
 
         }
+
         public string GetEmployeeName(SqlConnection connection)
         {
-            string sql = string.Format("select * from tlbEmployees where id = {0}", id);
+            string sql = string.Format("select * from tlbEmployees where id = {0}", Id);
             string name = null;
             try
             {
@@ -39,7 +42,9 @@ namespace officeManager.Controllers.Entities
                 }
                 dataReader.Close();
                 command.Dispose();
-                return name.Trim();
+                if(name != null)
+                    return name.Trim();
+                return name;
             }
             catch(Exception e)
             {
@@ -49,7 +54,7 @@ namespace officeManager.Controllers.Entities
 
         public void UpdateArrivingID(SqlConnection connection,string names)
         {
-            string sql = string.Format("UPDATE tlbCalendar SET EmployeesArriving = '{0}' where date = '{1}'", names,date);
+            string sql = string.Format("UPDATE tlbCalendar SET EmployeesArriving = '{0}' where date = '{1}'", names,Date);
             try
             {
                 SqlCommand command = new SqlCommand(sql, connection);
@@ -65,7 +70,7 @@ namespace officeManager.Controllers.Entities
 
         public void UpdateCapacity(SqlConnection connection, int capacity)
         {
-            string sql = string.Format("UPDATE tlbCalendar SET SittingCapacity = {0} where date = '{1}'", capacity.ToString(), date);
+            string sql = string.Format("UPDATE tlbCalendar SET SittingCapacity = {0} where date = '{1}'", capacity.ToString(), Date);
             try
             {
                 SqlCommand command = new SqlCommand(sql, connection);

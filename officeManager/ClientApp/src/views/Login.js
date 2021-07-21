@@ -11,10 +11,13 @@ function Login() {
     const [password, setPassword] = useState("");
    
     function validateForm() {
-        return username.length > 0 && password.length > 0;
+        //return username.length > 0 && password.length > 0;
+        return true;
     }
 
-    function handleSubmit(event) {
+
+
+    async function handleSubmit(event) {
         const requestOptions = {
             method: 'POST',
             headers: {
@@ -22,16 +25,19 @@ function Login() {
                 'Accept': 'application/json'
             },
             body: JSON.stringify({
-                username: username,
-                password: password
+                "username": username,
+                "password": password
             })
         };
         console.log(requestOptions);
-        fetch("https://localhost:44375/api/login/", requestOptions).then(response => console.log(response.status));
-        console.log(data);
-        console.log("on handel submit" + username);
-        console.log("on handel submit" + password);
-        event.preventDefault();
+        const response = await fetch("https://localhost:5001/api/login/", requestOptions)
+        if (response.status != 200) {
+            const data = await response.json();
+            alert(data)
+            event.preventDefault();
+        }
+
+        //event.preventDefault();
     }
 
     return (
@@ -43,7 +49,9 @@ function Login() {
                         autoFocus
                         type="text"
                         value={username}
+                        //onChange={setUsername()}
                         onChange={(e) => setUsername(e.target.value)}
+
                     />
                 </Form.Group>
                 <Form.Group size="lg" controlId="ID">
@@ -51,13 +59,14 @@ function Login() {
                     <Form.Control
                         type="password"
                         value={password}
+                        //onChange={setPassword()}
                         onChange={(e) => setPassword(e.target.value)}
                     />
                 </Form.Group>
                 <Button
                     block size="lg"
                     type="submit"
-                    disabled={!validateForm()}
+                    //disabled={!validateForm()}
                     >
                     Login
         </Button>
