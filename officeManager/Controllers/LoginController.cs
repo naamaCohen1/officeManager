@@ -4,6 +4,8 @@ using System.Net.Http;
 using System.IO;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Data.SqlClient;
+using Newtonsoft.Json;
 
 namespace officeManager.Controllers
 {
@@ -13,7 +15,6 @@ namespace officeManager.Controllers
     public class LoginController : ControllerBase
     {
         [HttpPost]
-        //[ResponseType(typeof(User))]
         public async Task<ActionResult<string>> Post([FromBody] LoginUser loginUser)
         {
             if (Validation.CheckValidationUserLogin(loginUser.Username, loginUser.Password))
@@ -33,21 +34,5 @@ namespace officeManager.Controllers
             //return ObjectResult(loginUser);
         }
 
-        //[HttpPost]
-        //public ActionResult Post([FromBody] LoginUser loginUser)
-        //{
-        //    if (Validation.CheckValidationUserLogin(loginUser.username, loginUser.password))
-        //    {
-        //        if (!loginUser.AddUser())
-        //        {
-        //            return NotFound();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return BadRequest();
-        //    }
-        //    return Ok(loginUser);
-        //}
     }
 }

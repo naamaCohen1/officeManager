@@ -19,7 +19,7 @@ namespace officeManager.Controllers
 
 
         /// <summary>
-        /// Performs GET request to https://localhost:5001/api/calendar
+        /// Performs GET request to https://localhost:44375/api/calendar
         /// Gets all calendar events
         /// </summary>
         /// <returns> List of all calendar events as <see cref="List{Calendar}"/> </returns>
@@ -60,12 +60,12 @@ namespace officeManager.Controllers
             }
         }
 
-        //POST https://localhost:5001/api/calendar
+        //POST https://localhost:44375/api/calendar
         //{"date": "07/21/2021",
         //"id": "204049316"
         //}
         /// <summary>
-        /// Performs GET request to https://localhost:5001/api/calendar/mm.dd.yyyy
+        /// Performs GET request to https://localhost:44375/api/calendar/mm.dd.yyyy
         /// Adding employee to EmployeesArriving in the requested day 
         /// </summary>
         /// <param name="calendarUser"> Employee to be added as <see cref="CalendarUser"/> </param>
@@ -178,7 +178,7 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs GET request to https://localhost:5001/api/calendar/mm.dd.yyyy
+        /// Performs GET request to https://localhost:44375/api/calendar/mm.dd.yyyy
         /// Adding employee to EmployeesArriving in the requested day 
         /// </summary>
         /// <param name="calendarUser"> Employee to be added as <see cref="CalendarUser"/> </param>

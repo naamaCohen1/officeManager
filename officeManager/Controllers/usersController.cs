@@ -15,16 +15,16 @@ namespace officeManager.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        //private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
-        private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
+        private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
+        //private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
 
         /// <summary>
-        /// Performs GET request to https://localhost:5001/api/users
+        /// Performs GET request to https://localhost:44375/api/users
         /// Gets all employees
         /// </summary>
         /// <returns> Returns all office's employees </returns>
         [HttpGet]
-        public ActionResult<List<User>> Get()
+        public async Task<ActionResult<List<User>>> Get()
         {
             List<User> employees = new List<User>();
             string sql = "select * from tlbEmployees";
@@ -66,13 +66,13 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs GET request to https://localhost:5001/api/users/{id}
+        /// Performs GET request to https://localhost:44375/api/users/{id}
         /// Gets specific employee
         /// </summary>
         /// <param name="id"> Employee's ID </param>
         /// <returns> Returns requested employee </returns>
         [HttpGet("{id}")]
-        public ActionResult<User> Get(string id)
+        public async Task<ActionResult<User>> Get(string id)
         {
             string sql = string.Format("select * from tlbEmployees where ID={0}", id);
             var user = new User();
@@ -111,13 +111,13 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs POST request to https://localhost:5001/api/users.
+        /// Performs POST request to https://localhost:44375/api/users.
         /// Adding new employee to DB
         /// </summary>
         /// <param name="user"> Employee to Add as <see cref="User"/> </param>
         /// <returns> Added employee as <see cref="User"/> </returns>
         [HttpPost]
-        public ActionResult<User> Post([FromBody] User user)
+        public async Task<ActionResult<User>> Post([FromBody] User user)
         {
             string sql = string.Format("INSERT into tlbEmployees " +
                 "(ID,FirstName,LastName,Email,CarNumber,Floor,RoomNumber,Role,PermissionLevel,Department) " +
@@ -144,21 +144,21 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs PUT request to https://localhost:5001/api/users/{id}
+        /// Performs PUT request to https://localhost:44375/api/users/{id}
         /// </summary>
         /// <param name="updated_user"> Updated employee as <see cref="User"/> </param>
         /// <param name="id"> Employee's ID to be update </param>
         /// <returns> <see cref="IActionResult"/> </returns>
         [HttpPut("{id}")]
-        public IActionResult Put([FromBody] User updated_user, string id)
+        public async Task<IActionResult> Put([FromBody] User updated_user, string id)
         {
             if (id != updated_user.ID)
                 return new BadRequestResult();
 
             var user = Get(id);
-            if (user.Result.ToString().Contains("NotFoundResult"))
+            if (user.Result.Result.ToString().Contains("NotFoundResult"))
                 return new NotFoundObjectResult("User with ID [" + id + "] was not found");
-            if (!user.Result.ToString().Contains("OkObjectResult"))
+            if (!user.Result.Result.ToString().Contains("OkObjectResult"))
                 return new BadRequestResult();
 
             string sql = string.Format("UPDATE tlbEmployees " +
@@ -184,12 +184,12 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs DELETE request to https://localhost:5001/api/users/{id}
+        /// Performs DELETE request to https://localhost:44375/api/users/{id}
         /// </summary>
         /// <param name="id"> Employee's ID to delete </param>
         /// <returns> <see cref="IActionResult"/> </returns>
         [HttpDelete("{id}")]
-        public IActionResult Delete(string id)
+        public async Task<IActionResult> Delete(string id)
         {
             var user = Get(id);
             if (user.Result.ToString().Contains("NotFoundResult"))

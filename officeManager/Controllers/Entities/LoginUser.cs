@@ -11,20 +11,25 @@ namespace officeManager
     public  class LoginUser
     {
 
-        //https://localhost:5001/api/login
-        private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
+        //https://localhost:44375/api/login
+        private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
+        //private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
+
         public string Username { get; set; }
         public string Password { get; set; }
        // private static CodeGrantOauth _tokens = null;
+
         public LoginUser(string username, string password)
         {
             this.Username = username;
             this.Password = password;
         }
+
         public LoginUser()
         {
 
         }
+
         public List<bool> CheckUserName()
         {
             List<bool> isFound = new List<bool>() {false, false };

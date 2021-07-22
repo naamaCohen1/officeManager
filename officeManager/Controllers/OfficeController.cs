@@ -17,7 +17,7 @@ namespace officeManager.Controllers
     {
         private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
 
-        //GET https://localhost:5001/api/office
+        //GET https://localhost:44375/api/office
         [HttpGet]
         public ActionResult<List<Office>> Get()
         {
@@ -59,7 +59,7 @@ namespace officeManager.Controllers
             }
         }
 
-        //GET https://localhost:5001/api/office/{name}
+        //GET https://localhost:44375/api/office/{name}
         [HttpGet("{name}")]
         public ActionResult<Office> Get(string name)
         {
@@ -100,7 +100,7 @@ namespace officeManager.Controllers
         }
 
 
-        //POST https://localhost:5001/api/office
+        //POST https://localhost:44375/api/office
         [HttpPost]
         public ActionResult<Office> Post([FromBody] Office office)
         {
@@ -127,7 +127,7 @@ namespace officeManager.Controllers
             }
         }
 
-        //PUT https://localhost:5001/api/office/{name}
+        //PUT https://localhost:44375/api/office/{name}
         [HttpPut("{name}")]
         public IActionResult Put([FromBody] Office updated_office, string name)
         {
@@ -155,13 +155,13 @@ namespace officeManager.Controllers
 
                 return NoContent();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return new BadRequestResult();
             }
         }
 
-        //DELETE https://localhost:5001/api/office/{name}
+        //DELETE https://localhost:44375/api/office/{name}
         [HttpDelete("{name}")]
         public IActionResult Delete(string name)
         {

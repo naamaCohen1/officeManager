@@ -1,21 +1,17 @@
 import React, { useState } from "react";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-
-
-
-
+import { Modal, Form, Button } from "react-bootstrap";
 
 function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-   
-    function validateForm() {
-        //return username.length > 0 && password.length > 0;
-        return true;
-    }
+    const [show, setShow] = useState(false);
+    const [showErr, setShowErr] = useState(false);
 
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
+    const handleCloseErr = () => setShowErr(false);
+    const handleShowErr = () => setShowErr(true);
 
     async function handleSubmit(event) {
         const requestOptions = {
@@ -30,14 +26,15 @@ function Login() {
             })
         };
         console.log(requestOptions);
-        const response = await fetch("https://localhost:5001/api/login/", requestOptions)
+        const response = await fetch("https://localhost:44375/api/login/", requestOptions)
         if (response.status != 200) {
-            const data = await response.json();
-            alert(data)
-            event.preventDefault();
+            { handleShowErr() }
+        }
+        else {
+            { handleShow() }
         }
 
-        //event.preventDefault();
+        event.preventDefault();
     }
 
     return (
@@ -49,7 +46,6 @@ function Login() {
                         autoFocus
                         type="text"
                         value={username}
-                        //onChange={setUsername()}
                         onChange={(e) => setUsername(e.target.value)}
 
                     />
@@ -59,17 +55,39 @@ function Login() {
                     <Form.Control
                         type="password"
                         value={password}
-                        //onChange={setPassword()}
                         onChange={(e) => setPassword(e.target.value)}
                     />
                 </Form.Group>
-                <Button
-                    block size="lg"
-                    type="submit"
-                    //disabled={!validateForm()}
-                    >
+                <button type="button"
+                    class="btn btn-primary"
+                    onClick={handleSubmit}
+                >
                     Login
-        </Button>
+                  </button>
+
+                <Modal show={showErr} onHide={handleCloseErr}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Error</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>Invalid Username or Password. Please try again</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="primary" onClick={handleCloseErr}>OK</Button>
+                    </Modal.Footer>
+                </Modal>
+
+                <Modal show={show} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Success</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>Loged In successfully</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="primary" onClick={handleClose}>OK</Button>
+                    </Modal.Footer>
+                </Modal>
             </Form>
         </div>
     );
