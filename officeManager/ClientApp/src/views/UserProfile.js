@@ -47,10 +47,8 @@ export default function User() {
     async function handleRequest(url, requestOptions) {
         const response = await fetch(url, requestOptions);
         if (response.status == 200) {
-            console.log("in the if")
             const data = await response.json();
             if (data != "null") {
-                console.log(data)
                 var dataChnage = data.replace("}", "")
                 var params = dataChnage.split(",")
                 var dictionary = []

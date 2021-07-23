@@ -25,7 +25,7 @@ function Login() {
                 "password": password
             })
         };
-        console.log(requestOptions);
+
         const response = await fetch("https://localhost:44375/api/login/", requestOptions)
         if (response.status != 200) {
             { handleShowErr() }

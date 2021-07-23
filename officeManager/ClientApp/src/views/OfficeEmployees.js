@@ -8,12 +8,12 @@ import {
     Row,
     Col,
     Modal,
-    ButtonGroup,
-    Form,
-    InputGroup
+    Form
 } from "react-bootstrap";
 
 export default function OfficeEmployees() {
+    var mappedPermissionLevel = ""
+
     const [employeesArray, setEmployeesArray] = useState([]);
     const [message, setMessage] = useState();
 
@@ -44,24 +44,15 @@ export default function OfficeEmployees() {
     const handleCloseAddUser = () => setShowAddUser(false);
     const handleShowAddUser = () => setShowAddUser(true);
 
-    const [validated, setValidated] = useState(false);
+    const [showEditUser, setShowEditUser] = useState(false);
+    const handleCloseEditUser = () => setShowEditUser(false);
+    const handleShowEditUser = () => setShowEditUser(true);
 
-    const handleSubmit = (event) => {
-        const form = event.currentTarget;
-        if (form.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-        else {
-            event.preventDefault();
-            {AddEmployee()}
-        }
-
-        setValidated(true);
-    };
+    const [validatedAdd, setValidatedAdd] = useState(false);
+    const [validatedEdit, setValidatedEdit] = useState(false);
 
     async function refreshPage() {
-        { handleCloseInfo()}
+        { handleCloseInfo() }
         window.location.reload();
     }
 
@@ -81,10 +72,8 @@ export default function OfficeEmployees() {
     async function handleRequest(url, requestOptions) {
         const response = await fetch(url, requestOptions);
         if (response.status == 200) {
-            console.log("in the if")
             const data = await response.json();
             if (data != "null") {
-                console.log(data)
                 var dataChnage = data.replace("[", "")
                 dataChnage = dataChnage.replace("]", "")
                 var employees = dataChnage.split("},")
@@ -107,8 +96,74 @@ export default function OfficeEmployees() {
                     array.push(dictionary)
                 }
                 setEmployeesArray(array)
-                console.log(employeesArray);
             }
+        }
+    }
+
+    const handleEdit = (event) => {
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        else {
+            event.preventDefault();
+            { EditEmployee() }
+        }
+
+        setValidatedEdit(true);
+    };
+
+    async function handleEditEmployee(value) {
+        setId(value[0])
+        setFirstName(value[1])
+        setLastName(value[2])
+        setEmail(value[3])
+        setCarNumber(value[4])
+        setFloor(value[5])
+        setRoomNumber(value[6])
+        setRole(value[7])
+        setDepartment(value[9])
+        setPermissionLevel(value[8])
+        { handleShowEditUser() }
+    }
+
+    async function EditEmployee() {
+        { handleCloseEditUser()}
+        mappedPermissionLevel = "1"
+        if (permissionLevel.toUpperCase() === 'ADMINISTRATOR') {
+            mappedPermissionLevel = "0"
+        }
+
+        const requestOptions = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                "id": id,
+                "firstName": firstName,
+                "lastName": lastName,
+                "email": email,
+                "carNumber": carNumber,
+                "floor": floor,
+                "roomNumber": roomNumber,
+                "role": role,
+                "department": department,
+                "permissionLevel": mappedPermissionLevel
+            })
+        };
+        var url = "https://localhost:44375/api/users/" + id;
+        const response = await fetch(url, requestOptions);
+
+        if (response.status == 204) {
+            setMessage("Employee was updated.")
+            { handleShowInfo() }
+        }
+        else {
+            setMessage("Unexpected error! Fail to delete employee.")
+            { handleShowErr() }
         }
     }
 
@@ -127,7 +182,6 @@ export default function OfficeEmployees() {
                 'Accept': 'application/json'
             }
         };
-        console.log(id)
         var url = "https://localhost:44375/api/users/" + id;
         const response = await fetch(url, requestOptions);
         if (response.status == 204) {
@@ -140,9 +194,23 @@ export default function OfficeEmployees() {
         }
     }
 
+    const handleAdd = (event) => {
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        else {
+            event.preventDefault();
+            { AddEmployee() }
+        }
+
+        setValidatedAdd(true);
+    };
+
     async function AddEmployee() {
         { handleCloseAddUser() }
-        
+
         var mappedPermissionLevel = "1"
         if (permissionLevel.toUpperCase() === 'ADMINISTRATOR') {
             mappedPermissionLevel = "0"
@@ -174,7 +242,6 @@ export default function OfficeEmployees() {
             { handleShowInfo() }
         }
         else {
-            console.log(response.status)
             setMessage("Unexpected error! Fail to create employee.")
             { handleShowErr() }
         }
@@ -234,7 +301,7 @@ export default function OfficeEmployees() {
                                                     <td style={{ fontSize: 12 }}>{item[9]}</td>
                                                     <td style={{ fontSize: 12 }}>{item[8]}</td>
                                                     <td>
-                                                        <button type="button" class="btn btn-info btn-sm">
+                                                        <button type="button" class="btn btn-info btn-sm" value={item} onClick={() => handleEditEmployee(item)}>
                                                             Edit
                                                             </button>
                                                     </td>
@@ -296,31 +363,31 @@ export default function OfficeEmployees() {
                         <Modal.Title>Add New Employee</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                    <Form noValidate validated={validated} onSubmit={handleSubmit}>
-                        <Row className="mb-3">
-                            <Form.Group as={Col}>
-                                <Form.Label>ID</Form.Label>
+                        <Form noValidate validated={validatedAdd} onSubmit={handleAdd}>
+                            <Row className="mb-3">
+                                <Form.Group as={Col}>
+                                    <Form.Label>ID</Form.Label>
                                     <Form.Control required type="text" placeholder="ID"
                                         onChange={(e) => setId(e.target.value)}
                                     />
                                     <Form.Control.Feedback type="invalid"> This field is required.</Form.Control.Feedback>
                                 </Form.Group>
 
-                                    <Form.Group as={Col}>
-                                <Form.Label>First name</Form.Label>
+                                <Form.Group as={Col}>
+                                    <Form.Label>First name</Form.Label>
                                     <Form.Control required type="text" placeholder="First name"
                                         onChange={(e) => setFirstName(e.target.value)}
                                     />
                                     <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
-                                    </Form.Group>
+                                </Form.Group>
 
-                                    <Form.Group as={Col}>
-                                        <Form.Label>Last name</Form.Label>
+                                <Form.Group as={Col}>
+                                    <Form.Label>Last name</Form.Label>
                                     <Form.Control required type="text" placeholder="Last name"
                                         onChange={(e) => setLastName(e.target.value)}
                                     />
-                                        <Form.Control.Feedback type="invalid"> This field is required.</Form.Control.Feedback>
-                                    </Form.Group>
+                                    <Form.Control.Feedback type="invalid"> This field is required.</Form.Control.Feedback>
+                                </Form.Group>
                             </Row>
 
                             <Row className="mb-3">
@@ -333,29 +400,29 @@ export default function OfficeEmployees() {
                                 </Form.Group>
                             </Row>
 
-                        <Row className="mb-3">
-                            <Form.Group as={Col}>
-                                <Form.Label>Car Number</Form.Label>
+                            <Row className="mb-3">
+                                <Form.Group as={Col}>
+                                    <Form.Label>Car Number</Form.Label>
                                     <Form.Control type="text" placeholder="Car Number"
                                         onChange={(e) => setCarNumber(e.target.value)}
                                     />
                                 </Form.Group>
 
-                            <Form.Group as={Col}>
-                                <Form.Label>Floor</Form.Label>
+                                <Form.Group as={Col}>
+                                    <Form.Label>Floor</Form.Label>
                                     <Form.Control type="text" placeholder="Floor" required
                                         onChange={(e) => setFloor(e.target.value)}
                                     />
-                                <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
+                                    <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
                                 </Form.Group>
 
-                            <Form.Group as={Col}>
-                                <Form.Label>Room Number</Form.Label>
+                                <Form.Group as={Col}>
+                                    <Form.Label>Room Number</Form.Label>
                                     <Form.Control type="text" placeholder="Room Number" required
                                         onChange={(e) => setRoomNumber(e.target.value)}
                                     />
-                                <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
-                            </Form.Group>
+                                    <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
+                                </Form.Group>
                             </Row>
 
                             <Row className="mb-3">
@@ -385,11 +452,117 @@ export default function OfficeEmployees() {
                             </Row>
 
                             <button type="submit" class="btn btn-primary" >Add</button>
-                    </Form>
+                        </Form>
                     </Modal.Body>
-
                 </Modal>
 
+                <Modal show={showEditUser} onHide={handleCloseEditUser}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Edit Employee</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form noValidate validated={validatedEdit} onSubmit={handleEdit}>
+                            <Row className="mb-3">
+                                <Form.Group as={Col}>
+                                    <Form.Label>ID</Form.Label>
+                                    <Form.Control required type="text" placeholder="ID"
+                                        value={id}
+                                        onChange={(e) => setId(e.target.value)}
+                                    />
+                                    <Form.Control.Feedback type="invalid"> This field is required.</Form.Control.Feedback>
+                                </Form.Group>
+
+                                <Form.Group as={Col}>
+                                    <Form.Label>First name</Form.Label>
+                                    <Form.Control required type="text" placeholder="First name"
+                                        value={firstName}
+                                        onChange={(e) => setFirstName(e.target.value)}
+                                    />
+                                    <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
+                                </Form.Group>
+
+                                <Form.Group as={Col}>
+                                    <Form.Label>Last name</Form.Label>
+                                    <Form.Control required type="text" placeholder="Last name"
+                                        value={lastName}
+                                        onChange={(e) => setLastName(e.target.value)}
+                                    />
+                                    <Form.Control.Feedback type="invalid"> This field is required.</Form.Control.Feedback>
+                                </Form.Group>
+                            </Row>
+
+                            <Row className="mb-3">
+                                <Form.Group as={Col}>
+                                    <Form.Label>Email</Form.Label>
+                                    <Form.Control required type="text" placeholder="Email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                    <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
+                                </Form.Group>
+                            </Row>
+
+                            <Row className="mb-3">
+                                <Form.Group as={Col}>
+                                    <Form.Label>Car Number</Form.Label>
+                                    <Form.Control type="text" placeholder="Car Number"
+                                        value={carNumber}
+                                        onChange={(e) => setCarNumber(e.target.value)}
+                                    />
+                                </Form.Group>
+
+                                <Form.Group as={Col}>
+                                    <Form.Label>Floor</Form.Label>
+                                    <Form.Control type="text" placeholder="Floor" required
+                                        value={floor}
+                                        onChange={(e) => setFloor(e.target.value)}
+                                    />
+                                    <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
+                                </Form.Group>
+
+                                <Form.Group as={Col}>
+                                    <Form.Label>Room Number</Form.Label>
+                                    <Form.Control type="text" placeholder="Room Number" required
+                                        value={roomNumber}
+                                        onChange={(e) => setRoomNumber(e.target.value)}
+                                    />
+                                    <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
+                                </Form.Group>
+                            </Row>
+
+                            <Row className="mb-3">
+                                <Form.Group as={Col}>
+                                    <Form.Label>Role</Form.Label>
+                                    <Form.Control type="text" placeholder="Role" required
+                                        value={role}
+                                        onChange={(e) => setRole(e.target.value)}
+                                    />
+                                    <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
+                                </Form.Group>
+
+                                <Form.Group as={Col}>
+                                    <Form.Label>Department</Form.Label>
+                                    <Form.Control type="text" placeholder="Department" required
+                                        value={department}
+                                        onChange={(e) => setDepartment(e.target.value)}
+                                    />
+                                    <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
+                                </Form.Group>
+
+                                <Form.Group as={Col}>
+                                    <Form.Label>Permission Level</Form.Label>
+                                    <Form.Control type="text" placeholder="Permission Level" required
+                                        value={permissionLevel}
+                                        onChange={(e) => setPermissionLevel(e.target.value)}
+                                    />
+                                    <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
+                                </Form.Group>
+                            </Row>
+
+                            <button type="submit" class="btn btn-primary" >Edit</button>
+                        </Form>
+                    </Modal.Body>
+                </Modal>
             </Container>
         </>
     );
