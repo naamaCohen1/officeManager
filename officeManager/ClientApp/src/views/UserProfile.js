@@ -23,15 +23,14 @@ export default function User() {
     const [department, setDepartment] = useState();
 
     const [show, setShow] = useState(false);
-
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const [showErr, setShowErr] = useState(false);
+    const handleCloseErr = () => setShowErr(false);
+    const handleShowErr = () => setShowErr(true);
 
-    async function onChange(id) {
-        console.log("on handel submit" + id);
-
-        setId(id)
+    async function loadPage(id) {
         const requestOptions = {
             method: 'GET',
             headers: {
@@ -39,31 +38,39 @@ export default function User() {
                 'Accept': 'application/json'
             }
         };
-        //console.log("id " + id);
-        //console.log("firstName " + firstName);
-        //console.log("lastName " + lastName);
-        //console.log("email " + email);
-        //console.log("carNumber " + carNumber);
-        //console.log("floor " + floor);
-        //console.log("roomNumber " + roomNumber);
-        //console.log("role " + role);
-        //console.log("department " + department);
-        //console.log("permissionLevel " + permissionLevel);
-        var url = "https://localhost:44375/api/users/" + id;
+
+        var url = "https://localhost:44375/api/users/" + "205666415";
+        //var url = "https://localhost:44375/api/users/" + id;
         handleRequest(url, requestOptions)
     }
 
     async function handleRequest(url, requestOptions) {
-        var user = new User()
         const response = await fetch(url, requestOptions);
         if (response.status == 200) {
             console.log("in the if")
             const data = await response.json();
-            console.log(data)
-            if (dataChnage != "null") {
-                console.log("naama")
-                //peopleList = dataChnage.split(",")
-                //setPeople(peopleList)
+            if (data != "null") {
+                console.log(data)
+                var dataChnage = data.replace("}", "")
+                var params = dataChnage.split(",")
+                var dictionary = []
+                for (var index in params) {
+                    var temp = params[index].split(":")
+                    temp[1] = temp[1].replace("\"", "")
+                    temp[1] = temp[1].replace("\"", "")
+                    dictionary.push(temp[1].trim())
+                }
+                
+                setId(dictionary[0])
+                setFirstName(dictionary[1])
+                setLastName(dictionary[2])
+                setEmail(dictionary[3])
+                setCarNumber(dictionary[4])
+                setFloor(dictionary[5])
+                setRoomNumber(dictionary[6])
+                setRole(dictionary[7])
+                setPermissionLevel(dictionary[8])
+                setDepartment(dictionary[9])
             }
         }
     }
@@ -97,6 +104,9 @@ export default function User() {
         if (response.status == 204) {
             { handleShow() }
         }
+        else {
+            { handleShowErr() }
+        }
     }
 
     return (
@@ -110,7 +120,6 @@ export default function User() {
                             </Card.Header>
                             <Card.Body>
                                 <Form
-                                   // onSubmit={handleSubmit} value={"205666415"}
                                 >
                                     <Row>
                                         <Col className="pl-1" md="6">
@@ -171,7 +180,7 @@ export default function User() {
                                                 <label>Car Number</label>
                                                 <Form.Control
                                                     placeholder="Car Number"
-                                                    type="number"
+                                                    type="text"
                                                     value={carNumber}
                                                     onChange={(e) => setCarNumber(e.target.value)}
                                                 ></Form.Control>
@@ -199,7 +208,7 @@ export default function User() {
                                                 <label>Floor</label>
                                                 <Form.Control
                                                     placeholder="Floor"
-                                                    type="number"
+                                                    type="text"
                                                     value={floor}
                                                     onChange={(e) => setFloor(e.target.value)}
                                                     value={floor}
@@ -213,7 +222,7 @@ export default function User() {
                                                 <label>Room Number</label>
                                                 <Form.Control
                                                     placeholder="Room Number"
-                                                    type="number"
+                                                    type="text"
                                                     value={roomNumber}
                                                     onChange={(e) => setRoomNumber(e.target.value)}
                                                 ></Form.Control>
@@ -240,7 +249,7 @@ export default function User() {
                                                 <Form.Control
                                                     disabled
                                                     placeholder="Permission Level"
-                                                    type="number"
+                                                    type="text"
                                                     value={permissionLevel}
                                                     onChange={(e) => setPermissionLevel(e.target.value)}
                                                 ></Form.Control>
@@ -264,6 +273,17 @@ export default function User() {
                                         </Modal.Body>
                                         <Modal.Footer>
                                             <Button variant="primary" onClick={handleClose}>OK</Button>
+                                        </Modal.Footer>
+                                    </Modal>
+                                    <Modal show={showErr} onHide={handleCloseErr}>
+                                        <Modal.Header closeButton>
+                                            <Modal.Title>Error</Modal.Title>
+                                        </Modal.Header>
+                                        <Modal.Body>
+                                            <p>Something went wrong. Please try again.</p>
+                                        </Modal.Body>
+                                        <Modal.Footer>
+                                            <Button variant="primary" onClick={handleCloseErr}>OK</Button>
                                         </Modal.Footer>
                                     </Modal>
                                 </Form>
