@@ -1,206 +1,207 @@
-////import React, { useState } from 'react';
-////import Calendar from 'react-calendar';
-////import 'react-calendar/dist/Calendar.css';
-////import Form from 'react-bootstrap/Form';
-////import Button from 'react-bootstrap/Button';
-////import ListGroup from 'react-bootstrap/ListGroup';
-////import Container from 'react-bootstrap/Container';
-////import InputGroup from 'react-bootstrap/InputGroup';
-////import DropdownButton from 'react-bootstrap/DropdownButton';
-////import Dropdown from 'react-bootstrap/Dropdown';
-////import FormControl from 'react-bootstrap/FormControl';
-////import Row from 'react-bootstrap/Row';
+//import React, { useState } from 'react';
+//import Calendar from 'react-calendar';
+//import 'react-calendar/dist/Calendar.css';
+//import Form from 'react-bootstrap/Form';
+//import Button from 'react-bootstrap/Button';
+//import ListGroup from 'react-bootstrap/ListGroup';
+//import Container from 'react-bootstrap/Container';
+//import InputGroup from 'react-bootstrap/InputGroup';
+//import DropdownButton from 'react-bootstrap/DropdownButton';
+//import Dropdown from 'react-bootstrap/Dropdown';
+//import FormControl from 'react-bootstrap/FormControl';
+//import Row from 'react-bootstrap/Row';
 
-////class NameForm extends React.Component {
-////    constructor(props) {
-////        super(props);
-////        this.state = { value: '' };
-////        this.handleChange = this.handleChange.bind(this);
-////        this.handleSubmit = this.handleSubmit.bind(this);
-////        this.isClicked = false;
+//class NameForm extends React.Component {
+//    constructor(props) {
+//        super(props);
+//        this.state = { value: '' };
+//        this.handleChange = this.handleChange.bind(this);
+//        this.handleSubmit = this.handleSubmit.bind(this);
+//        this.isClicked = false;
 
-////    }
+//    }
 
-////    handleChange(event) {
-////        this.setState({ value: event.target.value });
-////    }
+//    handleChange(event) {
+//        this.setState({ value: event.target.value });
+//    }
 
-////    handleSubmit(event) {
-////        alert('A name was submitted: ' + this.state.value);
-////        event.preventDefault();
-////    }
+//    handleSubmit(event) {
+//        alert('A name was submitted: ' + this.state.value);
+//        event.preventDefault();
+//    }
 
-////    render() {
-////        return (
-////            <Form onSubmit={this.handleSubmit}>
-////                <Form.Group as={Row} className="mb-3">
+//    render() {
+//        return (
+//            <Form onSubmit={this.handleSubmit}>
+//                <Form.Group as={Row} className="mb-3">
                
-////                    <InputGroup >
-////                        <DropdownButton
-////                            variant="outline-secondary"
-////                            title="Search By"
-////                            id="input-group-dropdown-1"
-////                        >
-////                            <Dropdown.Item href="#">Employee Name</Dropdown.Item>
-////                            <Dropdown.Item href="#">Department</Dropdown.Item>
-////                            <Dropdown.Item href="#">Floor</Dropdown.Item>
-////                        </DropdownButton>
-////                        <FormControl aria-label="Text input with dropdown button" value={this.state.value} onChange={this.handleChange} />
-////                    </InputGroup>
+//                    <InputGroup >
+//                        <DropdownButton
+//                            variant="outline-secondary"
+//                            title="Search By"
+//                            id="input-group-dropdown-1"
+//                        >
+//                            <Dropdown.Item href="#">Employee Name</Dropdown.Item>
+//                            <Dropdown.Item href="#">Department</Dropdown.Item>
+//                            <Dropdown.Item href="#">Floor</Dropdown.Item>
+//                        </DropdownButton>
+//                        <FormControl aria-label="Text input with dropdown button" value={this.state.value} onChange={this.handleChange} />
+//                    </InputGroup>
 
                         
                    
                
-////                </Form.Group>
-////            </Form>
+//                </Form.Group>
+//            </Form>
 
-////        );
-////    }
-////}
-
-
+//        );
+//    }
+//}
 
 
 
-////export default function Results() {
-////    // set states of calendar date
-////    const [calDate, setCalDate] = useState(new Date())
-////    const [DateIsClick, setDateIsClick] = useState(false);
-////    const [people, setPeople] = useState([]);
 
 
-////    function showSearchBar() {
-////        let button;
-////        if (DateIsClick) {
-////            button = <NameForm></NameForm>;
-////        } 
-////        return button;
-////    }
+//export default function Results() {
+//    // set states of calendar date
+//    const [calDate, setCalDate] = useState(new Date())
+//    const [DateIsClick, setDateIsClick] = useState(false);
+//    const [people, setPeople] = useState([]);
 
-////    function showAddButton() {
-////        if (DateIsClick) {
-////            return (
-////            <>
-////             <Button variant="primary" style={{margin: '10px'}}  onClick={clickSubmit} >Submit</Button>
-////             <Button variant="dark" onClick={clickRemove} >Remove</Button>
-////            </>
-////            )
-////        } 
-////    }
+
+//    function showSearchBar() {
+//        let button;
+//        if (DateIsClick) {
+//            button = <NameForm></NameForm>;
+//        } 
+//        return button;
+//    }
+
+//    function showAddButton() {
+//        if (DateIsClick) {
+//            return (
+//            <>
+//             <Button variant="primary" style={{margin: '10px'}}  onClick={clickSubmit} >Submit</Button>
+//             <Button variant="dark" onClick={clickRemove} >Remove</Button>
+//            </>
+//            )
+//        } 
+//    }
    
-////    async function  onChange(calDate) {
-////        setCalDate(calDate)
-////        var newCalDateFormat = calDate.toLocaleString().split(",")[0]   
-////        setDateIsClick(true)
-////        const requestOptions = {
-////            method: 'GET',
-////            headers: {
-////                'Content-Type': 'application/json',
-////                'Accept': 'application/json'
-////            }
-////        };
-////        newCalDateFormat = newCalDateFormat.replace('/', '.')
-////        newCalDateFormat = newCalDateFormat.replace('/', '.')
-////        console.log(newCalDateFormat)
-////        var url = "https://localhost:44375/api/calendar/" + newCalDateFormat;
-////        handleRequest(url, requestOptions)
-////    }
+//    async function  onChange(calDate) {
+//        setCalDate(calDate)
+//        var newCalDateFormat = calDate.toLocaleString().split(",")[0]   
+//        setDateIsClick(true)
+//        const requestOptions = {
+//            method: 'GET',
+//            headers: {
+//                'Content-Type': 'application/json',
+//                'Accept': 'application/json'
+//            }
+//        };
+//        newCalDateFormat = newCalDateFormat.replace('/', '.')
+//        newCalDateFormat = newCalDateFormat.replace('/', '.')
+//        console.log(newCalDateFormat)
+//        var url = "https://localhost:44375/api/calendar/" + newCalDateFormat;
+//        handleRequest(url, requestOptions)
+//    }
 
 
-////    async function handleRequest(url, requestOptions) {
-////        var peopleList = []
-////        const response = await fetch(url, requestOptions);
-////        if (response.status == 200) {
-////            console.log("in the if")
-////            const data = await response.json();
-////            console.log(data)
-////            var dataChnage = data.replace('[', '')
-////            dataChnage = dataChnage.replace(']', '')
-////            dataChnage = dataChnage.replaceAll('"', '')
-////            console.log(dataChnage)
-////            if (dataChnage != "null") {
-////                console.log("naama")
-////                peopleList = dataChnage.split(",")
-////                setPeople(peopleList)
-////            }
+//    async function handleRequest(url, requestOptions) {
+//        var peopleList = []
+//        const response = await fetch(url, requestOptions);
+//        if (response.status == 200) {
+//            console.log("in the if")
+//            const data = await response.json();
+//            console.log(data)
+//            var dataChnage = data.replace('[', '')
+//            dataChnage = dataChnage.replace(']', '')
+//            dataChnage = dataChnage.replaceAll('"', '')
+//            console.log(dataChnage)
+//            if (dataChnage != "null") {
+//                console.log("naama")
+//                peopleList = dataChnage.split(",")
+//                setPeople(peopleList)
+//            }
                 
 
 
-////        }
-////        else {
+//        }
+//        else {
 
-////        }
+//        }
         
-////    }
-////    async function clickSubmit() {
-////        console.log("clickSubmit()")
-////        const newCalDateFormat = calDate.toLocaleString().split(",")[0]  
-////        console.log(newCalDateFormat)
-////        const requestOptions = {
-////            method: 'POST',
-////            headers: {
-////                'Content-Type': 'application/json',
-////                'Accept': 'application/json'
-////            },
-////            body: JSON.stringify({
-////                "date": newCalDateFormat,
-////                "id": "204049316"
-////            })
-////        };
-////        setDateIsClick(true)
-////        console.log(requestOptions)
-////        handleRequest("https://localhost:44375/api/calendar", requestOptions)
-////    }
+//    }
+//    async function clickSubmit() {
+//        console.log("clickSubmit()")
+//        const newCalDateFormat = calDate.toLocaleString().split(",")[0]  
+//        console.log(newCalDateFormat)
+//        const requestOptions = {
+//            method: 'POST',
+//            headers: {
+//                'Content-Type': 'application/json',
+//                'Accept': 'application/json'
+//            },
+//            body: JSON.stringify({
+//                "date": newCalDateFormat,
+//                "id": "204049316"
+//            })
+//        };
+//        setDateIsClick(true)
+//        console.log(requestOptions)
+//        handleRequest("https://localhost:44375/api/calendar", requestOptions)
+//    }
 
-////    async function clickRemove() {
-////        console.log("clickRemove()")
-////        const newCalDateFormat = calDate.toLocaleString().split(",")[0]
-////        console.log(newCalDateFormat)
-////        const requestOptions = {
-////            method: 'DELETE',
-////            headers: {
-////                'Content-Type': 'application/json',
-////                'Accept': 'application/json'
-////            },
-////            body: JSON.stringify({
-////                "date": newCalDateFormat,
-////                "id": "204049316"
-////            })
-////        };
-////        setDateIsClick(true)
-////        console.log(requestOptions)
-////        handleRequest("https://localhost:44375/api/calendar", requestOptions)
-////    }
+//    async function clickRemove() {
+//        console.log("clickRemove()")
+//        const newCalDateFormat = calDate.toLocaleString().split(",")[0]
+//        console.log(newCalDateFormat)
+//        const requestOptions = {
+//            method: 'DELETE',
+//            headers: {
+//                'Content-Type': 'application/json',
+//                'Accept': 'application/json'
+//            },
+//            body: JSON.stringify({
+//                "date": newCalDateFormat,
+//                "id": "204049316"
+//            })
+//        };
+//        setDateIsClick(true)
+//        console.log(requestOptions)
+//        handleRequest("https://localhost:44375/api/calendar", requestOptions)
+//    }
 
-////    function showPeopleCame() {
-////        return (
-////            < React.Fragment >
-////                <ListGroup>
-////                    {people.map(listitem => (
-////                        <ListGroup.Item sm='4'>
-////                            {listitem}
-////                        </ListGroup.Item >
-////                    ))}
-////                </ListGroup>
-////            </React.Fragment >
-////        );
+//    function showPeopleCame() {
+//        return (
+//            < React.Fragment >
+//                <ListGroup>
+//                    {people.map(listitem => (
+//                        <ListGroup.Item sm='4'>
+//                            {listitem}
+//                        </ListGroup.Item >
+//                    ))}
+//                </ListGroup>
+//            </React.Fragment >
+//        );
        
-////    }
+//    }
 
-////    return (
-////        <div className="result-calendar" style={{ display: 'flex', justifyContent: 'space-between'}}>
-////            <Calendar onChange={onChange} value={calDate} />
-////            {showSearchBar()}
+//    return (
+//        <div className="result-calendar" style={{ display: 'flex', justifyContent: 'space-between'}}>
+//            <Calendar onChange={onChange} value={calDate} />
+//            {showSearchBar()}
 
-////            <div style={{ position: 'absolute', left: '15px', top: '420px',width: '300px'}}>
-////                <Container fluid="md">
-////            {showAddButton()}
-////            {showPeopleCame()}
-////                </Container>
-////            </div>
-////        </div>
-////    )
+//            <div style={{ position: 'absolute', left: '15px', top: '420px',width: '300px'}}>
+//                <Container fluid="md">
+//            {showAddButton()}
+//            {showPeopleCame()}
+//                </Container>
+//            </div>
+//        </div>
+//    )
 
-////}
+//}
 
 //////export default CommingToOffice;
+
