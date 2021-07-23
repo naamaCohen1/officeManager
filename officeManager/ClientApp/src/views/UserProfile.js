@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // react-bootstrap components
 import {
     Button,
@@ -61,6 +61,11 @@ export default function User() {
                     dictionary.push(temp[1].trim())
                 }
                 
+                if (dictionary[8] == 0)
+                    dictionary[8] = "ADMINISTRATOR"
+                else
+                    dictionary[8] = "STANDARD"
+
                 setId(dictionary[0])
                 setFirstName(dictionary[1])
                 setLastName(dictionary[2])
@@ -69,8 +74,8 @@ export default function User() {
                 setFloor(dictionary[5])
                 setRoomNumber(dictionary[6])
                 setRole(dictionary[7])
-                setPermissionLevel(dictionary[8])
                 setDepartment(dictionary[9])
+                setPermissionLevel(dictionary[8])
             }
         }
     }
@@ -92,9 +97,9 @@ export default function User() {
                 "floor": floor,
                 "roomNumber": roomNumber,
                 "role": role,
-                "permissionLevel": "0",
+                "department": department,
+                "permissionLevel": "0"
                 //"permissionLevel": permissionLevel,
-                "department": department
             })
         };
         var response = await fetch("https://localhost:44375/api/users/" + "205666415", requestOptions);
@@ -108,6 +113,10 @@ export default function User() {
             { handleShowErr() }
         }
     }
+
+    useEffect(() => {
+        loadPage("205666415");
+    }, []);
 
     return (
         <>

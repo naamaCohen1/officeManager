@@ -43,16 +43,17 @@ function Login() {
                 <Form.Group size="lg" controlId="Username">
                     <Form.Label>Username</Form.Label>
                     <Form.Control
+                        required
                         autoFocus
                         type="text"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-
                     />
                 </Form.Group>
                 <Form.Group size="lg" controlId="ID">
                     <Form.Label>ID</Form.Label>
                     <Form.Control
+                        required
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
