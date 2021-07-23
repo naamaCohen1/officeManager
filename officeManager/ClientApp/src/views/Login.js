@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Modal, Form, Button, Row, Col } from "react-bootstrap";
 
-function Login() {
+export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [validated, setValidated] = useState(false);
@@ -108,34 +108,3 @@ function Login() {
             </Form>
     );
 }
-
-export default Login;
-
-//return (
-//    <div className="Login">
-//        <Form onSubmit={handleSubmit}>
-//            <Form.Group size="lg" controlId="Username">
-//                <Form.Label>Username</Form.Label>
-//                <Form.Control
-//                    required
-//                    autoFocus
-//                    type="text"
-//                    value={username}
-//                    onChange={(e) => setUsername(e.target.value)}
-//                />
-//            </Form.Group>
-//            <Form.Group size="lg" controlId="ID">
-//                <Form.Label>ID</Form.Label>
-//                <Form.Control
-//                    required
-//                    type="password"
-//                    value={password}
-//                    onChange={(e) => setPassword(e.target.value)}
-//                />
-//            </Form.Group>
-//            <button type="button"
-//                class="btn btn-primary"
-//                onClick={handleSubmit}
-//            >
-//                Login
-//                  </button>
