@@ -7,7 +7,6 @@ namespace officeManager.Controllers.Entities
 {
     public class Office
     {
-
         public string Name { get; set; }
         public string NumOfEmployees { get; set; }
         public string ParkingAmount { get; set; }
@@ -18,6 +17,7 @@ namespace officeManager.Controllers.Entities
         public string OpenSpace { get; set; }
         public string HotSpot { get; set; }
         public string HotSpotPlaces { get; set; }
+        public string ID { get; set; }
 
         public Office()
         {
@@ -26,7 +26,7 @@ namespace officeManager.Controllers.Entities
 
         public Office(string Name, string NumOfEmployees, string ParkingAmount, string FloorsAmount,
             string RoomsAmount, string MeetingRoomsAmount, string OfficeCapacity,
-            string OpenSpace, string HotSpot, string HotSpotPlaces)
+            string OpenSpace, string HotSpot, string HotSpotPlaces, string Id)
         {
             this.Name = Name;
             this.NumOfEmployees = NumOfEmployees;
@@ -38,6 +38,7 @@ namespace officeManager.Controllers.Entities
             this.OpenSpace = OpenSpace;
             this.HotSpot = HotSpot;
             this.HotSpotPlaces = HotSpotPlaces;
+            this.ID = Id;
         }
     }
 }
