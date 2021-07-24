@@ -148,7 +148,9 @@ namespace officeManager.Controllers.Entities
                 command.Dispose();
                 connection.Close();
 
-                return calendars;
+                var sortedCalendar = calendars.OrderBy(x => x.Date).ToList();
+
+                return sortedCalendar;
             }
             catch (Exception e)
             {
@@ -159,6 +161,7 @@ namespace officeManager.Controllers.Entities
         public ArrivalStatistics GetPercentages(ArrivalStatistics arrivalStatistics)
         {
             ArrivalStatistics precentage = new ArrivalStatistics();
+            precentage.TotalArrivals = arrivalStatistics.TotalArrivals;
             precentage.Employees = calcPrecentage(arrivalStatistics.Employees, arrivalStatistics.TotalArrivals);
             precentage.Departments = calcPrecentage(arrivalStatistics.Departments, arrivalStatistics.TotalArrivals);
             precentage.Floors = calcPrecentage(arrivalStatistics.Floors, arrivalStatistics.TotalArrivals);
@@ -172,7 +175,7 @@ namespace officeManager.Controllers.Entities
             Dictionary<string, int> dictionary = new Dictionary<string, int>();
             foreach (var item in pairs)
             {
-                dictionary.Add(item.Key, (item.Value / totalArrivals));
+                dictionary.Add(item.Key, ((int)((double)item.Value / totalArrivals * 100)));
             }
 
             return dictionary;

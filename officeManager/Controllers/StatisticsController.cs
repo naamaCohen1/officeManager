@@ -15,15 +15,18 @@ namespace officeManager.Controllers
     {
         private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
 
-        private Statistics statistics = new Statistics();
+        private static Statistics statistics = new Statistics();
+        private static ArrivalStatistics arrivalStatistics;
+        private static ArrivalStatistics arrivalStatisticsPrec;
 
         [HttpGet]
-        public ActionResult<List<User>> Get()
+        public async Task<ActionResult<ArrivalStatistics>> Get()
         {
             try
             {
-                ArrivalStatistics arrivalStatistics = statistics.GetWeeklyActivity();
-                string json = JsonConvert.SerializeObject(arrivalStatistics);
+                arrivalStatistics = statistics.GetWeeklyActivity();
+                arrivalStatisticsPrec = statistics.GetPercentages(arrivalStatistics);
+                string json = JsonConvert.SerializeObject(arrivalStatisticsPrec);
                 return new OkObjectResult(json);
             }
             catch (Exception)
@@ -32,5 +35,10 @@ namespace officeManager.Controllers
             }
         }
 
+        [HttpGet("{mapBy}")]
+        public Dictionary<string, int> Get(string mapBy)
+        {
+            return arrivalStatistics.MapResponse(mapBy);
+        }
     }
 }

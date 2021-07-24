@@ -7,11 +7,12 @@ namespace officeManager.Controllers.Entities
 {
     public class ArrivalStatistics
     {
-        public int TotalArrivals { get; set; }
         public Dictionary<string, int> Employees { get; set; }
         public Dictionary<string, int> Departments { get; set; }
         public Dictionary<string, int> Floors { get; set; }
         public Dictionary<string, int> Roles { get; set; }
+        public int TotalArrivals { get; set; }
+
 
         public ArrivalStatistics()
         {
@@ -20,6 +21,27 @@ namespace officeManager.Controllers.Entities
             this.Departments = new Dictionary<string, int>();
             this.Floors = new Dictionary<string, int>();
             this.Roles = new Dictionary<string, int>();
+        }
+
+        public Dictionary<string, int> MapResponse(string mapBy)
+        {
+            switch (mapBy.ToLower()) {
+                case "totalarrivals":
+                    Dictionary<string, int> res = new Dictionary<string, int>();
+                    res.Add("TotalArrivals", TotalArrivals);
+                    return res;
+                case "employees":
+                    return Employees;
+                case "departments":
+                    return Departments;
+                case "floors":
+                    return Floors;
+                case "roles":
+                    return Roles;
+
+                default:
+                    throw new ArgumentException("Invalid mappaing value - " + mapBy);
+            }
         }
 
         //public ArrivalStatistics GetPercentages(ArrivalStatistics arrivalStatistics)
