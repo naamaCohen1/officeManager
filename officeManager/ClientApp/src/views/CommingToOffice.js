@@ -52,7 +52,7 @@ class NameForm extends React.Component {
         return (
             <Form onSubmit={this.handleSubmit}>
                 <Form.Group as={Row} className="mb-3">
-               
+
                     <InputGroup >
                         <DropdownButton
                             variant="outline-secondary"
@@ -68,9 +68,9 @@ class NameForm extends React.Component {
                         <FormControl aria-label="Text input with dropdown button" value={this.state.value} onChange={this.handleChange} />
                     </InputGroup>
 
-                        
-                   
-               
+
+
+
                 </Form.Group>
             </Form>
 
@@ -93,24 +93,24 @@ export default function Results() {
         let button;
         if (DateIsClick) {
             button = <NameForm></NameForm>;
-        } 
+        }
         return button;
     }
 
     function showAddButton() {
         if (DateIsClick) {
             return (
-            <>
-             <Button variant="primary" style={{margin: '10px'}}  onClick={clickSubmit} >Submit</Button>
-             <Button variant="dark" onClick={clickRemove} >Remove</Button>
-            </>
+                <>
+                    <Button variant="primary" style={{ margin: '10px' }} onClick={clickSubmit} >Submit</Button>
+                    <Button variant="dark" onClick={clickRemove} >Remove</Button>
+                </>
             )
-        } 
+        }
     }
-   
-    async function  onChange(calDate) {
+
+    async function onChange(calDate) {
         setCalDate(calDate)
-        var newCalDateFormat = calDate.toLocaleString().split(",")[0]   
+        var newCalDateFormat = calDate.toLocaleString().split(",")[0]
         setDateIsClick(true)
         const requestOptions = {
             method: 'GET',
@@ -143,18 +143,18 @@ export default function Results() {
                 peopleList = dataChnage.split(",")
                 setPeople(peopleList)
             }
-                
+
 
 
         }
         else {
 
         }
-        
+
     }
     async function clickSubmit() {
         console.log("clickSubmit()")
-        const newCalDateFormat = calDate.toLocaleString().split(",")[0]  
+        const newCalDateFormat = calDate.toLocaleString().split(",")[0]
         console.log(newCalDateFormat)
         const requestOptions = {
             method: 'POST',
@@ -204,23 +204,22 @@ export default function Results() {
                 </ListGroup>
             </React.Fragment >
         );
-       
+
     }
 
     return (
-        <div className="result-calendar" style={{ display: 'flex', justifyContent: 'space-between'}}>
+        <div className="result-calendar" style={{ display: 'flex', justifyContent: 'space-between' }}>
             <Calendar onChange={onChange} value={calDate} />
             {showSearchBar()}
 
-            <div style={{ position: 'absolute', left: '15px', top: '420px',width: '300px'}}>
+            <div style={{ position: 'absolute', left: '15px', top: '420px', width: '300px' }}>
                 <Container fluid="md">
-            {showAddButton()}
-            {showPeopleCame()}
+                    {showAddButton()}
+                    {showPeopleCame()}
                 </Container>
             </div>
         </div>
     )
-
 }
 
 //export default CommingToOffice;

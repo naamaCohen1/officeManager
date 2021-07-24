@@ -192,9 +192,9 @@ namespace officeManager.Controllers
         public async Task<IActionResult> Delete(string id)
         {
             var user = Get(id);
-            if (user.Result.ToString().Contains("NotFoundResult"))
+            if (user.Result.Result.ToString().Contains("NotFoundResult"))
                 return new NotFoundObjectResult("User with ID [" + id + "] was not found");
-            if (!user.Result.ToString().Contains("OkObjectResult"))
+            if (!user.Result.Result.ToString().Contains("OkObjectResult"))
                 return new BadRequestResult();
 
             string sql = string.Format("DELETE FROM tlbEmployees WHERE ID={0}", id);

@@ -1,19 +1,33 @@
 import React, { useState } from "react";
-import { Modal, Form, Button } from "react-bootstrap";
+import { Modal, Form, Button, Row, Col } from "react-bootstrap";
 
-function Login() {
+export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [show, setShow] = useState(false);
-    const [showErr, setShowErr] = useState(false);
+    const [validated, setValidated] = useState(false);
 
+    const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const [showErr, setShowErr] = useState(false);
     const handleCloseErr = () => setShowErr(false);
     const handleShowErr = () => setShowErr(true);
 
-    async function handleSubmit(event) {
+    const handleSubmit = (event) => {
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        else {
+            event.preventDefault();
+            { login() }
+        }
+        setValidated(true);
+    };
+
+    async function login() {
         const requestOptions = {
             method: 'POST',
             headers: {
@@ -25,7 +39,7 @@ function Login() {
                 "password": password
             })
         };
-        console.log(requestOptions);
+
         const response = await fetch("https://localhost:44375/api/login/", requestOptions)
         if (response.status != 200) {
             { handleShowErr() }
@@ -33,37 +47,40 @@ function Login() {
         else {
             { handleShow() }
         }
-
-        event.preventDefault();
     }
 
     return (
-        <div className="Login">
-            <Form onSubmit={handleSubmit}>
-                <Form.Group size="lg" controlId="Username">
+        <Form noValidate validated={validated} onSubmit={handleSubmit}>
+            <Row className="mb-3">
+                <Form.Group as={Col}>
                     <Form.Label>Username</Form.Label>
                     <Form.Control
-                        autoFocus
+                        required
                         type="text"
+                        placeholder="Username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-
                     />
-                </Form.Group>
-                <Form.Group size="lg" controlId="ID">
-                    <Form.Label>ID</Form.Label>
+                    <Form.Control.Feedback type="invalid">
+                        This field is required.
+          </Form.Control.Feedback>
+
+
+                    <Form.Label>Password</Form.Label>
                     <Form.Control
-                        type="password"
+                        required
+                        type="text"
+                        placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
+                    <Form.Control.Feedback type="invalid">
+                        This field is required.
+          </Form.Control.Feedback>
                 </Form.Group>
-                <button type="button"
-                    class="btn btn-primary"
-                    onClick={handleSubmit}
-                >
-                    Login
-                  </button>
+            </Row>
+
+            <button type="submit" class="btn btn-primary"> Login </button>
 
                 <Modal show={showErr} onHide={handleCloseErr}>
                     <Modal.Header closeButton>
@@ -82,15 +99,12 @@ function Login() {
                         <Modal.Title>Success</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <p>Loged In successfully</p>
+                        <p>User loged in</p>
                     </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="primary" onClick={handleClose}>OK</Button>
+                <Modal.Footer>
+                    <button type="button" class="btn btn-primary" onClick={handleClose}> OK </button>
                     </Modal.Footer>
                 </Modal>
             </Form>
-        </div>
     );
 }
-
-export default Login;
