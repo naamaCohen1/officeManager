@@ -9,8 +9,8 @@ namespace officeManager.Controllers.Entities
 {
     public class Statistics
     {
-        private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
-
+        //private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
+        private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
         //        public static int Compare(DateTime d1, DateTime d2);
         //        <0 − If date1 is earlier than date2
         //        0 − If date1 is the same as date2
@@ -45,6 +45,8 @@ namespace officeManager.Controllers.Entities
                             List<string> employees = new List<string>(calendar.EmployeesArriving.Trim().Split(';'));
                             foreach (string employee in employees)
                             {
+                                if (employee.Equals(""))
+                                    continue;
                                 arrivalStatistics.TotalArrivals++;
                                 updateLists(arrivalStatistics, employee);
                             }
@@ -123,7 +125,7 @@ namespace officeManager.Controllers.Entities
             }
         }
 
-        private List<Calendar> getCalendar()
+        public List<Calendar> getCalendar()
         {
             List<Calendar> calendars = new List<Calendar>();
             string sql = "select * from tlbCalendar";

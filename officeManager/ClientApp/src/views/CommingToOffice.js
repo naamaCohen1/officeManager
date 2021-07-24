@@ -1,15 +1,30 @@
 import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import ListGroup from 'react-bootstrap/ListGroup';
-import Container from 'react-bootstrap/Container';
-import InputGroup from 'react-bootstrap/InputGroup';
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import Dropdown from 'react-bootstrap/Dropdown';
-import FormControl from 'react-bootstrap/FormControl';
-import Row from 'react-bootstrap/Row';
+//import Form from 'react-bootstrap/Form';
+//import ListGroup from 'react-bootstrap/ListGroup';
+//import Container from 'react-bootstrap/Container';
+//import InputGroup from 'react-bootstrap/InputGroup';
+//import DropdownButton from 'react-bootstrap/DropdownButton';
+//import Dropdown from 'react-bootstrap/Dropdown';
+//import FormControl from 'react-bootstrap/FormControl';
+//import Row from 'react-bootstrap/Row';
+import {
+    Button,
+    Card,
+    ListGroup,
+    Container,
+    Row,
+    Col,
+    Modal,
+    Form,
+    InputGroup,
+    DropdownButton,
+    Dropdown,
+    FormControl
+} from "react-bootstrap";
+
+var date;
 
 class NameForm extends React.Component {
     constructor(props) {
@@ -18,34 +33,79 @@ class NameForm extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelect = this.handleSelect.bind(this);
-        this.isClicked = false;
-
+        this.handleRequest = this.handleRequest.bind(this);
     }
 
     handleChange(event) {
-         //let label = event.target.label;
-        //let label = event.nativeEvent.target[index].text;
         let value = event.target.value;
-
         this.setState({ value: value });
-        //this.setState({ value: event.target.value });
-        //this.state.label = event.nativeEvent.target[index].text
-        //this.setState({ data: Dropdown });
         console.log(value)
-        //console.log(label)
+        
     }
 
-    handleSubmit(event) {
-        console.log("ia am here")
-        alert('A name was submitted: ' + this.state.value);
+    async handleSubmit(event) {
+        console.log(date)
+        console.log("in handleSubmit")
+        console.log(this.state.label)
+        console.log(this.state.value)
+        if (this.state.label == '') {
+            alert('please select catogory');
+            
+        }
+        else {
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    "date":date,
+                    "category": this.state.label,
+                    "input": this.state.value
+                })
+            };
+            var url = "https://localhost:5001/api/search/" + "204049316"
+            console.log("sending get function")
+            handleRequest(url, requestOptions) 
+            //const response = await fetch(url, requestOptions)
+            //const data = await response.json()
+            //console.log(data)
+        } 
         event.preventDefault();
+       
     }
 
+     async handleRequest(url, requestOptions) {
+        console.log("in handleRequest")
+        const response = await fetch(url, requestOptions);
+         if (response.status == 200) {
+
+             const data = await response.json();
+             console.log(data)
+         }
+        //    var dataChnage = data.replace('[', '')
+        //    dataChnage = dataChnage.replace(']', '')
+        //    dataChnage = dataChnage.replaceAll('"', '')
+        //    console.log(dataChnage)
+        //    if (dataChnage != "null") {
+        //        console.log("naama")
+        //        peopleList = dataChnage.split(",")
+        //        setPeople(peopleList)
+        //    }
+
+
+
+        //}
+        //else {
+
+        //}
+
+    }
     handleSelect(event) {
         console.log(event)
-        //let label = event.target.value;
-        //this.setState({ label: label });
-        //console.log(label)
+        this.setState({ label: event });
+        console.log(this.state.label)
     }
 
     render() {
@@ -87,12 +147,20 @@ export default function Results() {
     const [calDate, setCalDate] = useState(new Date())
     const [DateIsClick, setDateIsClick] = useState(false);
     const [people, setPeople] = useState([]);
-
+    const [message, setMessage] = useState();
+    const [title, setTitle] = useState();
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+    const [showWaitingList, setShowWaitingList] = useState(false);
+    const handleCloseWaitingList = () => setShowWaitingList(false);
+    const handleShowWaitingList = () => setShowWaitingList(true);
 
     function showSearchBar() {
         let button;
         if (DateIsClick) {
             button = <NameForm></NameForm>;
+            
         }
         return button;
     }
@@ -110,6 +178,7 @@ export default function Results() {
 
     async function onChange(calDate) {
         setCalDate(calDate)
+        
         var newCalDateFormat = calDate.toLocaleString().split(",")[0]
         setDateIsClick(true)
         const requestOptions = {
@@ -122,11 +191,26 @@ export default function Results() {
         newCalDateFormat = newCalDateFormat.replace('/', '.')
         newCalDateFormat = newCalDateFormat.replace('/', '.')
         console.log(newCalDateFormat)
+        date = newCalDateFormat
         var url = "https://localhost:5001/api/calendar/" + newCalDateFormat;
         handleRequest(url, requestOptions)
     }
 
-
+    
+    async function AddToWaitingList(calDate) {
+        { handleCloseWaitingList() }
+        const requestOptions = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                "id": id,
+                "date": calDate
+            })
+        };
+    }
     async function handleRequest(url, requestOptions) {
         var peopleList = []
         const response = await fetch(url, requestOptions);
@@ -139,16 +223,44 @@ export default function Results() {
             dataChnage = dataChnage.replaceAll('"', '')
             console.log(dataChnage)
             if (dataChnage != "null") {
-                console.log("naama")
+                
                 peopleList = dataChnage.split(",")
                 setPeople(peopleList)
             }
 
-
-
         }
-        else {
+        else if (response.status == 404) {
+            console.log("response.status == 404")
+            return (<>
+                <Container fluid>
+                    <Modal show={show} onHide={handleClose}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>{title}</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <p>{message}</p>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={handleClose}>OK</Button>
+                        </Modal.Footer>
+                    </Modal>
 
+                    <Modal show={showWaitingList} onHide={handleCloseWaitingList}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>No available space</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <p>There is no available space  on the selected day. Do you want to subscribe to the waiting list?</p>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="Primary" onClick={AddToWaitingList}>Yes</Button>
+                            <Button variant="secondary" onClick={handleCloseWaitingList}>No</Button>
+                        </Modal.Footer>
+                    </Modal>
+                </Container>
+            </>
+            );
+        
         }
 
     }

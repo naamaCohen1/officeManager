@@ -15,7 +15,7 @@ namespace officeManager.Controllers
     public class LoginController : ControllerBase
     {
         [HttpPost]
-        public async Task<ActionResult<string>> Post([FromBody] LoginUser loginUser)
+        public ActionResult<string> Post([FromBody] LoginUser loginUser)
         {
             if (Validation.CheckValidationUserLogin(loginUser.Username, loginUser.Password))
             {

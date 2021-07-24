@@ -9,7 +9,7 @@ namespace officeManager.Controllers.Entities
 {
     public class CalendarUser
     {
-        string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
+        private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
         public string Id { get; set; }
         public string Date { get; set; }
 
