@@ -200,7 +200,6 @@ export default function Results() {
             </div>
         </div>
     )
-
 }
 
 //export default CommingToOffice;
