@@ -4,7 +4,7 @@ import React, { Component } from "react";
 
 import { Dropdown, Badge, Button, Form } from "react-bootstrap";
 
-import sideBarImage3 from "assets/img/sidebar-3.jpg";
+import sideBarImage3 from "assets/img/office-manager.png";
 
 function FixedPlugin({
   hasImage,
