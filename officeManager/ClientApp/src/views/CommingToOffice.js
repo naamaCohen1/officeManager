@@ -14,20 +14,38 @@ import Row from 'react-bootstrap/Row';
 class NameForm extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { value: '' };
+        this.state = { value: '', label: '' };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSelect = this.handleSelect.bind(this);
         this.isClicked = false;
 
     }
 
     handleChange(event) {
-        this.setState({ value: event.target.value });
+         //let label = event.target.label;
+        //let label = event.nativeEvent.target[index].text;
+        let value = event.target.value;
+
+        this.setState({ value: value });
+        //this.setState({ value: event.target.value });
+        //this.state.label = event.nativeEvent.target[index].text
+        //this.setState({ data: Dropdown });
+        console.log(value)
+        //console.log(label)
     }
 
     handleSubmit(event) {
+        console.log("ia am here")
         alert('A name was submitted: ' + this.state.value);
         event.preventDefault();
+    }
+
+    handleSelect(event) {
+        console.log(event)
+        //let label = event.target.value;
+        //this.setState({ label: label });
+        //console.log(label)
     }
 
     render() {
@@ -40,10 +58,12 @@ class NameForm extends React.Component {
                             variant="outline-secondary"
                             title="Search By"
                             id="input-group-dropdown-1"
+                            onSelect={this.handleSelect}
+                            value={this.state.value} 
                         >
-                            <Dropdown.Item href="#">Employee Name</Dropdown.Item>
-                            <Dropdown.Item href="#">Department</Dropdown.Item>
-                            <Dropdown.Item href="#">Floor</Dropdown.Item>
+                            <Dropdown.Item href="#" eventKey='EmployeeName'>Employee Name</Dropdown.Item>
+                            <Dropdown.Item href="#" eventKey='Department'>Department</Dropdown.Item>
+                            <Dropdown.Item href="#" eventKey='Floor'>Floor</Dropdown.Item>
                         </DropdownButton>
                         <FormControl aria-label="Text input with dropdown button" value={this.state.value} onChange={this.handleChange} />
                     </InputGroup>
