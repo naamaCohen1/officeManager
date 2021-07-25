@@ -29,7 +29,7 @@ export default function Login() {
 
     async function refreshPage() {
         { handleClose() }
-        window.location.reload();
+        window.location.replace("https://localhost:44375/admin/user");
     }
 
     async function login() {
@@ -51,11 +51,15 @@ export default function Login() {
         }
         else {
             sessionStorage.setItem("id", password)
+            sessionStorage.setItem("loggedin", true)
             var permission = await response.json()
             if (permission == 0) {
                 sessionStorage.setItem("admin", true)
             }
-            sessionStorage.setItem("admin", false)
+            else {
+                sessionStorage.setItem("admin", false)
+            }
+
             { handleShow() }
         }
     }
@@ -80,7 +84,7 @@ export default function Login() {
                     <Form.Label>Password</Form.Label>
                     <Form.Control
                         required
-                        type="text"
+                        type="password"
                         placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
