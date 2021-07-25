@@ -27,6 +27,11 @@ export default function Login() {
         setValidated(true);
     };
 
+    async function refreshPage() {
+        { handleClose() }
+        window.location.reload();
+    }
+
     async function login() {
         const requestOptions = {
             method: 'POST',
@@ -46,8 +51,11 @@ export default function Login() {
         }
         else {
             sessionStorage.setItem("id", password)
-            var json = await response.json()
-            console.log(json.body)
+            var permission = await response.json()
+            if (permission == 0) {
+                sessionStorage.setItem("admin", true)
+            }
+            sessionStorage.setItem("admin", false)
             { handleShow() }
         }
     }
@@ -105,7 +113,7 @@ export default function Login() {
                         <p>User loged in</p>
                     </Modal.Body>
                 <Modal.Footer>
-                    <button type="button" class="btn btn-primary" onClick={handleClose}> OK </button>
+                    <button type="button" class="btn btn-primary" onClick={refreshPage}> OK </button>
                     </Modal.Footer>
                 </Modal>
             </Form>

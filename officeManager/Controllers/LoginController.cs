@@ -25,9 +25,7 @@ namespace officeManager.Controllers
                     return new NotFoundObjectResult("Invalid username or password"); 
                 }
                 string userRole = loginUser.GetUserPermission();
-                string json = JsonConvert.SerializeObject(userRole);
-
-                return new OkObjectResult(json);
+                return new OkObjectResult(userRole);
             }
             else
             {
