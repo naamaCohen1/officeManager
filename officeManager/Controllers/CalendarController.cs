@@ -128,7 +128,8 @@ namespace officeManager.Controllers
             }
         }
 
-        HttpPut[("{date}")]
+        [HttpPut("{date}")]
+
         public async Task<ActionResult> Put([FromBody] string id, string date)
         {
             date.Replace(".", "/");

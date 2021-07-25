@@ -45,6 +45,9 @@ export default function Login() {
             { handleShowErr() }
         }
         else {
+            sessionStorage.setItem("id", password)
+            var json = await response.json()
+            console.log(json.body)
             { handleShow() }
         }
     }
