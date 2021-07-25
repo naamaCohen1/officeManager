@@ -44,6 +44,9 @@ function Sidebar({ color, image, routes }) {
                 </div>
                 <Nav>
                     {routes.map((prop, key) => {
+                        console.log("admin" + admin)
+                        console.log(prop.name)
+
                         if (!loggedin) {
                             if (prop.name == 'Login')
                                 show = true
@@ -51,15 +54,28 @@ function Sidebar({ color, image, routes }) {
                                 show = false
                         }
                         else {
-                            show = true
-                            if (prop.name == 'Login')
-                                show = false
-                            if (!admin && prop.name == 'Office Information')
-                                show = false
-                            if (!admin && prop.name == 'Office Employees')
-                                show = false
-                            if (!admin && prop.name == 'Dashboard')
-                                show = false
+                            if (admin) {
+                                console.log("admin")
+
+                                if (prop.name == 'Login')
+                                    show = false
+                                else
+                                    show = true
+                            }
+                            else {
+                                console.log("stand")
+
+                                if (prop.name == 'Login')
+                                    show = false
+                                else if (prop.name == 'Office Information')
+                                    show = false
+                                else if (prop.name == 'Office Employees')
+                                    show = false
+                                else if (prop.name == 'Dashboard')
+                                    show = false
+                                else
+                                    show = true
+                            }
                         }
 
                         console.log(show)
