@@ -9,6 +9,7 @@ import {
     Row,
     Col,
     Table,
+    Modal,
 } from "react-bootstrap";
 
 function HealthAvailabilityCertification() {
@@ -22,43 +23,21 @@ function HealthAvailabilityCertification() {
     const handleShow = () => setShow(true);
 
     function handleSubmit(event) {
-        console.log("handel")
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
-            console.log("if")
             event.preventDefault();
             event.stopPropagation();
         }
         else {
-            console.log("else")
             event.preventDefault();
-            { editEmployee() }
+            { sendToHR() }
         }
 
         setValidatedSubmit(true);
     };
 
-    async function editEmployee() {
-        //const requestOptions = {
-        //    method: 'PUT',
-        //    headers: {
-        //        'Content-Type': 'application/json',
-        //        'Accept': 'application/json'
-        //    },
-        //    body: JSON.stringify({
-        //        "id": id,
-        //        "firstName": firstName,
-        //        "lastName": lastName,
-        //        "email": email,
-        //        "carNumber": carNumber,
-        //        "floor": floor,
-        //        "roomNumber": roomNumber,
-        //        "role": role,
-        //        "department": department,
-        //        "permissionLevel": permission
-        //    })
-        //};
-        //var response = await fetch("https://localhost:44375/api/users/" + id, requestOptions);
+    async function sendToHR() {
+        // send email
         var response = 204
         if (response.status == 204) {
             setTitle("Info")
@@ -202,6 +181,18 @@ function HealthAvailabilityCertification() {
                     </Col>
 
                 </Row>
+
+                <Modal show={show} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>{title}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>{message}</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>OK</Button>
+                    </Modal.Footer>
+                </Modal>
             </Container>
         </>
     );
