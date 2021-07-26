@@ -12,7 +12,7 @@ import {
 
 //             Office Availability Certification
 
-function HealthCheck() {
+function HealthAvailabilityCertification() {
     const [checked, setChecked] = React.useState(false);
     const [id, setId] = React.useState(sessionStorage.getItem("id"));
 
@@ -132,4 +132,4 @@ function HealthCheck() {
     );
 }
 
-export default HealthCheck;
+export default HealthAvailabilityCertification;
