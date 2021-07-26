@@ -14,22 +14,11 @@ import ChartistGraph from "react-chartist";
 
 
 export default function Dashboard() {
-  //  var departmentsLabels = "["
-  //  var departmentsSeries = "["
-    var departmentsLabels = []
-    //var departmentsSeries = []
-    const [departmentsSeries, setDepartmentsSeries] = useState([])
-
-
     const [totalArrivals, setTotalArrivals] = useState([])
-    const [employeesKey, setEmployeesKey] = useState([])
-    const [employeesVal, setEmployeesVal] = useState([])
-    const [departmentsKey, setDepartmentsKey] = useState([])
-    const [departmentsVal, setDepartmentsVal] = useState([])
-    const [floorsKey, setFloorsKey] = useState([])
-    const [floorsVal, setFloorsVal] = useState([])
-    const [rolesKey, setRolesKey] = useState([])
-    const [rolesVal, setRolesVal] = useState([])
+    const [departmentsArray, setDepartmentsArray] = useState([]);
+    const [employeesArray, setEmployeesArray] = useState([]);
+    const [floorsArray, setFloorsArray] = useState([]);
+    const [rolesArray, setRolesArray] = useState([]);
 
     async function getStatistics() {
         const requestOptions = {
@@ -60,7 +49,6 @@ export default function Dashboard() {
             data.lastIndexOf("}")
         );
         totalArrivals.push(subString.trim())
-        console.log("totalArrivals " + totalArrivals)
     }
 
     async function getEmployees(data) {
@@ -69,18 +57,22 @@ export default function Dashboard() {
             data.lastIndexOf("},\"Departments\"")
         );
         var tempEmployees = subString.split(",")
-
+        var dictionary = []
         for (var index in tempEmployees) {
             var employee = (tempEmployees[index]).split(":")
+            var array = []
             var id = employee[0]
             id = id.replace("\"", "")
             id = id.replace("\"", "")
 
-            employeesKey.push(id.trim())
-            employeesVal.push(employee[1].trim())
+            var precentage = employee[1] / totalArrivals * 100;
+
+            array.push(id.trim())
+            array.push(employee[1].slice(0, -2).trim())
+            array.push(precentage.toFixed(2) + "%")
+            dictionary.push(array)
         }
-        console.log("employeesKey " + employeesKey)
-        console.log("employeesVal " + employeesVal)
+        setEmployeesArray(dictionary)
     }
 
     async function getDepartments(data) {
@@ -89,20 +81,25 @@ export default function Dashboard() {
             data.lastIndexOf("},\"Floors\"")
         );
         var tempDepartments = subString.split(",")
+        var array = []
+        for (var temp in tempDepartments) {
+            var dictionary = []
+            var departments = (tempDepartments[temp]).split(",")
+            for (var index in departments) {
+                var department = departments[index].split(":")
+                var dep = department[0]
+                dep = dep.replace("\"", "")
+                dep = dep.replace("\"", "")
 
-        for (var index in tempDepartments) {
-            var department = (tempDepartments[index]).split(":")
-            var dep = department[0]
-            dep = dep.replace("\"", "")
-            dep = dep.replace("\"", "")
+                var precentage = department[1] / totalArrivals * 100;
 
-            departmentsKey.push(dep.trim())
-            departmentsVal.push(department[1].trim())
+                dictionary.push(dep.trim())
+                dictionary.push(department[1].slice(0, -2).trim())
+                dictionary.push(precentage.toFixed(2) + "%")
+            }
+            array.push(dictionary)
         }
-
-        { departmentWeekly() }
-        console.log("departmentsKey " + departmentsKey)
-        console.log("departmentsVal " + departmentsVal)
+        setDepartmentsArray(array)
     }
 
     async function getFloors(data) {
@@ -110,19 +107,24 @@ export default function Dashboard() {
             data.lastIndexOf("\"Floors\":{") + 10,
             data.lastIndexOf("},\"Roles\"")
         );
+        console.log(subString)
         var tempFloors = subString.split(",")
-
+        var dictionary = []
         for (var index in tempFloors) {
+            var array = []
             var floor = (tempFloors[index]).split(":")
             var fl = floor[0]
             fl = fl.replace("\"", "")
             fl = fl.replace("\"", "")
 
-            floorsKey.push(fl.trim())
-            floorsVal.push(floor[1].trim())
+            var precentage = floor[1] / totalArrivals * 100;
+
+            array.push(fl.trim())
+            array.push(floor[1].slice(0, -2).trim())
+            array.push(precentage.toFixed(2) + "%")
+            dictionary.push(array)
         }
-        console.log("floorsKey " + floorsKey)
-        console.log("floorsVal " + floorsVal)
+        setFloorsArray(dictionary)
     }
 
     async function getRoles(data) {
@@ -131,71 +133,217 @@ export default function Dashboard() {
             data.lastIndexOf("},\"TotalArrivals\"")
         );
         var tempRoles = subString.split(",")
-
+        var dictionary = []
         for (var index in tempRoles) {
+            var array = []
             var role = (tempRoles[index]).split(":")
             var r = role[0]
             r = r.replace("\"", "")
             r = r.replace("\"", "")
 
-            rolesKey.push(r.trim())
-            rolesVal.push(role[1].trim())
-        }
-        console.log("rolesKey " + rolesKey)
-        console.log("rolesVal " + rolesVal)
-    }
+            var precentage = role[1] / totalArrivals * 100;
 
-    async function departmentWeekly() {
-        for (var val in departmentsVal) {
-            departmentsLabels.push(departmentsVal[val] + "%")
-            departmentsSeries.push(parseInt(departmentsVal[val]))
+            array.push(r.trim())
+            array.push(role[1].slice(0, -2).trim())
+            array.push(precentage.toFixed(2) + "%")
+            dictionary.push(array)
         }
+        setRolesArray(dictionary)
     }
 
     useEffect(() => {
         getStatistics();
     }, []);
 
+    return (
+        <>
+            <Container fluid>
+                <Row>
+                    <Col md="6">
+                        <Card className="card-plain table-plain-bg">
+                            <Card.Header>
+                                <Card.Title as="h4">Last 7 days arrival filtered by Departments</Card.Title>
+                                <p className="card-category">
+                                TOTAL ARRIVALS AMOUNT: {totalArrivals[0]}
+                                    </p>
+                            </Card.Header>
+                            <Card.Body className="table-full-width table-responsive px-0">
+                                <Table className="table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Department</th>
+                                            <th>Arrivals amount</th>
+                                            <th>Arrival percentage</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            departmentsArray.map((item) => (
+                                                <tr key={item.id}>
+                                                    <td style={{ fontSize: 12 }}>{item[0]}</td>
+                                                    <td style={{ fontSize: 12 }}>{item[1]}</td>
+                                                    <td style={{ fontSize: 12 }}>{item[2]}</td>
+                                                </tr>
+                                            ))
+                                        }
+                                    </tbody>
+                                </Table>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                    <Col>
+                        <Card className="card-plain table-plain-bg">
+                            <Card.Header>
+                                <Card.Title as="h4">Last 7 days arrival filtered by ID</Card.Title>
+                                <p className="card-category">
+                                    TOTAL ARRIVALS AMOUNT: {totalArrivals[0]}
+                                </p>
+                            </Card.Header>
+                            <Card.Body className="table-full-width table-responsive px-0">
+                                <Table className="table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Employee</th>
+                                            <th>Arrivals amount</th>
+                                            <th>Arrival percentage</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            employeesArray.map((item) => (
+                                                <tr key={item.id}>
+                                                    <td style={{ fontSize: 12 }}>{item[0]}</td>
+                                                    <td style={{ fontSize: 12 }}>{item[1]}</td>
+                                                    <td style={{ fontSize: 12 }}>{item[2]}</td>
+                                                </tr>
+                                            ))
+                                        }
+                                    </tbody>
+                                </Table>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                </Row>
 
-return (
-    <>
-                <Container fluid>
-            <Row>
-                <Col md="4">
-                    <Card>
-                        <Card.Header>
-                            <Card.Title as="h4">7 Days Arrival by Department</Card.Title>
-                            <p className="card-category">Last 7 days employees arrival filtered by Departments</p>
-                        </Card.Header>
-                        <Card.Body>
-                            <div
-                                className="ct-chart ct-perfect-fourth"
-                                id="chartPreferences"
-                            >
-                                <ChartistGraph
-                                     data={{
-                                    labels: ["40%", "20%", "40%"],
-                                    series: [40, 20, 40],
-                                        //labels: [departmentsLabels],
-                                        //series: [departmentsSeries],
-                                    }}
-                                    type="Pie"
-                                />
-                            </div>
-                            <div className="legend">
-                                <i className="fas fa-circle text-info"></i> Open
-                                <i className="fas fa-circle text-danger"></i> Bounce
-                                <i className="fas fa-circle text-warning"></i> Unsubscribe
-                </div>
-                            <hr></hr>
-                      </Card.Body>
-                  </Card>
-              </Col>
-            </Row>
-        </Container>
+                <Row>
+                    <Col md="6">
+                        <Card className="card-plain table-plain-bg">
+                            <Card.Header>
+                                <Card.Title as="h4">Last 7 days arrival filtered by Floor</Card.Title>
+                                <p className="card-category">
+                                    TOTAL ARRIVALS AMOUNT: {totalArrivals[0]}
+                                </p>
+                            </Card.Header>
+                            <Card.Body className="table-full-width table-responsive px-0">
+                                <Table className="table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Floor</th>
+                                            <th>Arrivals amount</th>
+                                            <th>Arrival percentage</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            floorsArray.map((item) => (
+                                                <tr key={item.id}>
+                                                    <td style={{ fontSize: 12 }}>{item[0]}</td>
+                                                    <td style={{ fontSize: 12 }}>{item[1]}</td>
+                                                    <td style={{ fontSize: 12 }}>{item[2]}</td>
+                                                </tr>
+                                            ))
+                                        }
+                                    </tbody>
+                                </Table>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                    <Col>
+                        <Card className="card-plain table-plain-bg">
+                            <Card.Header>
+                                <Card.Title as="h4">Last 7 days arrival filtered by Role</Card.Title>
+                                <p className="card-category">
+                                    TOTAL ARRIVALS AMOUNT: {totalArrivals[0]}
+                                </p>
+                            </Card.Header>
+                            <Card.Body className="table-full-width table-responsive px-0">
+                                <Table className="table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Role</th>
+                                            <th>Arrivals amount</th>
+                                            <th>Arrival percentage</th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            rolesArray.map((item) => (
+                                                <tr key={item.id}>
+                                                    <td style={{ fontSize: 12 }}>{item[0]}</td>
+                                                    <td style={{ fontSize: 12 }}>{item[1]}</td>
+                                                    <td style={{ fontSize: 12 }}>{item[2]}</td>
+                                                </tr>
+                                            ))
+                                        }
+                                    </tbody>
+                                </Table>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                </Row>
+            </Container >
         </>
     );
 }
+
+
+//return (
+//    <>
+//                <Container fluid>
+//            <Row>
+//                <Col md="4">
+//                    <Card>
+//                        <Card.Header>
+//                            <Card.Title as="h4">7 Days Arrival by Department</Card.Title>
+//                            <p className="card-category">Last 7 days employees arrival filtered by Departments</p>
+//                        </Card.Header>
+//                        <Card.Body>
+//                            <div
+//                                className="ct-chart ct-perfect-fourth"
+//                                id="chartPreferences"
+//                            >
+//                                <ChartistGraph
+//                                     data={{
+//                                    labels: ["40%", "20%", "40%"],
+//                                    series: [40, 20, 40],
+//                                        //labels: [departmentsLabels],
+//                                        //series: [departmentsSeries],
+//                                    }}
+//                                    type="Pie"
+//                                />
+//                            </div>
+//                            <div className="legend">
+//                                <i className="fas fa-circle text-info"></i> Open
+//                                <i className="fas fa-circle text-danger"></i> Bounce
+//                                <i className="fas fa-circle text-warning"></i> Unsubscribe
+//                </div>
+//                            <hr></hr>
+//                      </Card.Body>
+//                  </Card>
+//              </Col>
+//            </Row>
+//        </Container>
+//        </>
+//    );
+//}
 
 //return (
 //        <>

@@ -26,7 +26,7 @@ namespace officeManager.Controllers
             {
                 arrivalStatistics = statistics.GetWeeklyActivity();
                 arrivalStatisticsPrec = statistics.GetPercentages(arrivalStatistics);
-                string json = JsonConvert.SerializeObject(arrivalStatisticsPrec);
+                string json = JsonConvert.SerializeObject(arrivalStatistics);
                 return new OkObjectResult(json);
             }
             catch (Exception)
@@ -36,9 +36,16 @@ namespace officeManager.Controllers
         }
 
         [HttpGet("{mapBy}")]
-        public Dictionary<string, int> Get(string mapBy)
+        public async Task<ActionResult<List<double>>> Get(string mapBy)
         {
-            return arrivalStatistics.MapResponse(mapBy);
+            List<double> precentage = new List<double>();
+            Dictionary<string, double> dict = arrivalStatistics.GetPrecentage(mapBy,arrivalStatisticsPrec);
+            foreach (var item in dict)
+            {
+                precentage.Add(item.Value);
+            }
+            string json = JsonConvert.SerializeObject(precentage);
+            return new OkObjectResult(json);
         }
     }
 }

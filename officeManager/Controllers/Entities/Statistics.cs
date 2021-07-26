@@ -170,12 +170,13 @@ namespace officeManager.Controllers.Entities
             return precentage;
         }
 
-        private Dictionary<string, int> calcPrecentage(Dictionary<string, int> pairs, int totalArrivals)
+        private Dictionary<string, double> calcPrecentage(Dictionary<string, double> pairs, int totalArrivals)
         {
-            Dictionary<string, int> dictionary = new Dictionary<string, int>();
+            Dictionary<string, double> dictionary = new Dictionary<string, double>();
             foreach (var item in pairs)
             {
-                dictionary.Add(item.Key, ((int)((double)item.Value / totalArrivals * 100)));
+                double precentage = (double)item.Value / totalArrivals * 100;
+                dictionary.Add(item.Key, double.Parse(string.Format("{0:0.00}", precentage)));
             }
 
             return dictionary;
