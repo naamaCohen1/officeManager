@@ -12,6 +12,12 @@ import {
     Modal,
 } from "react-bootstrap";
 
+//user: 'officemanagerhealth@gmail.com',
+//    pass: 'Qwerty12!'
+// API Client - 425121669393-9gno5mtu3csnnu9n3oc9skbq4oj8f70n.apps.googleusercontent.com
+// Client Secret - Yn_mg_jRWehQgfwVFpBpZEQE
+// RefreshToken - 1//04xzCRP0pE5qpCgYIARAAGAQSNwF-L9IrZxumQG_ti_91FWUMQJ46oi8Oq4qLskWXI8ZhoquvoEaAn3i9tHLEvkMr-EHSUGCaX6k
+
 function HealthAvailabilityCertification() {
     const [id, setId] = React.useState(sessionStorage.getItem("id"));
     const [validatedSubmit, setValidatedSubmit] = useState(false);
@@ -39,7 +45,7 @@ function HealthAvailabilityCertification() {
     async function sendToHR() {
         // send email
         var response = 204
-        if (response.status == 204) {
+        if (response == 204) {
             setTitle("Info")
             setMessage("Health Availability Certification was sent to HR.")
             { handleShow() }
