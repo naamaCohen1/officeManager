@@ -60,7 +60,7 @@ export default function Login() {
                 sessionStorage.setItem("admin", false)
             }
 
-            { handleShow() }
+            { refreshPage() }
         }
     }
 

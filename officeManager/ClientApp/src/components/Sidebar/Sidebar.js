@@ -44,8 +44,6 @@ function Sidebar({ color, image, routes }) {
                 </div>
                 <Nav>
                     {routes.map((prop, key) => {
-                        console.log("admin" + admin)
-                        console.log(prop.name)
 
                         if (!loggedin) {
                             if (prop.name == 'Login')
@@ -54,7 +52,7 @@ function Sidebar({ color, image, routes }) {
                                 show = false
                         }
                         else {
-                            if (admin) {
+                            if (admin === 'true') {
                                 console.log("admin")
 
                                 if (prop.name == 'Login')
