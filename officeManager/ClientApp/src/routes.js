@@ -1,6 +1,6 @@
 import Dashboard from "views/Dashboard.js";
 import UserProfile from "views/UserProfile.js";
-import HealthCheck from "views/HealthCheck.js";
+import HealthAvailabilityCertification from "views/HealthAvailabilityCertification.js";
 import CommingToOffice from "views/CommingToOffice.js";
 import OfficeEmployees from "./views/OfficeEmployees";
 import OfficeInfo from "./views/OfficeInfo";
@@ -29,10 +29,10 @@ const dashboardRoutes = [
         layout: "/admin",
     },
     {
-        path: "/health-check",
-        name: "Health Check",
+        path: "/health-availability-certification",
+        name: "Health Availability Certification",
         icon: "nc-icon nc-favourite-28",
-        component: HealthCheck,
+        component: HealthAvailabilityCertification,
         layout: "/admin",
     },
     {

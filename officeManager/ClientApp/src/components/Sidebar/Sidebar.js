@@ -53,7 +53,6 @@ function Sidebar({ color, image, routes }) {
                         }
                         else {
                             if (admin === 'true') {
-                                console.log("admin")
 
                                 if (prop.name == 'Login')
                                     show = false
@@ -61,8 +60,6 @@ function Sidebar({ color, image, routes }) {
                                     show = true
                             }
                             else {
-                                console.log("stand")
-
                                 if (prop.name == 'Login')
                                     show = false
                                 else if (prop.name == 'Office Information')
@@ -76,7 +73,6 @@ function Sidebar({ color, image, routes }) {
                             }
                         }
 
-                        console.log(show)
                         if (show) {
                             if (!prop.redirect)
                                 return (
