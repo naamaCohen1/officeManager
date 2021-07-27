@@ -78,6 +78,7 @@ namespace officeManager.Controllers
             string capacity = null;
             string ArraivingID = null;
             string date = null;
+            
             List<string> sendingEmployees = new List<string>();
             try
             {
@@ -101,8 +102,8 @@ namespace officeManager.Controllers
                     { 
                         if (!ArraivingID.Contains(calendarUser.Id))
                         {
-                            intCapacity--;
-                            calendarUser.UpdateCapacity(connection, intCapacity);
+                            //intCapacity--;
+                            //calendarUser.UpdateCapacity(connection, intCapacity);
                             ArraivingID += string.Format("{0};", calendarUser.Id);
                             calendarUser.UpdateArrivingID(connection, ArraivingID);
                             //sendingEmployees.Add(calendarUser.GetEmployeeName(connection));
@@ -124,8 +125,8 @@ namespace officeManager.Controllers
 
                     else 
                     {
-                        intCapacity--;
-                        calendarUser.UpdateCapacity(connection, intCapacity);
+                        //intCapacity--;
+                        //calendarUser.UpdateCapacity(connection, intCapacity);
                         ArraivingID = string.Format("{0};", calendarUser.Id);
                         calendarUser.UpdateArrivingID(connection, ArraivingID);
                         sendingEmployees.Add(calendarUser.GetEmployeeName(connection));
