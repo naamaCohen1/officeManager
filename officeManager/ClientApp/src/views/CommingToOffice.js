@@ -33,7 +33,7 @@ class NameForm extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelect = this.handleSelect.bind(this);
-        this.handleRequest = this.handleRequest.bind(this);
+        //this.handleRequest = this.handleRequest.bind(this);
     }
 
     handleChange(event) {
@@ -43,7 +43,7 @@ class NameForm extends React.Component {
         
     }
 
-    async handleSubmit(event) {
+     handleSubmit(event) {
         console.log(date)
         console.log("in handleSubmit")
         console.log(this.state.label)
@@ -65,24 +65,27 @@ class NameForm extends React.Component {
                     "input": this.state.value
                 })
             };
-            var url = "https://localhost:5001/api/search/" + "204049316"
+            var url = "https://localhost:44375/api/search/" + "204049316"
             console.log("sending get function")
-            handleRequest(url, requestOptions) 
-            //const response = await fetch(url, requestOptions)
-            //const data = await response.json()
-            //console.log(data)
+            //handleRequest(url, requestOptions) 
+            const response = fetch(url, requestOptions)
+            const data =  response.json
+            console.log(data)
         } 
-        event.preventDefault();
+
+         //event.preventDefault();
        
     }
 
-     async handleRequest(url, requestOptions) {
+      handleRequest(url, requestOptions) {
         console.log("in handleRequest")
-        const response = await fetch(url, requestOptions);
+        const response = fetch(url, requestOptions);
          if (response.status == 200) {
 
-             const data = await response.json();
+             const data = response.json();
              console.log(data)
+             event.preventDefault();
+
          }
         //    var dataChnage = data.replace('[', '')
         //    dataChnage = dataChnage.replace(']', '')
@@ -147,14 +150,20 @@ export default function Results() {
     const [calDate, setCalDate] = useState(new Date())
     const [DateIsClick, setDateIsClick] = useState(false);
     const [people, setPeople] = useState([]);
+
     const [message, setMessage] = useState();
     const [title, setTitle] = useState();
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
     const [showWaitingList, setShowWaitingList] = useState(false);
     const handleCloseWaitingList = () => setShowWaitingList(false);
     const handleShowWaitingList = () => setShowWaitingList(true);
+
+    const [showParking, setShowParking] = useState(false);
+    const handleCloseParking = () => setShowParking(false);
+    const handleShowParking = () => setShowParking(true);
 
     function showSearchBar() {
         let button;
@@ -170,7 +179,7 @@ export default function Results() {
             return (
                 <>
                     <Button variant="primary" style={{ margin: '10px' }} onClick={clickSubmit} >Submit</Button>
-                    <Button variant="dark" onClick={clickRemove} >Remove</Button>
+                    <Button variant="danger" onClick={clickRemove} >Remove</Button>
                 </>
             )
         }
@@ -192,30 +201,17 @@ export default function Results() {
         newCalDateFormat = newCalDateFormat.replace('/', '.')
         console.log(newCalDateFormat)
         date = newCalDateFormat
-        var url = "https://localhost:5001/api/calendar/" + newCalDateFormat;
+        var url = "https://localhost:44375/api/calendar/" + newCalDateFormat;
         handleRequest(url, requestOptions)
     }
 
-    
-    async function AddToWaitingList(calDate) {
-        { handleCloseWaitingList() }
-        const requestOptions = {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-                "id": id,
-                "date": calDate
-            })
-        };
-    }
     async function handleRequest(url, requestOptions) {
         var peopleList = []
         const response = await fetch(url, requestOptions);
         if (response.status == 200) {
+        
             console.log("in the if")
+
             const data = await response.json();
             console.log(data)
             var dataChnage = data.replace('[', '')
@@ -227,43 +223,16 @@ export default function Results() {
                 peopleList = dataChnage.split(",")
                 setPeople(peopleList)
             }
-
+          
         }
         else if (response.status == 404) {
             console.log("response.status == 404")
-            return (<>
-                <Container fluid>
-                    <Modal show={show} onHide={handleClose}>
-                        <Modal.Header closeButton>
-                            <Modal.Title>{title}</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <p>{message}</p>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="secondary" onClick={handleClose}>OK</Button>
-                        </Modal.Footer>
-                    </Modal>
-
-                    <Modal show={showWaitingList} onHide={handleCloseWaitingList}>
-                        <Modal.Header closeButton>
-                            <Modal.Title>No available space</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <p>There is no available space  on the selected day. Do you want to subscribe to the waiting list?</p>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="Primary" onClick={AddToWaitingList}>Yes</Button>
-                            <Button variant="secondary" onClick={handleCloseWaitingList}>No</Button>
-                        </Modal.Footer>
-                    </Modal>
-                </Container>
-            </>
-            );
-        
+            { handleShowWaitingList() }
         }
 
+        return response;
     }
+
     async function clickSubmit() {
         console.log("clickSubmit()")
         const newCalDateFormat = calDate.toLocaleString().split(",")[0]
@@ -281,7 +250,13 @@ export default function Results() {
         };
         setDateIsClick(true)
         console.log(requestOptions)
-        handleRequest("https://localhost:5001/api/calendar", requestOptions)
+        var response = handleRequest("https://localhost:44375/api/calendar", requestOptions)
+        if ((await response).status == 200) {
+            //car = check for parking place
+            var car = 3
+            if (car > 0) { handleShowParking() }
+        }
+
     }
 
     async function clickRemove() {
@@ -301,7 +276,7 @@ export default function Results() {
         };
         setDateIsClick(true)
         console.log(requestOptions)
-        handleRequest("https://localhost:5001/api/calendar", requestOptions)
+        handleRequest("https://localhost:44375/api/calendar", requestOptions)
     }
 
     function showPeopleCame() {
@@ -319,6 +294,64 @@ export default function Results() {
 
     }
 
+    async function AddToWaitingList() {
+      { handleCloseWaitingList() } 
+            //calDate = "07.23.2021"
+        //var newCalDateFormat = calDate.toLocaleString().split(",")[0]
+        const requestOptions = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                "id": "204049316",
+                "date": calDate
+            })
+        };
+        var url = "https://localhost:44375/api/calendar/" + calDate;
+            const response = await fetch(url, requestOptions);
+             if (response.status == 204) {
+                setTitle("Info")
+                setMessage("Added to Waiting List.")
+                { handleShow() }
+            }
+        else {
+            setTitle("Error")
+            setMessage("Unexpected error! Fail to add to waiting list.")
+            { handleShow() }
+        }
+    }
+
+    async function AddToParking() {
+        { handleCloseParking() }
+        //calDate = "07.23.2021"
+        //var newCalDateFormat = calDate.toLocaleString().split(",")[0]
+        const requestOptions = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                "date": calDate
+            })
+        };
+        var url = "https://localhost:44375/api/calendar/" + calDate;
+        const response = await fetch(url, requestOptions);
+        if (response.status == 204) {
+            setTitle("Info")
+            setMessage("Your car was added.")
+            { handleShow() }
+        }
+        else {
+            setTitle("Error")
+            setMessage("Unexpected error! Fail to add car.")
+            { handleShow() }
+        }
+    }
+
+
     return (
         <div className="result-calendar" style={{ display: 'flex', justifyContent: 'space-between' }}>
             <Calendar onChange={onChange} value={calDate} />
@@ -329,6 +362,45 @@ export default function Results() {
                     {showAddButton()}
                     {showPeopleCame()}
                 </Container>
+            </div>
+            <div>
+                <Modal show={show} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>{title}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>{message}</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>OK</Button>
+                    </Modal.Footer>
+                </Modal>
+
+                <Modal show={showWaitingList} onHide={handleCloseWaitingList}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>No available space</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>There is no available space  on the selected day. Do you want to subscribe to the waiting list?</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="Primary" onClick={AddToWaitingList}>Yes</Button>
+                        <Button variant="secondary" onClick={handleCloseWaitingList}>No</Button>
+                    </Modal.Footer>
+                </Modal>
+
+                <Modal show={showParking} onHide={handleCloseParking}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Comming with a car?</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>Do you plan to come with a care to the office?</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="Primary" onClick={AddToParking}>Yes</Button>
+                        <Button variant="secondary" onClick={handleCloseParking}>No</Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         </div>
     )

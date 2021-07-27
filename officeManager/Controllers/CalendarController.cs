@@ -19,7 +19,7 @@ namespace officeManager.Controllers
 
 
         /// <summary>
-        /// Performs GET request to https://localhost:5001/api/calendar
+        /// Performs GET request to https://localhost:44375/api/calendar
         /// Gets all calendar events
         /// </summary>
         /// <returns> List of all calendar events as <see cref="List{Calendar}"/> </returns>
@@ -60,12 +60,12 @@ namespace officeManager.Controllers
             }
         }
 
-        //POST https://localhost:5001/api/calendar
+        //POST https://localhost:44375/api/calendar
         //{"date": "07/21/2021",
         //"id": "204049316"
         //}
         /// <summary>
-        /// Performs GET request to https://localhost:5001/api/calendar/mm.dd.yyyy
+        /// Performs GET request to https://localhost:44375/api/calendar/mm.dd.yyyy
         /// Adding employee to EmployeesArriving in the requested day 
         /// </summary>
         /// <param name="calendarUser"> Employee to be added as <see cref="CalendarUser"/> </param>
@@ -77,6 +77,8 @@ namespace officeManager.Controllers
             string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", calendarUser.Date);
             string capacity = null;
             string ArraivingID = null;
+            string date = null;
+            
             List<string> sendingEmployees = new List<string>();
             try
             {
@@ -88,39 +90,58 @@ namespace officeManager.Controllers
                 {
                     ArraivingID = dataReader["EmployeesArriving"].ToString().Trim();
                     capacity = dataReader["SittingCapacity"].ToString();
+                    date = dataReader["Date"].ToString();
                 }
                 dataReader.Close();
-                //if(ArraivingID !=null)
-                //    ArraivingID = ArraivingID.Trim();
-                string[] employees = ArraivingID.Split(';');
-                foreach (string employeeID in employees)
+
+                if (date != null)
                 {
-                    if (employeeID.Equals("") || employeeID.Equals(calendarUser.Id))
-                        continue;
-                    CalendarUser user = new CalendarUser();
-                    user.Id = employeeID;
-                    string name = user.GetEmployeeName(connection);
-                    sendingEmployees.Add(name);
+
+
+                    if (ArraivingID != null)
+                    { 
+                        if (!ArraivingID.Contains(calendarUser.Id))
+                        {
+                            //intCapacity--;
+                            //calendarUser.UpdateCapacity(connection, intCapacity);
+                            ArraivingID += string.Format("{0};", calendarUser.Id);
+                            calendarUser.UpdateArrivingID(connection, ArraivingID);
+                            //sendingEmployees.Add(calendarUser.GetEmployeeName(connection));
+                            //ArraivingID += calendarUser.Id + ";";
+                            Console.WriteLine(ArraivingID);
+                        }
+                        sendingEmployees = calendarUser.returnCommingList(ArraivingID, connection);
+                        //string[] employees = ArraivingID.Split(';');
+                        //foreach (string employeeID in employees)
+                        //{
+                        //    if (employeeID.Equals("") || employeeID.Equals(calendarUser.Id))
+                        //        continue;
+                        //    CalendarUser user = new CalendarUser();
+                        //    user.Id = employeeID;
+                        //    string name = user.GetEmployeeName(connection);
+                        //    sendingEmployees.Add(name);
+                        //}
+                    }
+
+                    else 
+                    {
+                        //intCapacity--;
+                        //calendarUser.UpdateCapacity(connection, intCapacity);
+                        ArraivingID = string.Format("{0};", calendarUser.Id);
+                        calendarUser.UpdateArrivingID(connection, ArraivingID);
+                        sendingEmployees.Add(calendarUser.GetEmployeeName(connection));
+                        //ArraivingID += calendarUser.Id + ";";
+                        Console.WriteLine(ArraivingID);
+                    }
+                    int intCapacity = int.Parse(capacity);
+                    if (intCapacity == 0)
+                        return new OkObjectResult("there is no place in this day,please register to waiting list");
+                    string json = JsonConvert.SerializeObject(sendingEmployees);
+                    command.Dispose();
+                    connection.Close();
+                    return new OkObjectResult(json);
                 }
-                int intCapacity = int.Parse(capacity);
-                if (intCapacity == 0)
-                    return new NotFoundObjectResult("there is no place in this day,please register to waiting list");
-                else
-                {
-                    string names = calendarUser.GetEmployeeName(connection);
-                    if (names == null)
-                        return new NotFoundObjectResult("there is no employee with this id");
-                    intCapacity--;
-                    calendarUser.UpdateCapacity(connection, intCapacity);
-                    //ArraivingID = ArraivingID.Trim();
-                    ArraivingID += string.Format("{0};", calendarUser.Id);
-                    calendarUser.UpdateArrivingID(connection, ArraivingID);
-                    sendingEmployees.Add(calendarUser.GetEmployeeName(connection));
-                }
-                string json = JsonConvert.SerializeObject(sendingEmployees);
-                command.Dispose();
-                connection.Close();
-                return new OkObjectResult(json);
+                return BadRequest();
             }
             catch (Exception e)
             {
@@ -129,8 +150,7 @@ namespace officeManager.Controllers
         }
 
         [HttpPut("{date}")]
-
-        public async Task<ActionResult> Put([FromBody] string id, string date)
+        public ActionResult Put([FromBody] string id, string date)
         {
             date.Replace(".", "/");
             string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", date);
@@ -225,7 +245,7 @@ namespace officeManager.Controllers
 
 
         /// <summary>
-        /// Performs GET request to https://localhost:5001/api/calendar/mm.dd.yyyy
+        /// Performs GET request to https://localhost:44375/api/calendar/mm.dd.yyyy
         /// Adding employee to EmployeesArriving in the requested day 
         /// </summary>
         /// <param name="calendarUser"> Employee to be added as <see cref="CalendarUser"/> </param>
@@ -236,7 +256,8 @@ namespace officeManager.Controllers
             //date.Replace(".", "/");
             string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", date);
             string CommingTotheOffice = null;
-            List<string> sendingEmployees = new List<string>();
+            string calDate = null;
+           // List<string> sendingEmployees = new List<string>();
             try
             {
                 SqlConnection connection = new SqlConnection(connetionString);
@@ -246,27 +267,41 @@ namespace officeManager.Controllers
                 while (dataReader.Read())
                 {
                     CommingTotheOffice = dataReader["EmployeesArriving"].ToString();
+                    calDate = dataReader["Date"].ToString();
+
                 }
 
                 dataReader.Close();
                 command.Dispose();
-                if (CommingTotheOffice != null)
+                if (calDate != null)
                 {
-                    CommingTotheOffice = CommingTotheOffice.Trim();
-                    string[] employees = CommingTotheOffice.Split(';');
-                    foreach (string employee in employees)
+                    if (CommingTotheOffice != null)
                     {
-                        if (employee.Equals(""))
-                            continue;
-                        CalendarUser user = new CalendarUser();
-                        user.Id = employee;
-                        string name = user.GetEmployeeName(connection);
-                        sendingEmployees.Add(name);
+                        //string[] employees = CommingTotheOffice.Trim().Split(';');
+                        //foreach (string employee in employees)
+                        //{
+                        //    if (employee.Equals(""))
+                        //        continue;
+                        //    CalendarUser user = new CalendarUser();
+                        //    user.Id = employee;
+                        //    string name = user.GetEmployeeName(connection);
+                        //    sendingEmployees.Add(name);
+                        //}
+                        CalendarUser caluser = new CalendarUser();
+                        List<string> sendingEmployees = caluser.returnCommingList(CommingTotheOffice, connection);
+                        connection.Close();
+                        return new OkObjectResult(JsonConvert.SerializeObject(sendingEmployees));
                     }
                     connection.Close();
-                    string json = JsonConvert.SerializeObject(sendingEmployees);
-                    return new OkObjectResult(json);
+                    return new OkResult();
                 }
+                 sql = string.Format("insert into tlbCalendar values('{0}',null,6,6,null)", date);
+                command = new SqlCommand(sql, connection);
+                dataReader = command.ExecuteReader();
+                dataReader.Read();
+                command.Dispose();
+                connection.Close();
+                //add date to calendar. defualt values
                 return NotFound();
 
             }
