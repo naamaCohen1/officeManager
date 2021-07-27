@@ -59,13 +59,40 @@ namespace officeManager
                 return isFound;
 
             }
-
             catch (Exception)
             {
                 command.Dispose();
                 connection.Close();
             }
             return isFound;
+        }
+
+        public string GetUserPermission()
+        {
+            string permission = null;
+            string sql = string.Format("select *  from tlbEmployees where ID ={0}", Password);
+            SqlConnection connection = new SqlConnection(connetionString);
+            SqlCommand command = new SqlCommand(sql, connection);
+            SqlDataReader dataReader;
+            try
+            {
+                connection.Open();
+                dataReader = command.ExecuteReader();
+                if (dataReader.Read())
+                {
+                    permission = dataReader["PermissionLevel"].ToString();
+                }
+
+                dataReader.Close();
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception)
+            {
+                command.Dispose();
+                connection.Close();
+            }
+            return permission;
         }
 
         public bool AddUser()

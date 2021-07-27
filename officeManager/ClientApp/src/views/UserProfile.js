@@ -11,7 +11,7 @@ import {
 } from "react-bootstrap";
 
 export default function User() {
-    const [id, setId] = useState("")
+    const [id, setId] = React.useState(sessionStorage.getItem("id"));
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
     const [email, setEmail] = useState("")
@@ -44,7 +44,7 @@ export default function User() {
         setValidatedEdit(true);
     };
 
-    async function loadPage(id) {
+    async function loadPage() {
         const requestOptions = {
             method: 'GET',
             headers: {
@@ -53,8 +53,7 @@ export default function User() {
             }
         };
 
-        var url = "https://localhost:44375/api/users/" + "205666415";
-        //var url = "https://localhost:44375/api/users/" + id;
+        var url = "https://localhost:44375/api/users/" + id;
         handleRequest(url, requestOptions)
     }
 
@@ -130,7 +129,7 @@ export default function User() {
     }
 
     useEffect(() => {
-        loadPage("205666415");
+        loadPage();
     }, []);
 
     return (
@@ -263,167 +262,3 @@ export default function User() {
         </>
     );
 }
-
-
-
-//<Form
-//>
-//    <Row>
-//        <Col className="pl-1" md="6">
-//            <Form.Group>
-
-//            </Form.Group>
-//        </Col>
-
-//        <Col className="pr-1" md="6">
-//            <Form.Group>
-//                <label>First Name</label>
-//                <Form.Control
-//                    placeholder="First Name"
-//                    type="text"
-//                    value={firstName}
-//                    onChange={(e) => setFirstName(e.target.value)}
-//                ></Form.Control>
-//            </Form.Group>
-//        </Col>
-//    </Row>
-
-//    <Row>
-//        <Col className="pr-1" md="6">
-//            <Form.Group>
-//                <label>Last Name</label>
-//                <Form.Control
-//                    placeholder="Last Name"
-//                    type="text"
-//                    value={lastName}
-//                    onChange={(e) => setLastName(e.target.value)}
-//                ></Form.Control>
-//            </Form.Group>
-//        </Col>
-
-//        <Col className="pl-1" md="6">
-//            <Form.Group>
-//                <label>Email</label>
-//                <Form.Control
-//                    placeholder="Email"
-//                    type="text"
-//                    value={email}
-//                    onChange={(e) => setEmail(e.target.value)}
-//                ></Form.Control>
-//            </Form.Group>
-//        </Col>
-//    </Row>
-
-//    <Row>
-//        <Col className="pr-1" md="6">
-//            <Form.Group>
-//                <label>Car Number</label>
-//                <Form.Control
-//                    placeholder="Car Number"
-//                    type="text"
-//                    value={carNumber}
-//                    onChange={(e) => setCarNumber(e.target.value)}
-//                ></Form.Control>
-//            </Form.Group>
-//        </Col>
-
-//        <Col className="pl-1" md="6">
-//            <Form.Group>
-//                <label for="validationCustom01" class="form-label">Role</label>
-//                <Form.Control
-//                    placeholder="Role"
-//                    type="text"
-//                    class="form-control"
-//                    id="validationCustom01"
-//                    value={role}
-//                    onChange={(e) => setRole(e.target.value)}
-//                ></Form.Control>
-//            </Form.Group>
-//        </Col>
-//    </Row>
-
-//    <Row>
-//        <Col className="pl-1" md="5">
-//            <Form.Group>
-//                <label>Floor</label>
-//                <Form.Control
-//                    placeholder="Floor"
-//                    type="text"
-//                    value={floor}
-//                    onChange={(e) => setFloor(e.target.value)}
-//                    value={floor}
-//                    onChange={(e) => setFloor(e.target.value)}
-//                ></Form.Control>
-//            </Form.Group>
-//        </Col>
-
-//        <Col className="pr-1" md="5">
-//            <Form.Group>
-//                <label>Room Number</label>
-//                <Form.Control
-//                    placeholder="Room Number"
-//                    type="text"
-//                    value={roomNumber}
-//                    onChange={(e) => setRoomNumber(e.target.value)}
-//                ></Form.Control>
-//            </Form.Group>
-//        </Col>
-//    </Row>
-
-//    <Row>
-//        <Col className="pl-1" md="6">
-//            <Form.Group >
-//                <label>Department</label>
-//                <Form.Control
-//                    placeholder="Department"
-//                    type="text"
-//                    value={department}
-//                    onChange={(e) => setDepartment(e.target.value)}
-//                ></Form.Control>
-//            </Form.Group>
-//        </Col>
-
-//        <Col className="pl-1" md="6">
-//            <Form.Group >
-//                <label>Permission Level (disabled)</label>
-//                <Form.Control
-//                    disabled
-//                    placeholder="Permission Level"
-//                    type="text"
-//                    value={permissionLevel}
-//                    onChange={(e) => setPermissionLevel(e.target.value)}
-//                ></Form.Control>
-//            </Form.Group>
-//        </Col>
-//    </Row>
-
-//    <button type="button"
-//        class="btn btn-primary"
-//        onClick={handleSubmit} value={"205666415"}
-//    >
-//        Update Profile
-//                  </button>
-
-//    <Modal show={show} onHide={handleClose}>
-//        <Modal.Header closeButton>
-//            <Modal.Title>Success</Modal.Title>
-//        </Modal.Header>
-//        <Modal.Body>
-//            <p>User profile was update successfully.</p>
-//        </Modal.Body>
-//        <Modal.Footer>
-//            <Button variant="primary" onClick={handleClose}>OK</Button>
-//        </Modal.Footer>
-//    </Modal>
-//    <Modal show={showErr} onHide={handleCloseErr}>
-//        <Modal.Header closeButton>
-//            <Modal.Title>Error</Modal.Title>
-//        </Modal.Header>
-//        <Modal.Body>
-//            <p>Something went wrong. Please try again.</p>
-//        </Modal.Body>
-//        <Modal.Footer>
-//            <Button variant="primary" onClick={handleCloseErr}>OK</Button>
-//        </Modal.Footer>
-//    </Modal>
-//</Form>

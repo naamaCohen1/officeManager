@@ -27,6 +27,11 @@ export default function Login() {
         setValidated(true);
     };
 
+    async function refreshPage() {
+        { handleClose() }
+        window.location.replace("https://localhost:44375/admin/user");
+    }
+
     async function login() {
         const requestOptions = {
             method: 'POST',
@@ -45,7 +50,17 @@ export default function Login() {
             { handleShowErr() }
         }
         else {
-            { handleShow() }
+            sessionStorage.setItem("id", password)
+            sessionStorage.setItem("loggedin", true)
+            var permission = await response.json()
+            if (permission == 0) {
+                sessionStorage.setItem("admin", true)
+            }
+            else {
+                sessionStorage.setItem("admin", false)
+            }
+
+            { refreshPage() }
         }
     }
 
@@ -69,7 +84,7 @@ export default function Login() {
                     <Form.Label>Password</Form.Label>
                     <Form.Control
                         required
-                        type="text"
+                        type="password"
                         placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
@@ -102,7 +117,7 @@ export default function Login() {
                         <p>User loged in</p>
                     </Modal.Body>
                 <Modal.Footer>
-                    <button type="button" class="btn btn-primary" onClick={handleClose}> OK </button>
+                    <button type="button" class="btn btn-primary" onClick={refreshPage}> OK </button>
                     </Modal.Footer>
                 </Modal>
             </Form>

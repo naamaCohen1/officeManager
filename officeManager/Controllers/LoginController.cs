@@ -15,7 +15,7 @@ namespace officeManager.Controllers
     public class LoginController : ControllerBase
     {
         [HttpPost]
-        public ActionResult<string> Post([FromBody] LoginUser loginUser)
+        public async Task<ActionResult<string>> Post([FromBody] LoginUser loginUser)
         {
             if (Validation.CheckValidationUserLogin(loginUser.Username, loginUser.Password))
             {
@@ -24,7 +24,8 @@ namespace officeManager.Controllers
                 {
                     return new NotFoundObjectResult("Invalid username or password"); 
                 }
-                return new OkResult();
+                string userRole = loginUser.GetUserPermission();
+                return new OkObjectResult(userRole);
             }
             else
             {

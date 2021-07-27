@@ -14,6 +14,7 @@ import {
 
 function HealthCheck() {
     const [checked, setChecked] = React.useState(false);
+    const [id, setId] = React.useState(sessionStorage.getItem("id"));
 
     return (
         <>
