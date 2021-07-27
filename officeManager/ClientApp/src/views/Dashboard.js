@@ -1,21 +1,24 @@
 import React, { Component } from "react";
 import ChartistGraph from "react-chartist";
-// react-bootstrap components
-import {
-    Badge,
-    Button,
-    Card,
-    Navbar,
-    Nav,
-    Table,
-    Container,
-    Row,
-    Col,
-    Form,
-    OverlayTrigger,
-    Tooltip,
-} from "react-bootstrap";
-import * as Chartist from "chartist";
+//import ChartistTooltip from 'chartist-plugin-tooltips-updated';
+
+//react-bootstrap components
+//import {
+//    components
+//    Badge,
+//    Button,
+//    Card,
+//    Navbar,
+//    Nav,
+//    Table,
+//    Container,
+//    Row,
+//    Col,
+//    Form,
+//    OverlayTrigger,
+//    Tooltip,
+//} from "react-bootstrap";
+//import * as Chartist from "chartist";
 
 ////function Dashboard() {
 ////    return (
@@ -334,51 +337,73 @@ import * as Chartist from "chartist";
 ////export default Dashboard;
 
 
-export default class Dashboard extends Component {
+export default class Dashboard extends React.Component {
+    state = {
+        data: {
+            series: []
+        }
+    }
+
+    calculate = (data) => {
+        console.log(data)
+        var obj = JSON.parse(data)
+        var series = []
+        var total = obj["TotalArrivals"] 
+        var departments = Object.keys(obj["Departments"])
+        for (var i = 0; i < Object.keys(obj["Departments"]).length; i++) {
+            var res = (((obj["Departments"][departments[i]]) / total) * 100)
+            var digObj =
+            {
+                label: departments[i],
+                value: res,
+                name: departments[i]
+            }
+            departments[i] += " " + res +" %"
+            series.push(digObj)
+        }
+        var dataReturn = {
+            labels: departments,
+
+            series
+         }
+        return dataReturn;
+    }
+
+    componentDidMount = () => {
+        console.log('naama')
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        }
+         const result = fetch("https://localhost:44375/api/Statistics", requestOptions).then(response => response.json())
+             .then(data => {
+                 const res = this.calculate(data);
+                 this.setState({data:res});
+             });
+    };
 
     render() {
-        let data = {
-            series: [
-                {
-                    label: "Series 1",
-                    value: 20,
-                    name: "Series 1"
-                },
-                {
-                    value: 10,
-                    name: "Series 2"
-                },
-                {
-                    value: 70,
-                    name: "Series 3"
-                }
-            ]
-        };
-
+        
         let options = {
             width: "400px",
             height: "400px",
             donut: false
+            
+            //showLabel: false,
+            //plugins: [
+            //    Chartist.plugins()
+            //]
         };
 
         let type = "Pie";
 
         return (
             <div>
-                <ChartistGraph data={data} options={options} type={type} />
+                <ChartistGraph data={this.state.data} options={options} type={type} />
             </div>
-        );
-    }
+        )
+    };
 }
-
-//export default function Result() {
-
-
-//    function getStatistic() {
-//        let button;
-//        if (DateIsClick) {
-//            button = <NameForm></NameForm>;
-//        }
-//        return button;
-//    }
-//}
