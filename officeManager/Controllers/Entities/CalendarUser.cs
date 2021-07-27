@@ -83,5 +83,34 @@ namespace officeManager.Controllers.Entities
                 throw e;
             }
         }
+
+        public List<string> returnCommingList(string arraivingID, SqlConnection connection)
+        {
+            List<string> commingEmployees = new List<string>();
+            try
+            {
+                string[] employees = arraivingID.Split(';');
+                foreach (string employeeID in employees)
+                {
+                    if (employeeID.Equals(""))
+                        continue;
+                    CalendarUser user = new CalendarUser();
+                    user.Id = employeeID;
+                    string name = user.GetEmployeeName(connection);
+                    commingEmployees.Add(name);
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            finally
+            {
+                connection.Close();
+              
+            }
+
+            return commingEmployees;
+        }
     }
 }
