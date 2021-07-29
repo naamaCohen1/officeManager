@@ -32,11 +32,12 @@ class NameForm extends React.Component {
     handleChange(event) {
         let value = event.target.value;
         this.setState({ value: value });
+        //this.state.value = value;
         console.log(value)
         
     }
 
-     handleSubmit(event) {
+      handleSubmit(event) {
         console.log(date)
         console.log("in handleSubmit")
         console.log(this.state.label)
@@ -60,12 +61,15 @@ class NameForm extends React.Component {
             };
             var url = "https://localhost:44375/api/search/" + "204049316"
             console.log("sending get function")
-            const response = fetch(url, requestOptions)
-            const data =  response.json
-            console.log(data)
+            const response = fetch(url, requestOptions).then(response => response.json()).then(data => {
+                console.log(data)
+            })
+            //const data = await response.json();
+            //console.log(data)
+            
         } 
-
-         //event.preventDefault();
+          event.preventDefault();
+         //
        
     }
 
@@ -122,10 +126,6 @@ class NameForm extends React.Component {
                         </DropdownButton>
                         <FormControl aria-label="Text input with dropdown button" value={this.state.value} onChange={this.handleChange} />
                     </InputGroup>
-
-
-
-
                 </Form.Group>
             </Form>
 

@@ -120,10 +120,9 @@ namespace officeManager.Controllers
             }
         }
 
-        //[HttpPut("{date}")]
+        [HttpPut]
         public ActionResult Put([FromBody] CalendarUser calendarUser)
         {
-            //date.Replace(".", "/");
             string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", calendarUser.Date);
             string waitingList = null, date = null; 
             try
@@ -163,7 +162,6 @@ namespace officeManager.Controllers
         [HttpPut("{date}")]
         public ActionResult Put(string date)
         {
-            //date.Replace(".", "/");
             string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", date);
             string parkigCapacity = null,dateCal = null;
             int intPark;

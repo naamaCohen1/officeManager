@@ -22,7 +22,7 @@ namespace officeManager.Controllers
         //}
 
         [HttpPost("{Id}")]
-        public ActionResult<string> Post(SearchObject searchObject)
+        public ActionResult<string> Post([FromBody]SearchObject searchObject)
         {
             try
             {
