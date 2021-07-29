@@ -1,5 +1,11 @@
 import React, { Component } from "react";
 import ChartistGraph from "react-chartist";
+import {
+    Card,
+    Container,
+    Row,
+    Col
+} from "react-bootstrap";
 //import ChartistTooltip from 'chartist-plugin-tooltips-updated';
 
 //react-bootstrap components
@@ -341,14 +347,16 @@ export default class Statistics extends React.Component {
     state = {
         data: {
             series: []
-        }
+        },
+        TotalArrivals: 0
     }
 
     calculate = (data) => {
         console.log(data)
         var obj = JSON.parse(data)
         var series = []
-        var total = obj["TotalArrivals"] 
+        var total = obj["TotalArrivals"]
+        this.state.TotalArrivals = total
         var departments = Object.keys(obj["Departments"])
         for (var i = 0; i < Object.keys(obj["Departments"]).length; i++) {
             var res = (((obj["Departments"][departments[i]]) / total) * 100).toFixed(2)
@@ -358,14 +366,15 @@ export default class Statistics extends React.Component {
                 value: res,
                 name: departments[i]
             }
-            departments[i] += " " + res +" %"
+            departments[i] += '\n' + res + "%"
+            console.log(departments[i])
             series.push(digObj)
         }
         var dataReturn = {
             labels: departments,
 
             series
-         }
+        }
         return dataReturn;
     }
 
@@ -378,20 +387,18 @@ export default class Statistics extends React.Component {
                 'Accept': 'application/json'
             }
         }
-         const result = fetch("https://localhost:44375/api/Statistics", requestOptions).then(response => response.json())
-             .then(data => {
-                 const res = this.calculate(data);
-                 this.setState({data:res});
-             });
+        const result = fetch("https://localhost:44375/api/Statistics", requestOptions).then(response => response.json())
+            .then(data => {
+                const res = this.calculate(data);
+                this.setState({ data: res });
+            });
     };
 
     render() {
-        
+
         let options = {
-            width: "400px",
-            height: "400px",
             donut: false
-            
+
             //showLabel: false,
             //plugins: [
             //    Chartist.plugins()
@@ -401,9 +408,31 @@ export default class Statistics extends React.Component {
         let type = "Pie";
 
         return (
-            <div>
-                <ChartistGraph data={this.state.data} options={options} type={type} />
-            </div>
-        )
-    };
+            <>
+                <Container fluid>
+                    <Row>
+                        <Col md="5">
+                            <Card>
+                                <Card.Header>
+                                    <Card.Title as="h4">Last 7 days arrival filtered by Departments</Card.Title>
+                                    <p className="card-category">
+                                        TOTAL ARRIVALS AMOUNT: {this.state.TotalArrivals}
+                                    </p>
+                                </Card.Header>
+                                <Card.Body>
+                                    <div
+                                        className="ct-chart ct-perfect-fourth"
+                                        id="chartPreferences"
+                                    >
+                                        <ChartistGraph data={this.state.data} options={options} type={type} />
+                                    </div>
+
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    </Row>
+                </Container>
+            </>
+        );
+    }
 }
