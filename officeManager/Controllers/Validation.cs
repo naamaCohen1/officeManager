@@ -15,9 +15,10 @@ namespace officeManager.Controllers
             bool isValidPassword = password.All(c=>char.IsDigit(c));
             if (string.IsNullOrEmpty(username))
                 return false;
-            bool isValidUserName = username.All(c => char.IsWhiteSpace(c) || char.IsLetter(c));
+            var addr = new System.Net.Mail.MailAddress(username);
+            bool isValidUsername =  addr.Address == username;
 
-            return isValidPassword && isValidUserName;
+            return isValidPassword && isValidUsername;
 
         }
       

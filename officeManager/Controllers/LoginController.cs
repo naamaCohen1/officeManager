@@ -19,10 +19,10 @@ namespace officeManager.Controllers
         {
             if (Validation.CheckValidationUserLogin(loginUser.Username, loginUser.Password))
             {
-                List<bool> res = loginUser.CheckUserName();
+                List<bool> res = loginUser.CheckUsername();
                 if (res[0] == false || res[1] == false)
                 {
-                    return new NotFoundObjectResult("Invalid username or password"); 
+                    return new NotFoundObjectResult("Invalid username or password");
                 }
                 string userRole = loginUser.GetUserPermission();
                 return new OkObjectResult(userRole);
@@ -31,9 +31,6 @@ namespace officeManager.Controllers
             {
                 return new BadRequestResult();
             }
-            //return new OkResult();
-            //return ObjectResult(loginUser);
         }
-
     }
 }

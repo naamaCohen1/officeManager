@@ -8,7 +8,7 @@ using Microsoft.Web.WebPages.OAuth;
 using officeManager.Controllers;
 namespace officeManager
 {
-    public  class LoginUser
+    public class LoginUser
     {
 
         //https://localhost:44375/api/login
@@ -17,7 +17,6 @@ namespace officeManager
 
         public string Username { get; set; }
         public string Password { get; set; }
-       // private static CodeGrantOauth _tokens = null;
 
         public LoginUser(string username, string password)
         {
@@ -27,16 +26,15 @@ namespace officeManager
 
         public LoginUser()
         {
-
         }
 
-        public List<bool> CheckUserName()
+        public List<bool> CheckUsername()
         {
-            List<bool> isFound = new List<bool>() {false, false };
-            string sql = string.Format("select *  from tlbEmployees where ID ={0}",Password);
+            List<bool> isFound = new List<bool>() { false, false };
+            string sql = string.Format("select *  from tlbEmployees where ID ={0}", Password);
             SqlConnection connection = new SqlConnection(connetionString);
             SqlCommand command = new SqlCommand(sql, connection);
-            SqlDataReader dataReader; 
+            SqlDataReader dataReader;
             try
             {
                 connection.Open();
@@ -45,11 +43,9 @@ namespace officeManager
                 {
                     isFound[0] = true;
                     string ID = dataReader["ID"].ToString();
-                    string FirstName = dataReader["FirstName"].ToString().Trim();
-                    string LastName = dataReader["LastName"].ToString().Trim();
+                    string Email = dataReader["Email"].ToString().Trim();
 
-                    string Name = FirstName + " " + LastName;
-                    if (string.Compare(Name, Username) == 0)
+                    if (string.Compare(Email, Username) == 0)
                         isFound[1] = true;
                 }
 
@@ -57,7 +53,6 @@ namespace officeManager
                 command.Dispose();
                 connection.Close();
                 return isFound;
-
             }
             catch (Exception)
             {

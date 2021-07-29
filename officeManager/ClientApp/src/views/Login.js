@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Modal, Form, Button, Row, Col } from "react-bootstrap";
 
 export default function Login() {
-    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [validated, setValidated] = useState(false);
 
@@ -40,7 +40,7 @@ export default function Login() {
                 'Accept': 'application/json'
             },
             body: JSON.stringify({
-                "username": username,
+                "username": email,
                 "password": password
             })
         };
@@ -68,13 +68,13 @@ export default function Login() {
         <Form noValidate validated={validated} onSubmit={handleSubmit}>
             <Row className="mb-3">
                 <Form.Group as={Col}>
-                    <Form.Label>Username</Form.Label>
+                    <Form.Label>Email</Form.Label>
                     <Form.Control
                         required
                         type="text"
-                        placeholder="Username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                     />
                     <Form.Control.Feedback type="invalid">
                         This field is required.
@@ -102,7 +102,7 @@ export default function Login() {
                         <Modal.Title>Error</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <p>Invalid Username or Password. Please try again</p>
+                        <p>Invalid Email or Password. Please try again</p>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="primary" onClick={handleCloseErr}>OK</Button>

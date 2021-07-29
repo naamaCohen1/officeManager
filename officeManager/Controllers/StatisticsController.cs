@@ -40,7 +40,6 @@ namespace officeManager.Controllers
             List<string> names = new List<string>();
             try
             {
-                //string[] idsList = ids.Split(",");
                 foreach (string id in ids)
                 {
                     var user = getUser(id.Trim());
