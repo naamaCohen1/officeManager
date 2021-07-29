@@ -1,46 +1,24 @@
-/*!
-
-=========================================================
-* Light Bootstrap Dashboard React - v2.0.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard-react
-* Copyright 2020 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/light-bootstrap-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-import Dashboard from "views/Dashboard.js";
+import Statistics from "views/Statistics.js";
 import UserProfile from "views/UserProfile.js";
-import HealthCheck from "views/HealthCheck.js";
+import HealthAvailabilityCertification from "views/HealthAvailabilityCertification.js";
 import CommingToOffice from "views/CommingToOffice.js";
 import OfficeEmployees from "./views/OfficeEmployees";
 import OfficeInfo from "./views/OfficeInfo";
 import Login from "./views/Login";
-
-//import {
-//    AiFillCheckSquare,
-//} from "react-icons";
 
 const dashboardRoutes = [
     {
         path: "/login",
         name: "Login",
         icon: "nc-icon nc-send",
-        //icon: AiFillCheckSquare,
         component: Login,
         layout: "/admin",
     },
     {
-        path: "/dashboard",
-        name: "Dashboard",
+        path: "/statistics",
+        name: "Statistics",
         icon: "nc-icon nc-chart-pie-35",
-        component: Dashboard,
+        component: Statistics,
         layout: "/admin",
     },
     {
@@ -51,10 +29,10 @@ const dashboardRoutes = [
         layout: "/admin",
     },
     {
-        path: "/health-check",
-        name: "Health Check",
+        path: "/health-availability-certification",
+        name: "Health Availability Certification",
         icon: "nc-icon nc-favourite-28",
-        component: HealthCheck,
+        component: HealthAvailabilityCertification,
         layout: "/admin",
     },
     {

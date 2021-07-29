@@ -1,20 +1,38 @@
 import React, { useState } from "react";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
+import { Modal, Form, Button, Row, Col } from "react-bootstrap";
 
-
-
-
-
-function Login() {
+export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-   
-    function validateForm() {
-        return username.length > 0 && password.length > 0;
+    const [validated, setValidated] = useState(false);
+
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
+    const [showErr, setShowErr] = useState(false);
+    const handleCloseErr = () => setShowErr(false);
+    const handleShowErr = () => setShowErr(true);
+
+    const handleSubmit = (event) => {
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        else {
+            event.preventDefault();
+            { login() }
+        }
+        setValidated(true);
+    };
+
+    async function refreshPage() {
+        { handleClose() }
+        window.location.replace("https://localhost:44375/admin/user");
     }
 
-    function handleSubmit(event) {
+    async function login() {
         const requestOptions = {
             method: 'POST',
             headers: {
@@ -22,48 +40,86 @@ function Login() {
                 'Accept': 'application/json'
             },
             body: JSON.stringify({
-                username: username,
-                password: password
+                "username": username,
+                "password": password
             })
         };
-        console.log(requestOptions);
-        fetch("https://localhost:44375/api/login/", requestOptions).then(response => console.log(response.status));
-        console.log(data);
-        console.log("on handel submit" + username);
-        console.log("on handel submit" + password);
-        event.preventDefault();
+
+        const response = await fetch("https://localhost:44375/api/login/", requestOptions)
+        if (response.status != 200) {
+            { handleShowErr() }
+        }
+        else {
+            sessionStorage.setItem("id", password)
+            sessionStorage.setItem("loggedin", true)
+            var permission = await response.json()
+            if (permission == 0) {
+                sessionStorage.setItem("admin", true)
+            }
+            else {
+                sessionStorage.setItem("admin", false)
+            }
+
+            { refreshPage() }
+        }
     }
 
     return (
-        <div className="Login">
-            <Form onSubmit={handleSubmit}>
-                <Form.Group size="lg" controlId="Username">
+        <Form noValidate validated={validated} onSubmit={handleSubmit}>
+            <Row className="mb-3">
+                <Form.Group as={Col}>
                     <Form.Label>Username</Form.Label>
                     <Form.Control
-                        autoFocus
+                        required
                         type="text"
+                        placeholder="Username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                     />
-                </Form.Group>
-                <Form.Group size="lg" controlId="ID">
-                    <Form.Label>ID</Form.Label>
+                    <Form.Control.Feedback type="invalid">
+                        This field is required.
+          </Form.Control.Feedback>
+
+
+                    <Form.Label>Password</Form.Label>
                     <Form.Control
+                        required
                         type="password"
+                        placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
+                    <Form.Control.Feedback type="invalid">
+                        This field is required.
+          </Form.Control.Feedback>
                 </Form.Group>
-                <Button
-                    block size="lg"
-                    type="submit"
-                    disabled={!validateForm()}
-                    >
-                    Login
-        </Button>
+            </Row>
+
+            <button type="submit" class="btn btn-primary"> Login </button>
+
+                <Modal show={showErr} onHide={handleCloseErr}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Error</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>Invalid Username or Password. Please try again</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="primary" onClick={handleCloseErr}>OK</Button>
+                    </Modal.Footer>
+                </Modal>
+
+                <Modal show={show} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Success</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>User loged in</p>
+                    </Modal.Body>
+                <Modal.Footer>
+                    <button type="button" class="btn btn-primary" onClick={refreshPage}> OK </button>
+                    </Modal.Footer>
+                </Modal>
             </Form>
-        </div>
     );
 }
-
-export default Login;

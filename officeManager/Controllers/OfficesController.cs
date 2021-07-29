@@ -7,19 +7,20 @@ using System.Net;
 using System.Net.Http;
 using System.IO;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace officeManager.Controllers
 {
     [Route("api/[controller]")]
-    [Route("office")]
+    [Route("offices")]
     [ApiController]
-    public class OfficeController : ControllerBase
+    public class OfficesController : ControllerBase
     {
         private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
 
-        //GET https://localhost:44375/api/office
+        //GET https://localhost:44375/api/offices
         [HttpGet]
-        public ActionResult<List<Office>> Get()
+        public async Task<ActionResult<List<Office>>> Get()
         {
             List<Office> offices = new List<Office>();
             string sql = "select * from tlbOffice";
@@ -41,9 +42,10 @@ namespace officeManager.Controllers
                     string OpenSpace = dataReader["OpenSpace"].ToString();
                     string HotSpot = dataReader["HotSpot"].ToString();
                     string HotSpotPlaces = dataReader["HotSpotPlaces"].ToString();
+                    string ID = dataReader["ID"].ToString();
 
                     offices.Add(new Office(Name, NumOfEmployees, ParkingAmount, FloorsAmount, 
-                        RoomsAmount, MeetingRoomsAmount, OfficeCapacity, OpenSpace, HotSpot, HotSpotPlaces));
+                        RoomsAmount, MeetingRoomsAmount, OfficeCapacity, OpenSpace, HotSpot, HotSpotPlaces, ID));
                 }
                 dataReader.Close();
                 command.Dispose();
@@ -51,7 +53,8 @@ namespace officeManager.Controllers
 
                 if (offices.Count == 0)
                     return NotFound();
-                return new OkObjectResult(offices);
+                string json = JsonConvert.SerializeObject(offices);
+                return new OkObjectResult(json);
             }
             catch (Exception)
             {
@@ -59,13 +62,13 @@ namespace officeManager.Controllers
             }
         }
 
-        //GET https://localhost:44375/api/office/{name}
-        [HttpGet("{name}")]
-        public ActionResult<Office> Get(string name)
+        //GET https://localhost:44375/api/offices/{id}
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Office>> Get(string id)
         {
-            name = name.Replace(" ", "-");
+            id = id.Replace(" ", "-");
             Office office = new Office();
-            string sql = string.Format("select * from tlbOffice WHERE CONVERT(VARCHAR, Name) = '{0}'", name);
+            string sql = string.Format("select * from tlbOffice WHERE CONVERT(VARCHAR, ID) = '{0}'", id);
             try
             {
                 SqlConnection connection = new SqlConnection(connetionString);
@@ -84,14 +87,16 @@ namespace officeManager.Controllers
                     office.OpenSpace = dataReader["OpenSpace"].ToString();
                     office.HotSpot = dataReader["HotSpot"].ToString();
                     office.HotSpotPlaces = dataReader["HotSpotPlaces"].ToString();
+                    office.ID = dataReader["ID"].ToString();
                 }
                 dataReader.Close();
                 command.Dispose();
                 connection.Close();
 
-                if (office.Name == null)
+                if (office.ID == null)
                     return NotFound();
-                return new OkObjectResult(office);
+                string json = JsonConvert.SerializeObject(office);
+                return new OkObjectResult(json);
             }
             catch (Exception)
             {
@@ -100,16 +105,16 @@ namespace officeManager.Controllers
         }
 
 
-        //POST https://localhost:44375/api/office
+        //POST https://localhost:44375/api/offices
         [HttpPost]
-        public ActionResult<Office> Post([FromBody] Office office)
+        public async Task<ActionResult<Office>> Post([FromBody] Office office)
         {
             string sql = string.Format("INSERT into tlbOffice (Name,NumOfEmployees,ParkingAmount," +
-                "FloorsAmount,RoomsAmount,MeetingRoomsAmount,OfficeCapacity,OpenSpace,HotSpot,HotSpotPlaces) " +
-                "values ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}')",
+                "FloorsAmount,RoomsAmount,MeetingRoomsAmount,OfficeCapacity,OpenSpace,HotSpot,HotSpotPlaces,ID) " +
+                "values ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}','{10}')",
                 office.Name, office.NumOfEmployees, office.ParkingAmount, office.FloorsAmount, office.RoomsAmount,
                 office.MeetingRoomsAmount, office.OfficeCapacity, office.OpenSpace,
-                office.HotSpot, office.HotSpotPlaces);
+                office.HotSpot, office.HotSpotPlaces, office.ID);
             try
             {
                 SqlConnection connection = new SqlConnection(connetionString);
@@ -119,7 +124,8 @@ namespace officeManager.Controllers
                 command.Dispose();
                 connection.Close();
 
-                return Created(this.Request.Path.ToString(), office);
+                string json = JsonConvert.SerializeObject(office);
+                return Created(this.Request.Path.ToString(), json);
             }
             catch (Exception)
             {
@@ -127,23 +133,23 @@ namespace officeManager.Controllers
             }
         }
 
-        //PUT https://localhost:44375/api/office/{name}
-        [HttpPut("{name}")]
-        public IActionResult Put([FromBody] Office updated_office, string name)
+        //PUT https://localhost:44375/api/offices/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put([FromBody] Office updated_office, string id)
         {
-            var office = Get(name);
-            if (office.Result.ToString().Contains("NotFoundResult"))
+            var office = Get(id);
+            if (office.Result.Result.ToString().Contains("NotFoundResult"))
                 return NotFound();
-            if (!office.Result.ToString().Contains("OkObjectResult"))
+            if (!office.Result.Result.ToString().Contains("OkObjectResult"))
                 return new BadRequestResult();
 
             string sql = string.Format("UPDATE tlbOffice " +
                 "SET NumOfEmployees = '{0}', ParkingAmount = '{1}', FloorsAmount = '{2}', RoomsAmount = '{3}'," +
                 "MeetingRoomsAmount = '{4}', OfficeCapacity = '{5}', OpenSpace = '{6}', HotSpot = '{7}'," +
-                "HotSpotPlaces = '{8}', Name = '{9}' WHERE CONVERT(VARCHAR, Name) = '{10}'",
+                "HotSpotPlaces = '{8}', Name = '{9}', ID = '{10}' WHERE CONVERT(VARCHAR, ID) = '{11}'",
             updated_office.NumOfEmployees, updated_office.ParkingAmount, updated_office.FloorsAmount, updated_office.RoomsAmount,
                 updated_office.MeetingRoomsAmount, updated_office.OfficeCapacity, updated_office.OpenSpace,
-                updated_office.HotSpot, updated_office.HotSpotPlaces, updated_office.Name, name);
+                updated_office.HotSpot, updated_office.HotSpotPlaces, updated_office.Name, updated_office.ID, id);
             try
             {
                 SqlConnection connection = new SqlConnection(connetionString);
@@ -155,24 +161,24 @@ namespace officeManager.Controllers
 
                 return NoContent();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return new BadRequestResult();
             }
         }
 
-        //DELETE https://localhost:44375/api/office/{name}
-        [HttpDelete("{name}")]
-        public IActionResult Delete(string name)
+        //DELETE https://localhost:44375/api/offices/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
         {
-            var office = Get(name);
-            if (office.Result.ToString().Contains("NotFoundResult"))
+            var office = Get(id);
+            if (office.Result.Result.ToString().Contains("NotFoundResult"))
                 return NotFound();
-            if (!office.Result.ToString().Contains("OkObjectResult"))
+            if (!office.Result.Result.ToString().Contains("OkObjectResult"))
                 return new BadRequestResult();
 
-            name = name.Replace(" ", "-");
-            string sql = string.Format("DELETE FROM tlbOffice WHERE CONVERT(VARCHAR, Name) = '{0}'", name);
+            id = id.Replace(" ", "-");
+            string sql = string.Format("DELETE FROM tlbOffice WHERE CONVERT(VARCHAR, ID) = '{0}'", id);
             try
             {
                 SqlConnection connection = new SqlConnection(connetionString);

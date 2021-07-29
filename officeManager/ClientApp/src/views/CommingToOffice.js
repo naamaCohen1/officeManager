@@ -1,138 +1,414 @@
 import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import {
+    Button,
+    Card,
+    ListGroup,
+    Container,
+    Row,
+    Col,
+    Modal,
+    Form,
+    InputGroup,
+    DropdownButton,
+    Dropdown,
+    FormControl
+} from "react-bootstrap";
 
-export default function Results() {
-    // set states of calendar date
-    const [calDate, setCalDate] = useState(new Date())
-
-    function onChange(calDate) {
-        // change results based on calendar date click
-        //this.NameForm.render();
-        console.log("naama")
-        setCalDate(calDate)
-    }
-
-    return (
-        <div className="result-calendar">
-            <Calendar onChange={onChange} value={calDate} />
-        </div>
-    )
-
-}
-
-function onChange(calDate) {
-    setCalDate(calDate)
-
-    const filteredResults = userResults.filter(result => {
-        const newResultFormat = new Date(result.created_at).toLocaleString().split(",")[0]
-        const newCalDateFormat = calDate.toLocaleString().split(",")[0]
-        return newResultFormat === newCalDateFormat
-    })
-}
-
+var date;
 
 class NameForm extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { value: '' };
-
+        this.state = { value: '', label: '' };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleSelect = this.handleSelect.bind(this);
+
+
     }
 
     handleChange(event) {
-        this.setState({ value: event.target.value });
+        let value = event.target.value;
+        this.setState({ value: value });
+        //this.state.value = value;
+        console.log(value)
+        
     }
 
-    handleSubmit(event) {
-        alert('A name was submitted: ' + this.state.value);
-        event.preventDefault();
+      handleSubmit(event) {
+        console.log(date)
+        console.log("in handleSubmit")
+        console.log(this.state.label)
+        console.log(this.state.value)
+        if (this.state.label == '') {
+            alert('please select catogory');
+            
+        }
+        else {
+            const requestOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    "date":date,
+                    "category": this.state.label,
+                    "input": this.state.value
+                })
+            };
+            var url = "https://localhost:44375/api/search/" + "204049316"
+            console.log("sending get function")
+            const response = fetch(url, requestOptions).then(response => response.json()).then(data => {
+                console.log(data)
+            })
+            //const data = await response.json();
+            //console.log(data)
+            
+        } 
+          event.preventDefault();
+         //
+       
+    }
+
+      handleRequest(url, requestOptions) {
+        console.log("in handleRequest")
+        const response = fetch(url, requestOptions);
+         if (response.status == 200) {
+
+             const data = response.json();
+             console.log(data)
+             event.preventDefault();
+
+         }
+        //    var dataChnage = data.replace('[', '')
+        //    dataChnage = dataChnage.replace(']', '')
+        //    dataChnage = dataChnage.replaceAll('"', '')
+        //    console.log(dataChnage)
+        //    if (dataChnage != "null") {
+        //        console.log("naama")
+        //        peopleList = dataChnage.split(",")
+        //        setPeople(peopleList)
+        //    }
+
+
+
+        //}
+        //else {
+
+        //}
+
+    }
+    handleSelect(event) {
+        console.log(event)
+        this.setState({ label: event });
+        console.log(this.state.label)
     }
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit}>
-                <label>
-                    Name:
-          <input type="text" value={this.state.value} onChange={this.handleChange} />
-                </label>
-                <input type="submit" value="Submit" />
-            </form>
+            <Form onSubmit={this.handleSubmit}>
+                <Form.Group as={Row} className="mb-3">
+
+                    <InputGroup >
+                        <DropdownButton
+                            variant="outline-secondary"
+                            title="Search By"
+                            id="input-group-dropdown-1"
+                            onSelect={this.handleSelect}
+                            value={this.state.value} 
+                        >
+                            <Dropdown.Item href="#" eventKey='EmployeeName'>Employee Name</Dropdown.Item>
+                            <Dropdown.Item href="#" eventKey='Department'>Department</Dropdown.Item>
+                            <Dropdown.Item href="#" eventKey='Floor'>Floor</Dropdown.Item>
+                        </DropdownButton>
+                        <FormControl aria-label="Text input with dropdown button" value={this.state.value} onChange={this.handleChange} />
+                    </InputGroup>
+                </Form.Group>
+            </Form>
+
         );
     }
 }
 
-// react-bootstrap components
-//import { Badge, Button, Navbar, Nav, Container } from "react-bootstrap";
-
-//function CommingToOffice() {
-//  const mapRef = React.useRef(null);
-//  React.useEffect(() => {
-//    let google = window.google;
-//    let map = mapRef.current;
-//    let lat = "40.748817";
-//    let lng = "-73.985428";
-//    const myLatlng = new google.maps.LatLng(lat, lng);
-//    const mapOptions = {
-//      zoom: 13,
-//      center: myLatlng,
-//      scrollwheel: false,
-//      zoomControl: true,
-//    };
-
-//    map = new google.maps.Map(map, mapOptions);
-
-//    const marker = new google.maps.Marker({
-//      position: myLatlng,
-//      map: map,
-//      animation: google.maps.Animation.DROP,
-//      title: "Light Bootstrap Dashboard PRO React!",
-//    });
-
-//    const contentString =
-//      '<div class="info-window-content"><h2>Light Bootstrap Dashboard PRO React</h2>' +
-//      "<p>A premium Admin for React-Bootstrap, Bootstrap, React, and React Hooks.</p></div>";
-
-//    const infowindow = new google.maps.InfoWindow({
-//      content: contentString,
-//    });
-
-//    google.maps.event.addListener(marker, "click", function () {
-//      infowindow.open(map, marker);
-//    });
-//  }, []);
-//  return (
-//    <>
-//      <div className="map-container">
-//        <div id="map" ref={mapRef}></div>
-//      </div>
-//    </>
-//  );
-//}
-
-//export default CommingToOffice;
 
 
-////import React, { useState } from "react";
-////import Calendar from "react-calendar";
-////import "react-calendar/dist/Calendar.css";
-////import moment from "moment";
 
-//function CommingToOffice() {
-    //const [dateState, setDateState] = useState(new Date())
-    //const changeDate = (e) => {
-    //    setDateState(e)
-    //}
-    //return (
-    //    <>
-    //        <Calendar
-    //            value={dateState}
-    //            onChange={changeDate}
-    //        />
-    //        <p>Current selected date is <b>{moment(dateState).format('MMMM Do YYYY')}</b></p>
-    //    </>
-    //)
-//}
+
+export default function Results() {
+    // set states of calendar date
+    const [calDate, setCalDate] = useState(new Date())
+    const [DateIsClick, setDateIsClick] = useState(false);
+    const [people, setPeople] = useState([]);
+    const [buttons, setButtons] = useState(true);
+
+
+    const [message, setMessage] = useState();
+    const [title, setTitle] = useState();
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
+    const [showWaitingList, setShowWaitingList] = useState(false);
+    const handleCloseWaitingList = () => setShowWaitingList(false);
+    const handleShowWaitingList = () => setShowWaitingList(true);
+
+    const [showParking, setShowParking] = useState(false);
+    const handleCloseParking = () => setShowParking(false);
+    const handleShowParking = () => setShowParking(true);
+  
+    function showSearchBar() {
+        let button;
+        if (DateIsClick) {
+            button = <NameForm></NameForm>;
+            
+        }
+        return button;
+    }
+
+    function showAddButton() {
+        if (DateIsClick && buttons == true) {
+            return (
+                <>
+                    <Button variant="primary" style={{ margin: '10px' }} onClick={clickSubmit} >Submit</Button>
+                    <Button variant="danger" onClick={clickRemove} >Remove</Button>
+                </>
+            )
+        }
+    }
+
+    async function onChange(calDate) {
+        setCalDate(calDate)    
+        var newCalDateFormat = calDate.toLocaleString().split(",")[0]
+        setDateIsClick(true)
+        var today = new Date();
+        if (today > calDate) {
+            setButtons(false)
+
+        } else {
+            setButtons(true)
+        }
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        };
+        newCalDateFormat = newCalDateFormat.replace('/', '.')
+        newCalDateFormat = newCalDateFormat.replace('/', '.')
+        console.log(newCalDateFormat)
+        date = newCalDateFormat
+        var url = "https://localhost:44375/api/calendar/" + newCalDateFormat;
+        handleRequest(url, requestOptions)
+    }
+
+    async function handleRequest(url, requestOptions) {
+        var peopleList = []
+        const response = await fetch(url, requestOptions);
+        if (response.status == 200) {
+            const data = await response.json();
+            console.log(data)
+            if (data == "no space")
+                return data
+            var obj = JSON.parse(data)
+            var dataChnage = obj["EmployeesArriving"]
+            console.log(dataChnage)
+            if (dataChnage == null) {
+                setPeople(peopleList)
+            }
+
+            if (dataChnage != null) {              
+                dataChnage = dataChnage.slice(0, -1)
+                peopleList = dataChnage.split(",")
+                setPeople(peopleList)
+            }
+          
+        }
+        else if (response.status == 404) {
+            console.log("response.status == 404")
+            setPeople([])
+        }
+
+        return obj;
+    }
+
+    async function clickSubmit() {
+        console.log("clickSubmit()")
+        const newCalDateFormat = calDate.toLocaleString().split(",")[0]
+        console.log(newCalDateFormat)
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                "date": newCalDateFormat,
+                "id": "204049316"
+            })
+        };
+        setDateIsClick(true)
+        console.log(requestOptions)
+        var data = await handleRequest("https://localhost:44375/api/calendar", requestOptions)
+            console.log(data)
+            if (data == "no space") {
+                handleShowWaitingList()
+            }
+            else {
+                if (data["ParkingCapacity"] > 0) {
+                    handleShowParking()
+                }
+            }
+        }
+
+    async function clickRemove() {
+        console.log("clickRemove()")
+        const newCalDateFormat = calDate.toLocaleString().split(",")[0]
+        console.log(newCalDateFormat)
+        const requestOptions = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                "date": newCalDateFormat,
+                "id": "204049316"
+            })
+        };
+        setDateIsClick(true)
+        console.log(requestOptions)
+        handleRequest("https://localhost:44375/api/calendar", requestOptions)
+    }
+
+    function showPeopleCame() {
+        return (
+            < React.Fragment >
+                <ListGroup>
+                    {people.map(listitem => (
+                        <ListGroup.Item sm='4'>
+                            {listitem}
+                        </ListGroup.Item >
+                    ))}
+                </ListGroup>
+            </React.Fragment >
+        );
+
+    }
+
+    async function AddToWaitingList() {
+        { handleCloseWaitingList() } 
+        var newCalDateFormat = calDate.toLocaleString().split(",")[0]
+        const requestOptions = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                "id": "204049316",
+                "date": newCalDateFormat
+            })
+        };
+        //newCalDateFormat = newCalDateFormat.replaceAll('/','.')
+        var url = "https://localhost:44375/api/calendar/";
+        const response = await fetch(url, requestOptions);
+        console.log(response)
+             if (response.status == 204) {
+                setTitle("Info")
+                setMessage("Added to Waiting List.")
+                { handleShow() }
+            }
+        else {
+            setTitle("Error")
+            setMessage("Unexpected error! Fail to add to waiting list.")
+            { handleShow() }
+        }
+    }
+
+    async function AddToParking() {
+        { handleCloseParking() }
+        var newCalDateFormat = calDate.toLocaleString().split(",")[0]
+        const requestOptions = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        };
+        console.log(newCalDateFormat)
+        newCalDateFormat = newCalDateFormat.replaceAll('/', '.')
+        console.log(newCalDateFormat)
+        var url = "https://localhost:44375/api/calendar/" + newCalDateFormat;
+        const response = await fetch(url, requestOptions);
+        if (response.status == 204) {
+            setTitle("Info")
+            setMessage("Your car was added.")
+            { handleShow() }
+        }
+        else {
+            setTitle("Error")
+            setMessage("Unexpected error! Fail to add car.")
+            { handleShow() }
+        }
+    }
+
+    
+    return (
+        <div className="result-calendar" style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Calendar onChange={onChange} value={calDate} />
+            {showSearchBar()}
+
+            <div style={{ position: 'fixed',left: '260px', top: '450px', width: '300px' }}>
+                <Container fluid="md" >
+                    {showAddButton()}
+                    {showPeopleCame()}
+                </Container>
+            </div>
+            <div>
+                <Modal show={show} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>{title}</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>{message}</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>OK</Button>
+                    </Modal.Footer>
+                </Modal>
+
+                <Modal show={showWaitingList} onHide={handleCloseWaitingList}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>No available space</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>There is no available space on the selected day. Do you want to subscribe to the waiting list?</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="Primary" onClick={AddToWaitingList}>Yes</Button>
+                        <Button variant="secondary" onClick={handleCloseWaitingList}>No</Button>
+                    </Modal.Footer>
+                </Modal>
+
+                <Modal show={showParking} onHide={handleCloseParking}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Comming with a car?</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>Do you plan to come with a care to the office?</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="Primary" onClick={AddToParking}>Yes</Button>
+                        <Button variant="secondary" onClick={handleCloseParking}>No</Button>
+                    </Modal.Footer>
+                </Modal>
+            </div>
+        </div>
+    )
+}
 
 //export default CommingToOffice;
