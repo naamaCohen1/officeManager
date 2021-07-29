@@ -250,11 +250,17 @@ export default function Results() {
         };
         setDateIsClick(true)
         console.log(requestOptions)
-        var response = handleRequest("https://localhost:44375/api/calendar", requestOptions)
-        if ((await response).status == 200) {
-            //car = check for parking place
-            var car = 3
-            if (car > 0) { handleShowParking() }
+        var response = await  handleRequest("https://localhost:44375/api/calendar", requestOptions)
+        if (response.status == 200) {
+            var data = await response.json()
+            if (data == "no space") {
+                handleShowWaitingList()
+            }
+            else {
+                var car = 3
+                if (car > 0) { handleShowParking() }
+            }
+           
         }
 
     }
@@ -381,7 +387,7 @@ export default function Results() {
                         <Modal.Title>No available space</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <p>There is no available space  on the selected day. Do you want to subscribe to the waiting list?</p>
+                        <p>There is no available space on the selected day. Do you want to subscribe to the waiting list?</p>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="Primary" onClick={AddToWaitingList}>Yes</Button>
