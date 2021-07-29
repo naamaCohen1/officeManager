@@ -1,4 +1,4 @@
-import Dashboard from "views/Dashboard.js";
+import Statistics from "views/Statistics.js";
 import UserProfile from "views/UserProfile.js";
 import HealthAvailabilityCertification from "views/HealthAvailabilityCertification.js";
 import CommingToOffice from "views/CommingToOffice.js";
@@ -15,10 +15,10 @@ const dashboardRoutes = [
         layout: "/admin",
     },
     {
-        path: "/dashboard",
-        name: "Dashboard",
+        path: "/statistics",
+        name: "Statistics",
         icon: "nc-icon nc-chart-pie-35",
-        component: Dashboard,
+        component: Statistics,
         layout: "/admin",
     },
     {
