@@ -74,8 +74,7 @@ namespace officeManager.Controllers.Entities
             try
             {
                 SqlCommand command = new SqlCommand(sql, connection);
-                SqlDataReader dataReader = command.ExecuteReader();
-                dataReader.Close();
+                command.ExecuteNonQuery();
                 command.Dispose();
             }
             catch (Exception e)
@@ -84,11 +83,14 @@ namespace officeManager.Controllers.Entities
             }
         }
 
-        public List<string> returnCommingList(string arraivingID, SqlConnection connection)
+        public string returnCommingName(string arraivingID, SqlConnection connection)
         {
-            List<string> commingEmployees = new List<string>();
+            string commingEmployees = null;
             try
             {
+                if (arraivingID == null)
+                    return commingEmployees;
+                arraivingID = arraivingID.Trim();
                 string[] employees = arraivingID.Split(';');
                 foreach (string employeeID in employees)
                 {
@@ -97,19 +99,13 @@ namespace officeManager.Controllers.Entities
                     CalendarUser user = new CalendarUser();
                     user.Id = employeeID;
                     string name = user.GetEmployeeName(connection);
-                    commingEmployees.Add(name);
+                    commingEmployees += name + ',';
                 }
             }
             catch (Exception e)
             {
                 throw e;
             }
-            finally
-            {
-                connection.Close();
-              
-            }
-
             return commingEmployees;
         }
     }
