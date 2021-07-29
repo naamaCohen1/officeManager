@@ -16,18 +16,7 @@ namespace officeManager.Controllers.Entities
         //        0 − If date1 is the same as date2
         //        >0 − If date1 is later than date2
 
-
-        public ArrivalStatistics GetWeeklyActivity()
-        {
-            return getLastActivities(7);
-        }
-
-        public ArrivalStatistics GetMonthActivity()
-        {
-            return getLastActivities(31);
-        }
-
-        private ArrivalStatistics getLastActivities(int periodToGet)
+        public ArrivalStatistics GetLastActivities(int periodToGet)
         {
             ArrivalStatistics arrivalStatistics = new ArrivalStatistics();
             var events = getCalendar();
