@@ -173,7 +173,7 @@ export default class Statistics extends React.Component {
                 this.state.dataDepartmentWeek = department;
                 this.state.dataFloorsWeek = floors;
                 this.state.dataRolesWeek = roles;
-                this.state.dataEmployeesWeek = employees;
+                this.setState({ dataEmployeesWeek: employees });
             });
         const result1 = fetch("https://localhost:44375/api/Statistics/30", requestOptions).then(response => response.json())
             .then(dataMonth => {
