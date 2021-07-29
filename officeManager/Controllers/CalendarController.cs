@@ -105,7 +105,7 @@ namespace officeManager.Controllers
                         calendarUser.UpdateCapacity(connection, --intCapacity);
                         calendar.EmployeesArriving += string.Format("{0};", calendarUser.Id);
                         calendarUser.UpdateArrivingID(connection, calendar.EmployeesArriving);
-                        employeesName += calendarUser.GetEmployeeName(connection);
+                        employeesName += calendarUser.GetEmployeeName(connection) +',';
                     }
                     command.Dispose();
                     connection.Close();
@@ -120,12 +120,12 @@ namespace officeManager.Controllers
             }
         }
 
-        [HttpPut("{date}")]
-        public ActionResult Put([FromBody] string id, string date)
+        //[HttpPut("{date}")]
+        public ActionResult Put([FromBody] CalendarUser calendarUser)
         {
-            date.Replace(".", "/");
-            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", date);
-            string waitingList = null;
+            //date.Replace(".", "/");
+            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", calendarUser.Date);
+            string waitingList = null, date = null; 
             try
             {
                 SqlConnection connection = new SqlConnection(connetionString);
@@ -135,25 +135,21 @@ namespace officeManager.Controllers
                 while (dataReader.Read())
                 {
                     waitingList = dataReader["WaitingList"].ToString().Trim();
+                    date = dataReader["Date"].ToString().Trim();
                 }
 
                 dataReader.Close();
                 command.Dispose();
-                if (!waitingList.Contains(id))
+                if (date != null)
                 {
-                    if (waitingList != null)
+                    if (waitingList == null || !waitingList.Contains(calendarUser.Id))
                     {
-                        waitingList += ";" + id;
+                        waitingList += calendarUser.Id + ";";
+                        sql = string.Format("update tlbCalendar set WaitingList='{0}' WHERE date = '{1}'", waitingList, calendarUser.Date);
+                        command = new SqlCommand(sql, connection);
+                        command.ExecuteNonQuery();
+                        command.Dispose();
                     }
-                    else
-                    {
-                        waitingList = id;
-                    }
-
-                    sql = string.Format("update tlbCalendar set WaitingList='{0}' WHERE date = '{1}'", waitingList, date);
-                    command = new SqlCommand(sql, connection);
-                    command.ExecuteNonQuery();
-                    command.Dispose();
                 }
                 connection.Close();
                 return NoContent();
@@ -164,6 +160,49 @@ namespace officeManager.Controllers
             }
         }
 
+        [HttpPut("{date}")]
+        public ActionResult Put(string date)
+        {
+            //date.Replace(".", "/");
+            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", date);
+            string parkigCapacity = null,dateCal = null;
+            int intPark;
+            try
+            {
+                SqlConnection connection = new SqlConnection(connetionString);
+                connection.Open();
+                SqlCommand command = new SqlCommand(sql, connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    dateCal = dataReader["Date"].ToString().Trim();
+                    parkigCapacity = dataReader["ParkingCapacity"].ToString().Trim();
+                }
+                dataReader.Close();
+                command.Dispose();
+                if (dateCal != null)
+                {
+                    intPark = int.Parse(parkigCapacity);
+                    if (intPark > 0)
+                    {
+                        sql = string.Format("update tlbCalendar set ParkingCapacity={0} WHERE date = '{1}'", --intPark, date);
+                        command = new SqlCommand(sql, connection);
+                        command.ExecuteNonQuery();
+                        command.Dispose();
+                        return NoContent();
+                    }
+                    else
+                        return new OkObjectResult("no parking left");
+                }
+               
+                connection.Close();
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                return new BadRequestObjectResult(e.Message);
+            }
+        }
         [HttpDelete]
         public ActionResult<Calendar> Delete([FromBody] CalendarUser calendarUser)
         {
@@ -259,7 +298,7 @@ namespace officeManager.Controllers
                  sql = string.Format("insert into tlbCalendar values('{0}',null,6,6,null)", date);
                 command = new SqlCommand(sql, connection);
                 dataReader = command.ExecuteReader();
-                dataReader.Read();
+                ///dataReader.Read();
                 command.Dispose();
                 connection.Close();
                 //add date to calendar. defualt values

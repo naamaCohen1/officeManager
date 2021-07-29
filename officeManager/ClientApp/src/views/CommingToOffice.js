@@ -1,14 +1,6 @@
 import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-//import Form from 'react-bootstrap/Form';
-//import ListGroup from 'react-bootstrap/ListGroup';
-//import Container from 'react-bootstrap/Container';
-//import InputGroup from 'react-bootstrap/InputGroup';
-//import DropdownButton from 'react-bootstrap/DropdownButton';
-//import Dropdown from 'react-bootstrap/Dropdown';
-//import FormControl from 'react-bootstrap/FormControl';
-//import Row from 'react-bootstrap/Row';
 import {
     Button,
     Card,
@@ -33,7 +25,8 @@ class NameForm extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelect = this.handleSelect.bind(this);
-        //this.handleRequest = this.handleRequest.bind(this);
+
+
     }
 
     handleChange(event) {
@@ -67,7 +60,6 @@ class NameForm extends React.Component {
             };
             var url = "https://localhost:44375/api/search/" + "204049316"
             console.log("sending get function")
-            //handleRequest(url, requestOptions) 
             const response = fetch(url, requestOptions)
             const data =  response.json
             console.log(data)
@@ -150,6 +142,8 @@ export default function Results() {
     const [calDate, setCalDate] = useState(new Date())
     const [DateIsClick, setDateIsClick] = useState(false);
     const [people, setPeople] = useState([]);
+    const [buttons, setButtons] = useState(true);
+
 
     const [message, setMessage] = useState();
     const [title, setTitle] = useState();
@@ -164,7 +158,7 @@ export default function Results() {
     const [showParking, setShowParking] = useState(false);
     const handleCloseParking = () => setShowParking(false);
     const handleShowParking = () => setShowParking(true);
-
+  
     function showSearchBar() {
         let button;
         if (DateIsClick) {
@@ -175,7 +169,7 @@ export default function Results() {
     }
 
     function showAddButton() {
-        if (DateIsClick) {
+        if (DateIsClick && buttons == true) {
             return (
                 <>
                     <Button variant="primary" style={{ margin: '10px' }} onClick={clickSubmit} >Submit</Button>
@@ -186,10 +180,16 @@ export default function Results() {
     }
 
     async function onChange(calDate) {
-        setCalDate(calDate)
-        
+        setCalDate(calDate)    
         var newCalDateFormat = calDate.toLocaleString().split(",")[0]
         setDateIsClick(true)
+        var today = new Date();
+        if (today > calDate) {
+            setButtons(false)
+
+        } else {
+            setButtons(true)
+        }
         const requestOptions = {
             method: 'GET',
             headers: {
@@ -209,17 +209,19 @@ export default function Results() {
         var peopleList = []
         const response = await fetch(url, requestOptions);
         if (response.status == 200) {
-        
-            console.log("in the if")
-
             const data = await response.json();
             console.log(data)
-            var dataChnage = data.replace('[', '')
-            dataChnage = dataChnage.replace(']', '')
-            dataChnage = dataChnage.replaceAll('"', '')
+            if (data == "no space")
+                return data
+            var obj = JSON.parse(data)
+            var dataChnage = obj["EmployeesArriving"]
             console.log(dataChnage)
-            if (dataChnage != "null") {
-                
+            if (dataChnage == null) {
+                setPeople(peopleList)
+            }
+
+            if (dataChnage != null) {              
+                dataChnage = dataChnage.slice(0, -1)
                 peopleList = dataChnage.split(",")
                 setPeople(peopleList)
             }
@@ -227,10 +229,10 @@ export default function Results() {
         }
         else if (response.status == 404) {
             console.log("response.status == 404")
-            { handleShowWaitingList() }
+            setPeople([])
         }
 
-        return response;
+        return obj;
     }
 
     async function clickSubmit() {
@@ -250,20 +252,17 @@ export default function Results() {
         };
         setDateIsClick(true)
         console.log(requestOptions)
-        var response = await  handleRequest("https://localhost:44375/api/calendar", requestOptions)
-        if (response.status == 200) {
-            var data = await response.json()
+        var data = await handleRequest("https://localhost:44375/api/calendar", requestOptions)
+            console.log(data)
             if (data == "no space") {
                 handleShowWaitingList()
             }
             else {
-                var car = 3
-                if (car > 0) { handleShowParking() }
+                if (data["ParkingCapacity"] > 0) {
+                    handleShowParking()
+                }
             }
-           
         }
-
-    }
 
     async function clickRemove() {
         console.log("clickRemove()")
@@ -301,9 +300,8 @@ export default function Results() {
     }
 
     async function AddToWaitingList() {
-      { handleCloseWaitingList() } 
-            //calDate = "07.23.2021"
-        //var newCalDateFormat = calDate.toLocaleString().split(",")[0]
+        { handleCloseWaitingList() } 
+        var newCalDateFormat = calDate.toLocaleString().split(",")[0]
         const requestOptions = {
             method: 'PUT',
             headers: {
@@ -312,11 +310,13 @@ export default function Results() {
             },
             body: JSON.stringify({
                 "id": "204049316",
-                "date": calDate
+                "date": newCalDateFormat
             })
         };
-        var url = "https://localhost:44375/api/calendar/" + calDate;
-            const response = await fetch(url, requestOptions);
+        //newCalDateFormat = newCalDateFormat.replaceAll('/','.')
+        var url = "https://localhost:44375/api/calendar/";
+        const response = await fetch(url, requestOptions);
+        console.log(response)
              if (response.status == 204) {
                 setTitle("Info")
                 setMessage("Added to Waiting List.")
@@ -331,19 +331,18 @@ export default function Results() {
 
     async function AddToParking() {
         { handleCloseParking() }
-        //calDate = "07.23.2021"
-        //var newCalDateFormat = calDate.toLocaleString().split(",")[0]
+        var newCalDateFormat = calDate.toLocaleString().split(",")[0]
         const requestOptions = {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-                "date": calDate
-            })
+            }
         };
-        var url = "https://localhost:44375/api/calendar/" + calDate;
+        console.log(newCalDateFormat)
+        newCalDateFormat = newCalDateFormat.replaceAll('/', '.')
+        console.log(newCalDateFormat)
+        var url = "https://localhost:44375/api/calendar/" + newCalDateFormat;
         const response = await fetch(url, requestOptions);
         if (response.status == 204) {
             setTitle("Info")
@@ -357,14 +356,14 @@ export default function Results() {
         }
     }
 
-
+    
     return (
         <div className="result-calendar" style={{ display: 'flex', justifyContent: 'space-between' }}>
             <Calendar onChange={onChange} value={calDate} />
             {showSearchBar()}
 
-            <div style={{ position: 'absolute', left: '15px', top: '420px', width: '300px' }}>
-                <Container fluid="md">
+            <div style={{ position: 'fixed',left: '260px', top: '450px', width: '300px' }}>
+                <Container fluid="md" >
                     {showAddButton()}
                     {showPeopleCame()}
                 </Container>
