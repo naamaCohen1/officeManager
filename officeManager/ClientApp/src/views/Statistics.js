@@ -337,7 +337,7 @@ import ChartistGraph from "react-chartist";
 ////export default Dashboard;
 
 
-export default class Dashboard extends React.Component {
+export default class Statistics extends React.Component {
     state = {
         data: {
             series: []
@@ -351,7 +351,7 @@ export default class Dashboard extends React.Component {
         var total = obj["TotalArrivals"] 
         var departments = Object.keys(obj["Departments"])
         for (var i = 0; i < Object.keys(obj["Departments"]).length; i++) {
-            var res = (((obj["Departments"][departments[i]]) / total) * 100)
+            var res = (((obj["Departments"][departments[i]]) / total) * 100).toFixed(2)
             var digObj =
             {
                 label: departments[i],

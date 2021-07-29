@@ -66,7 +66,7 @@ function Sidebar({ color, image, routes }) {
                                     show = false
                                 else if (prop.name == 'Office Employees')
                                     show = false
-                                else if (prop.name == 'Dashboard')
+                                else if (prop.name == 'Statistics')
                                     show = false
                                 else
                                     show = true
