@@ -4,7 +4,10 @@ import {
     Card,
     Container,
     Row,
-    Col
+    Col,
+    Form,
+    Modal,
+    Button
 } from "react-bootstrap";
 
 export default class Statistics extends React.Component {
@@ -33,8 +36,67 @@ export default class Statistics extends React.Component {
         dataEmployeesMonth: {
             series: []
         },
+        dataAmount: {
+            series: []
+        },
         TotalArrivalsWeek: 0,
-        TotalArrivalsMonth: 0
+        TotalArrivalsMonth: 0,
+        TotalArrivalAmount: 0,
+        statOption: "Departments",
+        Amount: "0",
+        showPie: false,
+        showBar: false
+    }
+
+     handleClosePie = () => { this.state.showPie = false; }
+    handleShowPie = () => {
+        this.state.showPie = true;
+    }
+
+    handleCloseBar = () => { this.state.showBar = false; }
+    handleShowBar = () => { this.state.showBar = true; }
+
+    setTtatOption(event) {
+        let value = event.target.value;
+        this.state.statOption= value
+        console.log("statOption " + value)
+    }
+
+    setAmount(event) {
+        let value = event.target.value;
+        this.setState({ Amount: value });
+        console.log("Amount " + value)
+    }
+
+    handleShow(event) {
+        console.log("in show")
+                            { this.handleShowPie() }
+
+        //const result = fetch("https://localhost:44375/api/Statistics/" + this.state.Amount, requestOptions).then(response => response.json())
+        //    .then(data => {
+        //        this.setTotalAmount(data);
+        //        const department = this.calculateDepartment(data);
+        //        const floors = this.calculateFloors(data);
+        //        const roles = this.calculateRoles(data);
+        //        const employees = this.calculateEmployees(data);
+        //        if (this.state.statOption === 'Departments') {
+        //            this.setState({ dataAmount: department });
+        //            { this.handleShowPie() }
+        //        }
+        //        else if (this.state.statOption === 'Floors') {
+        //            this.setState({ dataAmount: floors });
+        //            { this.handleShowPie() }
+        //        }
+        //        else if (this.state.statOption === 'Roles') {
+        //            this.setState({ dataAmount: roles });
+        //            { this.handleShowPie() }
+        //        }
+        //        else if (this.state.statOption === 'Employees') {
+        //            this.setState({ dataAmount: department });
+        //            { this.handleShowBar() }
+        //        }
+        //    });
+        // event.preventDefault();
     }
 
     setTotalWeek = (data) => {
@@ -47,6 +109,12 @@ export default class Statistics extends React.Component {
         var obj = JSON.parse(data)
         var total = obj["TotalArrivals"]
         this.state.TotalArrivalsMonth = total
+    }
+
+    setTotalAmount = (data) => {
+        var obj = JSON.parse(data)
+        var total = obj["TotalArrivals"]
+        this.state.TotalArrivalsAmount = total
     }
 
     calculateDepartment = (data) => {
@@ -72,7 +140,7 @@ export default class Statistics extends React.Component {
         return dataReturn;
     }
 
-    calculateFloors = (data,) => {
+    calculateFloors = (data) => {
         var obj = JSON.parse(data)
         var total = obj["TotalArrivals"]
         var series = []
@@ -191,6 +259,11 @@ export default class Statistics extends React.Component {
 
     render() {
 
+        let amountBarOptions = {
+            high: this.state.Amount,
+            low: 0
+        };
+
         let weekBarOptions = {
             high: 7,
             low: 0
@@ -211,6 +284,51 @@ export default class Statistics extends React.Component {
         return (
             <>
                 <Container fluid>
+                    <Row>
+                        <Col>
+                            <Card>
+                                <Card.Header>
+                                    <Card.Title as="h4">Get Customize statistics </Card.Title>
+                                </Card.Header>
+                                <Card.Body>
+                                    <Form onSubmit={this.handleShow}>
+                                        <Row className="mb-3">
+                                            <Form.Group as={Col} md="1.5">
+                                                <p> Get Last </p>
+                                            </Form.Group>
+                                            <Form.Group as={Col} md="1">
+                                                <Form.Control type="text"
+                                                    style={{ width: '60px' }}
+                                                    value={this.state.value}
+                                                    onChange={(e) => this.setAmount}
+                                                />
+                                            </Form.Group>
+                                            <Form.Group as={Col} md="2.5">
+                                                <p>days statistics filtterd by </p>
+                                            </Form.Group>
+                                            <Form.Group as={Col} md="6">
+                                                <Form.Control
+                                                    as="select"
+                                                    className="hotspots-select"
+                                                    id="hotspots-select"
+                                                    style={{ width: '150px' }}
+                                                    value={this.state.value}
+                                                    onChange={(e) => this.setTtatOption}
+                                                >
+                                                    <option value="Departments">Departments</option>
+                                                    <option value="Roles">Roles</option>
+                                                    <option value="Floors">Floors</option>
+                                                    <option value="Employees">Employees</option>
+                                                ></Form.Control>
+                                            </Form.Group>
+                                        </Row>
+                                        <button type="submit" class="btn btn-primary">Show</button>
+                                    </Form>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    </Row>
+                    
                     <Row>
                         <Col md="6">
                             <Card>
@@ -353,6 +471,62 @@ export default class Statistics extends React.Component {
                             </Card>
                         </Col>
                     </Row>
+
+
+                    <Modal show={this.state.showPie} onHide={this.handleClosePie}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Last {this.state.Amount} days statistics filtered by {this.state.statOption}</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Row>
+                                <Col md="6">
+                                    <Card>
+                                        <Card.Header>
+                                            <p className="card-category">
+                                                TOTAL ARRIVALS AMOUNT: {this.state.TotalArrivalAmount}
+                                            </p>
+                                        </Card.Header>
+                                        <Card.Body>
+                                            <div>
+                                                <ChartistGraph data={this.state.dataAmount} options={this.options} type={this.type} />
+                                            </div>
+
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                            </Row>
+                                </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={this.handleClosePie}>OK</Button>
+                        </Modal.Footer>
+                    </Modal>
+
+                    <Modal show={this.state.showBar} onHide={this.handleCloseBar}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Last {this.state.Amount} days statistics filtered by {this.state.statOption}</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                    <Row>
+                                        <Col>
+                                            <Card>
+                                                <Card.Header>
+                                                    <p className="card-category">
+                                                        TOTAL ARRIVALS AMOUNT: {this.state.TotalArrivalsAmount}
+                                                    </p>
+                                                </Card.Header>
+                                                <Card.Body>
+                                                    <div>
+                                                <ChartistGraph data={this.state.dataAmount} options={this.amountBarOptions} type={this.barType} />
+                                                    </div>
+                                                </Card.Body>
+                                            </Card>
+                                        </Col>
+                                    </Row>                        
+                                </Modal.Body>
+                                <Modal.Footer>
+                            <Button variant="secondary" onClick={this.handleCloseBar}>OK</Button>
+                                </Modal.Footer>
+                    </Modal>
                 </Container>
             </>
         );
