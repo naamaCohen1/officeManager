@@ -42,61 +42,70 @@ export default class Statistics extends React.Component {
         TotalArrivalsWeek: 0,
         TotalArrivalsMonth: 0,
         TotalArrivalAmount: 0,
-        statOption: "Departments",
-        Amount: "0",
+        statOption: 'Departments',
+        Amount: '',
         showPie: false,
         showBar: false
     }
 
-     handleClosePie = () => { this.state.showPie = false; }
+    handleClosePie = () => { this.state.showPie = false; }
     handleShowPie = () => {
+        console.log("in handleShowPie")
+        //this.setState({ showPie: true });
         this.state.showPie = true;
     }
 
     handleCloseBar = () => { this.state.showBar = false; }
     handleShowBar = () => { this.state.showBar = true; }
 
-    setTtatOption(event) {
-        let value = event.target.value;
-        this.state.statOption= value
-        console.log("statOption " + value)
+    setAmount = (event) => {
+        this.state.Amount = event.target.value;
     }
 
-    setAmount(event) {
-        let value = event.target.value;
-        this.setState({ Amount: value });
-        console.log("Amount " + value)
+    handleSelect = (event) => {
+        this.state.statOption = event.target.value;
     }
 
-    handleShow(event) {
+    handleShow = (event) => {
+        event.preventDefault();
+
         console.log("in show")
-                            { this.handleShowPie() }
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        }
+        const result = fetch("https://localhost:44375/api/Statistics/" + this.state.Amount, requestOptions).then(response => response.json())
+            .then(data => {
+                this.setTotalAmount(data);
+                if (this.state.statOption === 'Departments') {
+                    const department = this.calculateDepartment(data);
+                    this.setState({ dataAmount: department });
+                    { this.handleShowPie }
+                }
+                else if (this.state.statOption === 'Floors') {
+                    console.log("in floors")
+                    const floors = this.calculateFloors(data);
+                    this.state.dataAmount = floors;
+                    console.log("dataAmount " + this.state.dataAmount)
+                    //{ this.handleShowPie }
+                    this.state.showPie = true;
+                    console.log(this.state.showPie)
 
-        //const result = fetch("https://localhost:44375/api/Statistics/" + this.state.Amount, requestOptions).then(response => response.json())
-        //    .then(data => {
-        //        this.setTotalAmount(data);
-        //        const department = this.calculateDepartment(data);
-        //        const floors = this.calculateFloors(data);
-        //        const roles = this.calculateRoles(data);
-        //        const employees = this.calculateEmployees(data);
-        //        if (this.state.statOption === 'Departments') {
-        //            this.setState({ dataAmount: department });
-        //            { this.handleShowPie() }
-        //        }
-        //        else if (this.state.statOption === 'Floors') {
-        //            this.setState({ dataAmount: floors });
-        //            { this.handleShowPie() }
-        //        }
-        //        else if (this.state.statOption === 'Roles') {
-        //            this.setState({ dataAmount: roles });
-        //            { this.handleShowPie() }
-        //        }
-        //        else if (this.state.statOption === 'Employees') {
-        //            this.setState({ dataAmount: department });
-        //            { this.handleShowBar() }
-        //        }
-        //    });
-        // event.preventDefault();
+                }
+                else if (this.state.statOption === 'Roles') {
+                    const roles = this.calculateRoles(data);
+                    this.setState({ dataAmount: roles });
+                    { this.handleShowPie }
+                }
+                else if (this.state.statOption === 'Employees') {
+                    const employees = this.calculateEmployees(data);
+                    this.setState({ dataAmount: employees });
+                    { this.handleShowBar }
+                }
+            });
     }
 
     setTotalWeek = (data) => {
@@ -299,8 +308,8 @@ export default class Statistics extends React.Component {
                                             <Form.Group as={Col} md="1">
                                                 <Form.Control type="text"
                                                     style={{ width: '60px' }}
+                                                    onChange={this.setAmount}
                                                     value={this.state.value}
-                                                    onChange={(e) => this.setAmount}
                                                 />
                                             </Form.Group>
                                             <Form.Group as={Col} md="2.5">
@@ -312,17 +321,17 @@ export default class Statistics extends React.Component {
                                                     className="hotspots-select"
                                                     id="hotspots-select"
                                                     style={{ width: '150px' }}
+                                                    onChange={this.handleSelect}
                                                     value={this.state.value}
-                                                    onChange={(e) => this.setTtatOption}
                                                 >
                                                     <option value="Departments">Departments</option>
                                                     <option value="Roles">Roles</option>
                                                     <option value="Floors">Floors</option>
                                                     <option value="Employees">Employees</option>
                                                 ></Form.Control>
-                                            </Form.Group>
+                                            </Form.Group>   
                                         </Row>
-                                        <button type="submit" class="btn btn-primary">Show</button>
+                                        <Button type="submit" class="btn btn-primary">Show</Button>
                                     </Form>
                                 </Card.Body>
                             </Card>
