@@ -34,13 +34,36 @@ namespace officeManager.Controllers.Entities
             this.Id = Id;
             updateCalendar();
         }
+        private string calcDateAsNeeded()
+        {
+            char[] dateIndex = Date.ToArray<char>();
+            string newDate = null;
+            for (int i = 0; i < dateIndex.Length; i++)
+            {
+                if (dateIndex[i] == '.')
+                {
+                    if (i - 1 == 0)
+                    {
+                        newDate = newDate.Insert(0, "0");
+                    }
+                    else if (dateIndex[i - 2] == '.')
+                    {
+                        newDate = newDate.Insert(i, "0");
+                    }
+
+                }
+                newDate += dateIndex[i];
+            }
+            return newDate;
+        }
         public List<string> GetImployeeByFloor(int floor)
         {
             
             List<Calendar> calendars = statistics.getCalendar();
 
-            DateTime date_test = DateTime.ParseExact(Date, "MM/dd/yyyy", CultureInfo.InvariantCulture);
-
+            string newDate = calcDateAsNeeded();
+            DateTime date_test = DateTime.ParseExact(newDate, "MM.dd.yyyy", CultureInfo.InvariantCulture);
+            
             DateTime week_ahead = date_test.AddDays(7);
             string currentFloor = null;
             string fullName = null;
@@ -98,7 +121,8 @@ namespace officeManager.Controllers.Entities
         {
 
             List<Calendar> calendars = statistics.getCalendar();
-            DateTime date_test = DateTime.ParseExact(Date, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+            string newDate = calcDateAsNeeded();
+            DateTime date_test = DateTime.ParseExact(newDate, "MM.dd.yyyy", CultureInfo.InvariantCulture);
 
             DateTime week_ahead = date_test.AddDays(7);
             string fullName = null;
@@ -131,7 +155,7 @@ namespace officeManager.Controllers.Entities
                                 dataReader.Close();
                                 command.Dispose();
                              
-                                if (fullName.ToLower().Contains(name))
+                                if (fullName.ToLower().Contains(name.ToLower()))
                                 {
                                     addOnlyIfTheNameIsNew(ref employees, fullName);
                                 }
@@ -154,7 +178,9 @@ namespace officeManager.Controllers.Entities
         {
 
             List<Calendar> calendars = statistics.getCalendar();
-            DateTime date_test = DateTime.ParseExact(Date, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+            string newDate = calcDateAsNeeded();
+            DateTime date_test = DateTime.ParseExact(newDate, "MM.dd.yyyy", CultureInfo.InvariantCulture);
+
 
             DateTime week_ahead = date_test.AddDays(7);
             string fullName = null;
@@ -189,7 +215,7 @@ namespace officeManager.Controllers.Entities
                                 dataReader.Close();
                                 command.Dispose();
 
-                                if (dept.Equals(department))
+                                if (dept.ToLower().Equals(department.ToLower()))
                                 {
                                     addOnlyIfTheNameIsNew(ref employees, fullName);
                                 }
