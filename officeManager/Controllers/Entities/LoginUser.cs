@@ -12,8 +12,8 @@ namespace officeManager
     {
 
         //https://localhost:44375/api/login
-        private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
-        //private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
+        //private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
+        private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
 
         public string Username { get; set; }
         public string Password { get; set; }
@@ -45,7 +45,7 @@ namespace officeManager
                     string ID = dataReader["ID"].ToString();
                     string Email = dataReader["Email"].ToString().Trim();
 
-                    if (string.Compare(Email, Username) == 0)
+                    if (string.Compare(Email.ToLower(), Username.ToLower()) == 0)
                         isFound[1] = true;
                 }
 
