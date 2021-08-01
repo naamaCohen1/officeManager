@@ -32,7 +32,7 @@ namespace officeManager.Controllers
         /// <returns>Requested users as string</returns>
         /// <seealso cref="SearchObject.GetImployeeByFloor(int)"/>
         /// <seealso cref="SearchObject.GetImployeeByDeparment(string)"/>
-        /// <seealso cref="SearchObject.GetImployeeByName(string)"/>
+        /// <seealso cref="SearchObject.GetEmployeeByName(string)"/>
         [HttpPost("{Id}")]
         public ActionResult<string> Post(string id, SearchObject searchObject)
         {
@@ -52,7 +52,7 @@ namespace officeManager.Controllers
                 }
                 else if (searchObject.Category.Equals("EmployeeName"))
                 {
-                    List<string> employees = searchObject.GetImployeeByName(searchObject.Input);
+                    List<string> employees = searchObject.GetEmployeeByName(searchObject.Input);
                     return new OkObjectResult(employees);
                 }
                 else

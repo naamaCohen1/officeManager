@@ -20,14 +20,14 @@ namespace officeManager.Controllers
         /// <param name="loginUser"> Login user to check </param>
         /// <returns>User permission <see cref="IActionResult"/></returns>
         /// <seealso cref="Validation.CheckValidationUserLogin(string, string)"/>
-        /// <seealso cref="LoginUser.CheckUsername"/>
+        /// <seealso cref="LoginUser.CheckUser"/>
         /// <seealso cref="LoginUser.GetUserPermission"/>
         [HttpPost]
         public async Task<ActionResult<string>> Post([FromBody] LoginUser loginUser)
         {
             if (Validation.CheckValidationUserLogin(loginUser.Username, loginUser.Password))
             {
-                List<bool> res = loginUser.CheckUsername();
+                List<bool> res = loginUser.CheckUser();
                 if (res[0] == false || res[1] == false)
                 {
                     return new NotFoundObjectResult("Invalid username or password");

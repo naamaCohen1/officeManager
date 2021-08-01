@@ -13,17 +13,27 @@ namespace officeManager.Controllers.Entities
         public string Id { get; set; }
         public string Date { get; set; }
 
-        public CalendarUser(string date,string id)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public CalendarUser(string date, string id)
         {
             this.Id = id;
             this.Date = date;
-
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public CalendarUser()
         {
-
         }
+
+        /// <summary>
+        /// This method update the waiting list
+        /// </summary>
+        /// <param name="connection"> <see cref="SqlConnection"/></param>
+        /// <param name="names">Update waiting list value</param>
         public void UpdateWaitingList(SqlConnection connection, string names)
         {
             string sql = string.Format("UPDATE tlbCalendar SET WaitingList = '{0}' where date = '{1}'", names, Date);
@@ -39,6 +49,11 @@ namespace officeManager.Controllers.Entities
                 throw e;
             }
         }
+
+        /// <summary>
+        /// This method gets the employee name
+        /// </summary>
+        /// <param name="connection"> <see cref="SqlConnection"/></param>
         public string GetEmployeeName(SqlConnection connection)
         {
             string sql = string.Format("select * from tlbEmployees where id = {0}", Id);
@@ -51,24 +66,29 @@ namespace officeManager.Controllers.Entities
                 {
                     name += dataReader["FirstName"].ToString();
                     name = name.Trim();
-                    name +=" ";
+                    name += " ";
                     name += dataReader["LastName"].ToString();
                 }
                 dataReader.Close();
                 command.Dispose();
-                if(name != null)
+                if (name != null)
                     return name.Trim();
                 return name;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw e;
             }
         }
 
-        public void UpdateArrivingID(SqlConnection connection,string names)
+        /// <summary>
+        /// This method update the Arriving ID list
+        /// </summary>
+        /// <param name="connection"> <see cref="SqlConnection"/></param>
+        /// <param name="names">Update Arriving ID list value</param>
+        public void UpdateArrivingID(SqlConnection connection, string names)
         {
-            string sql = string.Format("UPDATE tlbCalendar SET EmployeesArriving = '{0}' where date = '{1}'", names,Date);
+            string sql = string.Format("UPDATE tlbCalendar SET EmployeesArriving = '{0}' where date = '{1}'", names, Date);
             try
             {
                 SqlCommand command = new SqlCommand(sql, connection);
@@ -82,21 +102,11 @@ namespace officeManager.Controllers.Entities
             }
         }
 
-        //public void UpdateWaitingList(SqlConnection connection, string names)
-        //{
-        //    string sql = string.Format("UPDATE tlbCalendar SET WaitingList = '{0}' where date = '{1}'", names, Date);
-        //    try
-        //    {
-        //        SqlCommand command = new SqlCommand(sql, connection);
-        //        SqlDataReader dataReader = command.ExecuteReader();
-        //        dataReader.Close();
-        //        command.Dispose();
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        throw e;
-        //    }
-        //}
+        /// <summary>
+        /// This method update the Capacity
+        /// </summary>
+        /// <param name="connection"> <see cref="SqlConnection"/></param>
+        /// <param name="names">Update Capacity value</param>
         public void UpdateCapacity(SqlConnection connection, int capacity)
         {
             string sql = string.Format("UPDATE tlbCalendar SET SittingCapacity = {0} where date = '{1}'", capacity.ToString(), Date);
@@ -112,7 +122,14 @@ namespace officeManager.Controllers.Entities
             }
         }
 
-        public string returnCommingName(string arraivingID, SqlConnection connection)
+        /// <summary>
+        /// This method gets the names of the requested IDs
+        /// </summary>
+        /// <param name="arraivingID">IDs to gets thier names</param>
+        /// <param name="connection"><see cref="SqlConnection"/></param>
+        /// <returns>Requested employees names</returns>
+        /// <seealso cref="GetEmployeeName(SqlConnection)"/>
+        public string GetComingEmployeesNames(string arraivingID, SqlConnection connection)
         {
             string commingEmployees = null;
             try
