@@ -14,6 +14,7 @@ namespace officeManager.Controllers
     {
       
     string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
+
         //https://localhost:44375/api/search/{Id}
         //  {
         //     "date": "7.21.2021",
@@ -26,8 +27,6 @@ namespace officeManager.Controllers
         {
             try
             {
-                searchObject.Date = searchObject.Date.Replace('.', '/');
-                searchObject.Date = string.Format("0{0}", searchObject.Date);
                 Console.WriteLine(searchObject.Date);
                 if (searchObject.Category.Equals("Floor"))
                 {
@@ -54,8 +53,8 @@ namespace officeManager.Controllers
 
             catch (Exception e)
             {
-                //throw new Exception("Fail to search on these values " + e.Message);
-                return new BadRequestResult();
+                //throw new Exception();
+                return new BadRequestObjectResult("Fail to search on these values " + e.Message);
             }
            
         }

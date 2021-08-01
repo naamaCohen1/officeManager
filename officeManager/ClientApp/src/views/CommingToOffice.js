@@ -17,14 +17,15 @@ import {
 } from "react-bootstrap";
 
 var date;
-
+var user_id = '205488349'
 class NameForm extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { value: '', label: '' };
+        this.state = { value: '', label: 'Search By', people: []};
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelect = this.handleSelect.bind(this);
+        //const [id, setId] = React.useState(sessionStorage.getItem("id"));
 
 
     }
@@ -32,16 +33,11 @@ class NameForm extends React.Component {
     handleChange(event) {
         let value = event.target.value;
         this.setState({ value: value });
-        //this.state.value = value;
-        console.log(value)
         
     }
 
-      handleSubmit(event) {
-        console.log(date)
-        console.log("in handleSubmit")
-        console.log(this.state.label)
-        console.log(this.state.value)
+    handleSubmit(event) {
+        //console.log(id)
         if (this.state.label == '') {
             alert('please select catogory');
             
@@ -59,13 +55,15 @@ class NameForm extends React.Component {
                     "input": this.state.value
                 })
             };
-            var url = "https://localhost:44375/api/search/" + "204049316"
+            var url = "https://localhost:44375/api/search/" + user_id 
             console.log("sending get function")
-            const response = fetch(url, requestOptions).then(response => response.json()).then(data => {
-                console.log(data)
-            })
-            //const data = await response.json();
-            //console.log(data)
+           var test = fetch(url, requestOptions).then(response =>  response.json()).then(data => {
+                    this.setState({ people: data });
+                    console.log(data)
+                    console.log("here!")
+
+           })
+            console.log(test)
             
         } 
           event.preventDefault();
@@ -83,22 +81,7 @@ class NameForm extends React.Component {
              event.preventDefault();
 
          }
-        //    var dataChnage = data.replace('[', '')
-        //    dataChnage = dataChnage.replace(']', '')
-        //    dataChnage = dataChnage.replaceAll('"', '')
-        //    console.log(dataChnage)
-        //    if (dataChnage != "null") {
-        //        console.log("naama")
-        //        peopleList = dataChnage.split(",")
-        //        setPeople(peopleList)
-        //    }
-
-
-
-        //}
-        //else {
-
-        //}
+     
 
     }
     handleSelect(event) {
@@ -106,7 +89,25 @@ class NameForm extends React.Component {
         this.setState({ label: event });
         console.log(this.state.label)
     }
+    showSearchPeople() {
+        console.log(this.state.people)
+        if (this.state.people != null) {
+            return (
+                < React.Fragment >
+                    <ListGroup>
+                        {this.state.people.map(listitem => (
+                            <ListGroup.Item sm='4'>
+                                {listitem}
+                            </ListGroup.Item >
+                        ))}
+                    </ListGroup>
+                </React.Fragment >
+            );
+        }
+        
+  
 
+}
     render() {
         return (
             <Form onSubmit={this.handleSubmit}>
@@ -115,7 +116,7 @@ class NameForm extends React.Component {
                     <InputGroup >
                         <DropdownButton
                             variant="outline-secondary"
-                            title="Search By"
+                            title={this.state.label}
                             id="input-group-dropdown-1"
                             onSelect={this.handleSelect}
                             value={this.state.value} 
@@ -125,6 +126,9 @@ class NameForm extends React.Component {
                             <Dropdown.Item href="#" eventKey='Floor'>Floor</Dropdown.Item>
                         </DropdownButton>
                         <FormControl aria-label="Text input with dropdown button" value={this.state.value} onChange={this.handleChange} />
+                        <div style={{ position: 'fixed', left: '700px', top: '175px', width: '300px' }}>
+                            {this.showSearchPeople()}
+                            </div>
                     </InputGroup>
                 </Form.Group>
             </Form>
@@ -143,7 +147,7 @@ export default function Results() {
     const [DateIsClick, setDateIsClick] = useState(false);
     const [people, setPeople] = useState([]);
     const [buttons, setButtons] = useState(true);
-
+   const [id, setId] = React.useState(sessionStorage.getItem("id"));
 
     const [message, setMessage] = useState();
     const [title, setTitle] = useState();
@@ -169,6 +173,7 @@ export default function Results() {
     }
 
     function showAddButton() {
+       
         if (DateIsClick && buttons == true) {
             return (
                 <>
@@ -247,7 +252,7 @@ export default function Results() {
             },
             body: JSON.stringify({
                 "date": newCalDateFormat,
-                "id": "204049316"
+                "id": id 
             })
         };
         setDateIsClick(true)
@@ -276,7 +281,7 @@ export default function Results() {
             },
             body: JSON.stringify({
                 "date": newCalDateFormat,
-                "id": "204049316"
+                "id": id 
             })
         };
         setDateIsClick(true)
@@ -309,11 +314,11 @@ export default function Results() {
                 'Accept': 'application/json'
             },
             body: JSON.stringify({
-                "id": "204049316",
+                "id": id ,
                 "date": newCalDateFormat
             })
         };
-        //newCalDateFormat = newCalDateFormat.replaceAll('/','.')
+
         var url = "https://localhost:44375/api/calendar/";
         const response = await fetch(url, requestOptions);
         console.log(response)
