@@ -48,28 +48,20 @@ export default class Statistics extends React.Component {
         showBar: false
     }
 
-    handleClosePie = () => { this.state.showPie = false; }
-    handleShowPie = () => {
-        console.log("in handleShowPie")
-        //this.setState({ showPie: true });
-        this.state.showPie = true;
-    }
+    handleClosePie = () => { this.setState({ showPie: false }) };
+    handleCloseBar = () => { this.setState({ showBar: false }) };
+    setAmount = (event) => { this.setState({ Amount: event.target.value }) };
+    handleSelect = (event) => { this.state.statOption = event.target.value; }
 
-    handleCloseBar = () => { this.state.showBar = false; }
-    handleShowBar = () => { this.state.showBar = true; }
-
-    setAmount = (event) => {
-        this.state.Amount = event.target.value;
-    }
-
-    handleSelect = (event) => {
-        this.state.statOption = event.target.value;
-    }
+    setTotalAmount = (data) => {
+        var obj = JSON.parse(data)
+        var total = obj["TotalArrivals"]
+        this.setState({ TotalArrivalsAmount: total });
+    };
 
     handleShow = (event) => {
         event.preventDefault();
 
-        console.log("in show")
         const requestOptions = {
             method: 'GET',
             headers: {
@@ -83,27 +75,22 @@ export default class Statistics extends React.Component {
                 if (this.state.statOption === 'Departments') {
                     const department = this.calculateDepartment(data);
                     this.setState({ dataAmount: department });
-                    { this.handleShowPie }
+                    this.setState({ showPie: true });
                 }
                 else if (this.state.statOption === 'Floors') {
-                    console.log("in floors")
                     const floors = this.calculateFloors(data);
                     this.state.dataAmount = floors;
-                    console.log("dataAmount " + this.state.dataAmount)
-                    //{ this.handleShowPie }
-                    this.state.showPie = true;
-                    console.log(this.state.showPie)
-
+                    this.setState({ showPie: true });
                 }
                 else if (this.state.statOption === 'Roles') {
                     const roles = this.calculateRoles(data);
                     this.setState({ dataAmount: roles });
-                    { this.handleShowPie }
+                    this.setState({ showPie: true });
                 }
                 else if (this.state.statOption === 'Employees') {
                     const employees = this.calculateEmployees(data);
                     this.setState({ dataAmount: employees });
-                    { this.handleShowBar }
+                    this.setState({ showBar: true })
                 }
             });
     }
@@ -118,13 +105,7 @@ export default class Statistics extends React.Component {
         var obj = JSON.parse(data)
         var total = obj["TotalArrivals"]
         this.state.TotalArrivalsMonth = total
-    }
-
-    setTotalAmount = (data) => {
-        var obj = JSON.parse(data)
-        var total = obj["TotalArrivals"]
-        this.state.TotalArrivalsAmount = total
-    }
+    };
 
     calculateDepartment = (data) => {
         var obj = JSON.parse(data)
@@ -147,7 +128,7 @@ export default class Statistics extends React.Component {
             series
         }
         return dataReturn;
-    }
+    };
 
     calculateFloors = (data) => {
         var obj = JSON.parse(data)
@@ -170,7 +151,7 @@ export default class Statistics extends React.Component {
             series
         }
         return dataReturn;
-    }
+    };
 
     calculateRoles = (data) => {
         var obj = JSON.parse(data)
@@ -193,7 +174,7 @@ export default class Statistics extends React.Component {
             series
         }
         return dataReturn;
-    }
+    };
 
     calculateEmployees = (data) => {
         var obj = JSON.parse(data)
@@ -210,7 +191,7 @@ export default class Statistics extends React.Component {
             series: [seriesVals]
         }
         return dataReturn;
-    }
+    };
 
     async getEmployeesNames(ids) {
         const requestOptions = {
@@ -229,8 +210,7 @@ export default class Statistics extends React.Component {
                 test = names
             });
         return test;
-    }
-
+    };
 
     componentDidMount = () => {
         const requestOptions = {
@@ -300,7 +280,7 @@ export default class Statistics extends React.Component {
                                     <Card.Title as="h4">Get Customize statistics </Card.Title>
                                 </Card.Header>
                                 <Card.Body>
-                                    <Form onSubmit={this.handleShow}>
+                                    <Form>
                                         <Row className="mb-3">
                                             <Form.Group as={Col} md="1.5">
                                                 <p> Get Last </p>
@@ -329,15 +309,15 @@ export default class Statistics extends React.Component {
                                                     <option value="Floors">Floors</option>
                                                     <option value="Employees">Employees</option>
                                                 ></Form.Control>
-                                            </Form.Group>   
+                                            </Form.Group>
                                         </Row>
-                                        <Button type="submit" class="btn btn-primary">Show</Button>
+                                        <Button type="button" class="btn btn-primary" onClick={this.handleShow}>Show</Button>
                                     </Form>
                                 </Card.Body>
                             </Card>
                         </Col>
                     </Row>
-                    
+
                     <Row>
                         <Col md="6">
                             <Card>
@@ -487,54 +467,25 @@ export default class Statistics extends React.Component {
                             <Modal.Title>Last {this.state.Amount} days statistics filtered by {this.state.statOption}</Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            <Row>
-                                <Col md="6">
-                                    <Card>
-                                        <Card.Header>
-                                            <p className="card-category">
-                                                TOTAL ARRIVALS AMOUNT: {this.state.TotalArrivalAmount}
-                                            </p>
-                                        </Card.Header>
-                                        <Card.Body>
-                                            <div>
-                                                <ChartistGraph data={this.state.dataAmount} options={this.options} type={this.type} />
-                                            </div>
-
-                                        </Card.Body>
-                                    </Card>
-                                </Col>
-                            </Row>
-                                </Modal.Body>
+                            <p> TOTAL ARRIVALS AMOUNT: {this.state.TotalArrivalsAmount} </p>
+                            <ChartistGraph data={this.state.dataAmount} options={options} type={type} />
+                        </Modal.Body>
                         <Modal.Footer>
                             <Button variant="secondary" onClick={this.handleClosePie}>OK</Button>
                         </Modal.Footer>
                     </Modal>
 
                     <Modal show={this.state.showBar} onHide={this.handleCloseBar}>
-                            <Modal.Header closeButton>
-                                <Modal.Title>Last {this.state.Amount} days statistics filtered by {this.state.statOption}</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                                    <Row>
-                                        <Col>
-                                            <Card>
-                                                <Card.Header>
-                                                    <p className="card-category">
-                                                        TOTAL ARRIVALS AMOUNT: {this.state.TotalArrivalsAmount}
-                                                    </p>
-                                                </Card.Header>
-                                                <Card.Body>
-                                                    <div>
-                                                <ChartistGraph data={this.state.dataAmount} options={this.amountBarOptions} type={this.barType} />
-                                                    </div>
-                                                </Card.Body>
-                                            </Card>
-                                        </Col>
-                                    </Row>                        
-                                </Modal.Body>
-                                <Modal.Footer>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Last {this.state.Amount} days statistics filtered by {this.state.statOption}</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <p> TOTAL ARRIVALS AMOUNT: {this.state.TotalArrivalsAmount} </p>
+                            <ChartistGraph data={this.state.dataAmount} options={amountBarOptions} type={barType} />
+                        </Modal.Body>
+                        <Modal.Footer>
                             <Button variant="secondary" onClick={this.handleCloseBar}>OK</Button>
-                                </Modal.Footer>
+                        </Modal.Footer>
                     </Modal>
                 </Container>
             </>
