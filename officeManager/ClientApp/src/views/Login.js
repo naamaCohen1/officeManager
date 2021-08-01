@@ -8,6 +8,7 @@ export default function Login() {
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     const [showErr, setShowErr] = useState(false);
     const handleCloseErr = () => setShowErr(false);
@@ -74,10 +75,7 @@ export default function Login() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
-                    <Form.Control.Feedback type="invalid">
-                        This field is required.
-          </Form.Control.Feedback>
-
+                    <Form.Control.Feedback type="invalid"> This field is required. </Form.Control.Feedback>
 
                     <Form.Label>Password</Form.Label>
                     <Form.Control
