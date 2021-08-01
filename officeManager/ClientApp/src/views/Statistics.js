@@ -4,7 +4,10 @@ import {
     Card,
     Container,
     Row,
-    Col
+    Col,
+    Form,
+    Modal,
+    Button
 } from "react-bootstrap";
 
 export default class Statistics extends React.Component {
@@ -33,8 +36,64 @@ export default class Statistics extends React.Component {
         dataEmployeesMonth: {
             series: []
         },
+        dataAmount: {
+            series: []
+        },
         TotalArrivalsWeek: 0,
-        TotalArrivalsMonth: 0
+        TotalArrivalsMonth: 0,
+        TotalArrivalAmount: 0,
+        statOption: 'Departments',
+        Amount: '',
+        showPie: false,
+        showBar: false,
+        employeesName: []
+    }
+
+    handleClosePie = () => { this.setState({ showPie: false }) };
+    handleCloseBar = () => { this.setState({ showBar: false }) };
+    setAmount = (event) => { this.setState({ Amount: event.target.value }) };
+    handleSelect = (event) => { this.state.statOption = event.target.value; }
+
+    setTotalAmount = (data) => {
+        var obj = JSON.parse(data)
+        var total = obj["TotalArrivals"]
+        this.setState({ TotalArrivalsAmount: total });
+    };
+
+    handleShow = (event) => {
+        event.preventDefault();
+
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        }
+        const result = fetch("https://localhost:44375/api/Statistics/" + this.state.Amount, requestOptions).then(response => response.json())
+            .then(data => {
+                this.setTotalAmount(data);
+                if (this.state.statOption === 'Departments') {
+                    const department = this.calculateDepartment(data);
+                    this.setState({ dataAmount: department });
+                    this.setState({ showPie: true });
+                }
+                else if (this.state.statOption === 'Floors') {
+                    const floors = this.calculateFloors(data);
+                    this.state.dataAmount = floors;
+                    this.setState({ showPie: true });
+                }
+                else if (this.state.statOption === 'Roles') {
+                    const roles = this.calculateRoles(data);
+                    this.setState({ dataAmount: roles });
+                    this.setState({ showPie: true });
+                }
+                else if (this.state.statOption === 'Employees') {
+                    const employees = this.calculateEmployees(data);
+                    this.setState({ dataAmount: employees });
+                    this.setState({ showBar: true })
+                }
+            });
     }
 
     setTotalWeek = (data) => {
@@ -47,7 +106,7 @@ export default class Statistics extends React.Component {
         var obj = JSON.parse(data)
         var total = obj["TotalArrivals"]
         this.state.TotalArrivalsMonth = total
-    }
+    };
 
     calculateDepartment = (data) => {
         var obj = JSON.parse(data)
@@ -70,9 +129,9 @@ export default class Statistics extends React.Component {
             series
         }
         return dataReturn;
-    }
+    };
 
-    calculateFloors = (data,) => {
+    calculateFloors = (data) => {
         var obj = JSON.parse(data)
         var total = obj["TotalArrivals"]
         var series = []
@@ -93,7 +152,7 @@ export default class Statistics extends React.Component {
             series
         }
         return dataReturn;
-    }
+    };
 
     calculateRoles = (data) => {
         var obj = JSON.parse(data)
@@ -116,7 +175,7 @@ export default class Statistics extends React.Component {
             series
         }
         return dataReturn;
-    }
+    };
 
     calculateEmployees = (data) => {
         var obj = JSON.parse(data)
@@ -127,13 +186,14 @@ export default class Statistics extends React.Component {
         for (var i = 0; i < Object.keys(obj["Employees"]).length; i++) {
             seriesVals.push((obj["Employees"][employees[i]]))
         }
+        { this.getEmployeesNames(employees) }
         var dataReturn = {
-            //       labels: this.getEmployeesNames(employees),
+            //labels: this.state.employeesName,
             labels: employees,
             series: [seriesVals]
         }
         return dataReturn;
-    }
+    };
 
     async getEmployeesNames(ids) {
         const requestOptions = {
@@ -146,14 +206,11 @@ export default class Statistics extends React.Component {
                 ids
             )
         };
-        var test = []
         const results = await fetch("https://localhost:44375/api/statistics/", requestOptions).then(response => response.json())
             .then(names => {
-                test = names
+                this.setState({ employeesName: names });
             });
-        return test;
-    }
-
+    };
 
     componentDidMount = () => {
         const requestOptions = {
@@ -191,6 +248,11 @@ export default class Statistics extends React.Component {
 
     render() {
 
+        let amountBarOptions = {
+            high: this.state.Amount,
+            low: 0
+        };
+
         let weekBarOptions = {
             high: 7,
             low: 0
@@ -211,6 +273,51 @@ export default class Statistics extends React.Component {
         return (
             <>
                 <Container fluid>
+                    <Row>
+                        <Col>
+                            <Card>
+                                <Card.Header>
+                                    <Card.Title as="h4">Get Customize statistics </Card.Title>
+                                </Card.Header>
+                                <Card.Body>
+                                    <Form>
+                                        <Row className="mb-3">
+                                            <Form.Group as={Col} md="1.5">
+                                                <p> Get Last </p>
+                                            </Form.Group>
+                                            <Form.Group as={Col} md="1">
+                                                <Form.Control type="text"
+                                                    style={{ width: '60px' }}
+                                                    onChange={this.setAmount}
+                                                    value={this.state.value}
+                                                />
+                                            </Form.Group>
+                                            <Form.Group as={Col} md="2.5">
+                                                <p>days statistics filtterd by </p>
+                                            </Form.Group>
+                                            <Form.Group as={Col} md="6">
+                                                <Form.Control
+                                                    as="select"
+                                                    className="hotspots-select"
+                                                    id="hotspots-select"
+                                                    style={{ width: '150px' }}
+                                                    onChange={this.handleSelect}
+                                                    value={this.state.value}
+                                                >
+                                                    <option value="Departments">Departments</option>
+                                                    <option value="Roles">Roles</option>
+                                                    <option value="Floors">Floors</option>
+                                                    <option value="Employees">Employees</option>
+                                                ></Form.Control>
+                                            </Form.Group>
+                                        </Row>
+                                        <Button type="button" class="btn btn-primary" onClick={this.handleShow}>Show</Button>
+                                    </Form>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    </Row>
+
                     <Row>
                         <Col md="6">
                             <Card>
@@ -353,6 +460,33 @@ export default class Statistics extends React.Component {
                             </Card>
                         </Col>
                     </Row>
+
+
+                    <Modal show={this.state.showPie} onHide={this.handleClosePie}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Last {this.state.Amount} days statistics filtered by {this.state.statOption}</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <p> TOTAL ARRIVALS AMOUNT: {this.state.TotalArrivalsAmount} </p>
+                            <ChartistGraph data={this.state.dataAmount} options={options} type={type} />
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={this.handleClosePie}>OK</Button>
+                        </Modal.Footer>
+                    </Modal>
+
+                    <Modal show={this.state.showBar} onHide={this.handleCloseBar}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Last {this.state.Amount} days statistics filtered by {this.state.statOption}</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <p> TOTAL ARRIVALS AMOUNT: {this.state.TotalArrivalsAmount} </p>
+                            <ChartistGraph data={this.state.dataAmount} options={amountBarOptions} type={barType} />
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={this.handleCloseBar}>OK</Button>
+                        </Modal.Footer>
+                    </Modal>
                 </Container>
             </>
         );

@@ -18,6 +18,7 @@ namespace officeManager.Controllers
     {
         //private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
         private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
+        
         //GET https://localhost:44375/api/offices
         [HttpGet]
         public async Task<ActionResult<List<Office>>> Get()
