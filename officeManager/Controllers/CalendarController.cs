@@ -105,7 +105,7 @@ namespace officeManager.Controllers
                         calendarUser.UpdateCapacity(connection, --intCapacity);
                         calendar.EmployeesArriving += string.Format("{0};", calendarUser.Id);
                         calendarUser.UpdateArrivingID(connection, calendar.EmployeesArriving);
-                        employeesName += calendarUser.GetEmployeeName(connection) +',';
+                        employeesName += calendarUser.GetEmployeeName(connection) + ',';
                     }
                     command.Dispose();
                     connection.Close();
@@ -124,7 +124,7 @@ namespace officeManager.Controllers
         public ActionResult Put([FromBody] CalendarUser calendarUser)
         {
             string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", calendarUser.Date);
-            string waitingList = null, date = null; 
+            string waitingList = null, date = null;
             try
             {
                 SqlConnection connection = new SqlConnection(connetionString);
@@ -163,7 +163,7 @@ namespace officeManager.Controllers
         public ActionResult Put(string date)
         {
             string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", date);
-            string parkigCapacity = null,dateCal = null;
+            string parkigCapacity = null, dateCal = null;
             int intPark;
             try
             {
@@ -192,7 +192,7 @@ namespace officeManager.Controllers
                     else
                         return new OkObjectResult("no parking left");
                 }
-               
+
                 connection.Close();
                 return NoContent();
             }
@@ -216,9 +216,10 @@ namespace officeManager.Controllers
                 SqlDataReader dataReader = command.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    calendar.EmployeesArriving = dataReader["EmployeesArriving"].ToString();
-                    calendar.SittingCapacity = dataReader["SittingCapacity"].ToString();
-                    calendar.Date = dataReader["Date"].ToString();
+                    calendar.EmployeesArriving = dataReader["EmployeesArriving"].ToString().Trim();
+                    calendar.SittingCapacity = dataReader["SittingCapacity"].ToString().Trim();
+                    calendar.Date = dataReader["Date"].ToString().Trim();
+                    calendar.WaitingList = dataReader["WaitingList"].ToString().Trim();
                 }
                 dataReader.Close();
                 if (calendar.Date != null)
@@ -237,7 +238,18 @@ namespace officeManager.Controllers
                         string removeId = string.Format("{0};", calendarUser.Id);
                         calendar.EmployeesArriving = calendar.EmployeesArriving.Replace(removeId, "");
                         calendarUser.UpdateArrivingID(connection, calendar.EmployeesArriving);
+                        if (calendar.WaitingList != null || calendar.WaitingList != "")
+                        {
+                            calendarUser.UpdateCapacity(connection, --intCap);
+                            string waitId = calendar.WaitingList.Split(";")[0];
+                            string addId = string.Format("{0};", waitId);
+                            calendar.EmployeesArriving += addId;
+                            calendarUser.UpdateArrivingID(connection, calendar.EmployeesArriving);
+                            calendar.WaitingList = calendar.WaitingList.Replace(addId, "");
+                            calendarUser.UpdateWaitingList(connection, calendar.WaitingList);
+                        }
                     }
+
                     string employeesName = calendarUser.returnCommingName(calendar.EmployeesArriving, connection);
                     command.Dispose();
                     connection.Close();
@@ -246,7 +258,7 @@ namespace officeManager.Controllers
 
                 }
                 return BadRequest();
-               
+
             }
             catch (Exception e)
             {
@@ -275,7 +287,7 @@ namespace officeManager.Controllers
                 SqlDataReader dataReader = command.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    calendar.EmployeesArriving= dataReader["EmployeesArriving"].ToString();
+                    calendar.EmployeesArriving = dataReader["EmployeesArriving"].ToString();
                     calendar.Date = dataReader["Date"].ToString();
 
                 }
@@ -293,7 +305,7 @@ namespace officeManager.Controllers
                     connection.Close();
                     return new OkResult();
                 }
-                 sql = string.Format("insert into tlbCalendar values('{0}',null,6,6,null)", date);
+                sql = string.Format("insert into tlbCalendar values('{0}',null,6,6,null)", date);
                 command = new SqlCommand(sql, connection);
                 dataReader = command.ExecuteReader();
                 ///dataReader.Read();
@@ -308,5 +320,40 @@ namespace officeManager.Controllers
                 return new BadRequestResult();
             }
         }
+
+        [HttpPost("{id}")]
+        public ActionResult<List<string>> Post(string id)
+        {
+            try
+            {
+                List<string> dates = new List<string>();
+                string sql = string.Format("SELECT * FROM tlbCalendar WHERE EmployeesArriving LIKE '%{0}%'", id);
+                DateTime today_date = DateTime.Today;
+
+                SqlConnection connection = new SqlConnection(connetionString);
+                connection.Open();
+                SqlCommand command = new SqlCommand(sql, connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    string date = dataReader["Date"].ToString().Trim();
+                    DateTime curr = Convert.ToDateTime(date);
+                    if (DateTime.Compare(today_date, curr) <= 0)
+                        dates.Add(date.Split(" ")[0]);
+                }
+                dataReader.Close();
+                command.Dispose();
+                connection.Close();
+
+                string json = JsonConvert.SerializeObject(dates);
+                return new OkObjectResult(json);
+
+            }
+            catch (Exception e)
+            {
+                return new BadRequestResult();
+            }
+        }
+
     }
 }

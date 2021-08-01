@@ -22,8 +22,9 @@ namespace officeManager.Controllers
         //}
 
         [HttpPost("{Id}")]
-        public ActionResult<string> Post([FromBody]SearchObject searchObject)
+        public ActionResult<string> Post(string id,SearchObject searchObject)
         {
+            searchObject.Id =id.Replace("\"","");
             try
             {
                 Console.WriteLine(searchObject.Date);
