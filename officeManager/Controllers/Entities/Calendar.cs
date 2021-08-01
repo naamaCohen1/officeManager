@@ -13,16 +13,11 @@ namespace officeManager.Controllers.Entities
         public string ParkingCapacity { get; set; }
         public string WaitingList { get; set; }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
         public Calendar()
         {
+
         }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
         public Calendar(string date, string employeesArriving, string sittingCapacity, string parkingCapacity)
         {
             this.Date = date;
@@ -32,9 +27,7 @@ namespace officeManager.Controllers.Entities
             this.WaitingList = String.Empty;
         }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
+
         public Calendar(string date, string employeesArriving, string sittingCapacity,
             string parkingCapacity, string WaitingList)
         {

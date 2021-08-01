@@ -1,7 +1,7 @@
 import Statistics from "views/Statistics.js";
 import UserProfile from "views/UserProfile.js";
 import HealthAvailabilityCertification from "views/HealthAvailabilityCertification.js";
-import ComingToOffice from "views/ComingToOffice.js";
+import CommingToOffice from "views/CommingToOffice.js";
 import OfficeEmployees from "./views/OfficeEmployees";
 import OfficeInfo from "./views/OfficeInfo";
 import Login from "./views/Login";
@@ -36,10 +36,10 @@ const dashboardRoutes = [
         layout: "/admin",
     },
     {
-        path: "/coming-to-office",
-        name: "Coming To The Office",
+        path: "/comming-to-office",
+        name: "Comming To The Office",
         icon: "nc-icon nc-pin-3",
-        component: ComingToOffice,
+        component: CommingToOffice,
         layout: "/admin",
     },
     {
