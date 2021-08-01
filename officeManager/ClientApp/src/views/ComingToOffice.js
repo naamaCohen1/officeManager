@@ -26,9 +26,6 @@ class NameForm extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelect = this.handleSelect.bind(this);
-
-
-
     }
 
     handleChange(event) {
@@ -40,18 +37,15 @@ class NameForm extends React.Component {
         //    if (isnum === false) {
         //        alert('in Floor label you need to enter only numbers');
         //        value = '';
-        //    }
-                
+        //    }  
         //}
-         this.setState({ value: value });
-        
+         this.setState({ value: value });   
     }
 
     handleSubmit(event) {
         console.log(user_id)
         if (this.state.label == 'Search By') {
             alert('please select catogory');
-            
         }
         else {
             const requestOptions = {
@@ -73,7 +67,6 @@ class NameForm extends React.Component {
                     alert('in Floor label you need to enter only numbers');
                     this.setState({value:''})
                 }
-
             }
             var url = "https://localhost:44375/api/search/" + this.state.id 
             console.log("sending get function")
@@ -83,35 +76,28 @@ class NameForm extends React.Component {
                         this.setState({ people: data });
                         console.log(data)
                     })
-
                 }
             })
-            
-            
         } 
           event.preventDefault();
-         //
-       
     }
 
       handleRequest(url, requestOptions) {
         console.log("in handleRequest")
         const response = fetch(url, requestOptions);
          if (response.status == 200) {
-
              const data = response.json();
              console.log(data)
              event.preventDefault();
-
          }
-     
-
     }
+
     handleSelect(event) {
         console.log(event)
         this.setState({ label: event });
         console.log(this.state.label)
     }
+
     showSearchPeople() {
         console.log(this.state.people)
         if (this.state.people != null) {
@@ -127,10 +113,8 @@ class NameForm extends React.Component {
                 </React.Fragment >
             );
         }
-        
-  
+    }
 
-}
     render() {
         return (
             <Form onSubmit={this.handleSubmit}>
@@ -160,10 +144,6 @@ class NameForm extends React.Component {
     }
 }
 
-
-
-
-
 export default function Results() {
     // set states of calendar date
     const [calDate, setCalDate] = useState(new Date())
@@ -192,7 +172,7 @@ export default function Results() {
     const handleShowDates = () => setShowDates(true);
 
 
-    async function showCommingDates() {
+    async function showComingDates() {
         const requestOptions = {
             method: 'POST',
             headers: {
@@ -217,13 +197,13 @@ export default function Results() {
         let button;
         if (DateIsClick) {
             button = <NameForm></NameForm>;
-            
+
         }
         return button;
     }
 
     function showAddButton() {
-       
+
         if (DateIsClick && buttons == true) {
             return (
                 <>
@@ -235,7 +215,7 @@ export default function Results() {
     }
 
     async function onChange(calDate) {
-        setCalDate(calDate)    
+        setCalDate(calDate)
         var newCalDateFormat = calDate.toLocaleString().split(",")[0]
         setDateIsClick(true)
         var today = new Date();
@@ -275,12 +255,12 @@ export default function Results() {
                 setPeople(peopleList)
             }
 
-            if (dataChnage != null) {              
+            if (dataChnage != null) {
                 dataChnage = dataChnage.slice(0, -1)
                 peopleList = dataChnage.split(",")
                 setPeople(peopleList)
             }
-          
+
         }
         else if (response.status == 404) {
             console.log("response.status == 404")
@@ -302,22 +282,22 @@ export default function Results() {
             },
             body: JSON.stringify({
                 "date": newCalDateFormat,
-                "id": id 
+                "id": id
             })
         };
         setDateIsClick(true)
         console.log(requestOptions)
         var data = await handleRequest("https://localhost:44375/api/calendar", requestOptions)
-            console.log(data)
-            if (data == "no space") {
-                handleShowWaitingList()
-            }
-            else {
-                if (data["ParkingCapacity"] > 0) {
-                    handleShowParking()
-                }
+        console.log(data)
+        if (data == "no space") {
+            handleShowWaitingList()
+        }
+        else {
+            if (data["ParkingCapacity"] > 0) {
+                handleShowParking()
             }
         }
+    }
 
     async function clickRemove() {
         console.log("clickRemove()")
@@ -331,7 +311,7 @@ export default function Results() {
             },
             body: JSON.stringify({
                 "date": newCalDateFormat,
-                "id": id 
+                "id": id
             })
         };
         setDateIsClick(true)
@@ -351,12 +331,9 @@ export default function Results() {
                 </ListGroup>
             </React.Fragment >
         );
-
     }
 
     function showUpcomingDates() {
-        console.log(dates)
-
         if (dates.length > 0) {
             var testDates = JSON.parse(dates)
             console.log(testDates)
@@ -375,7 +352,7 @@ export default function Results() {
     }
 
     async function AddToWaitingList() {
-        { handleCloseWaitingList() } 
+        { handleCloseWaitingList() }
         var newCalDateFormat = calDate.toLocaleString().split(",")[0]
         const requestOptions = {
             method: 'PUT',
@@ -384,19 +361,18 @@ export default function Results() {
                 'Accept': 'application/json'
             },
             body: JSON.stringify({
-                "id": id ,
+                "id": id,
                 "date": newCalDateFormat
             })
         };
-
         var url = "https://localhost:44375/api/calendar/";
         const response = await fetch(url, requestOptions);
         console.log(response)
-             if (response.status == 204) {
-                setTitle("Info")
-                setMessage("Added to Waiting List.")
-                { handleShow() }
-            }
+        if (response.status == 204) {
+            setTitle("Info")
+            setMessage("Added to Waiting List.")
+            { handleShow() }
+        }
         else {
             setTitle("Error")
             setMessage("Unexpected error! Fail to add to waiting list.")
@@ -404,7 +380,6 @@ export default function Results() {
         }
     }
 
-    
     async function AddToParking() {
         { handleCloseParking() }
         var newCalDateFormat = calDate.toLocaleString().split(",")[0]
@@ -433,14 +408,14 @@ export default function Results() {
     }
 
     useEffect(() => {
-        showCommingDates();
+        showComingDates();
     }, []);
 
     return (
         <div className="result-calendar" style={{ display: 'flex', justifyContent: 'space-between' }}>
             <Calendar onChange={onChange} value={calDate} />
             {showSearchBar()}
-            <div style={{ position: 'fixed',left: '260px', top: '450px', width: '300px' }}>
+            <div style={{ position: 'fixed', left: '260px', top: '450px', width: '300px' }}>
                 <Container fluid="md" >
                     {showAddButton()}
                     {showPeopleCame()}
@@ -472,7 +447,7 @@ export default function Results() {
                 </Modal>
                 <Modal show={showParking} onHide={handleCloseParking}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Comming with a car?</Modal.Title>
+                        <Modal.Title>Coming with a car?</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <p>Do you plan to come with a care to the office?</p>
@@ -488,8 +463,8 @@ export default function Results() {
                     </Modal.Header>
                     <Modal.Body>
                         <p>These are your scheduled days:</p>
-                        
-                        {showUpcomingDates() }
+
+                        {showUpcomingDates()}
                     </Modal.Body>
                     <Modal.Footer>
                         <button type="button" class="btn btn-primary" onClick={handleCloseDates}> OK </button>
@@ -499,5 +474,3 @@ export default function Results() {
         </div>
     )
 }
-
-//export default CommingToOffice;
