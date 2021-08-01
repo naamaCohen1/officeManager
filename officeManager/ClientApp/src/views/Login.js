@@ -8,7 +8,6 @@ export default function Login() {
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
 
     const [showErr, setShowErr] = useState(false);
     const handleCloseErr = () => setShowErr(false);
@@ -59,7 +58,6 @@ export default function Login() {
             else {
                 sessionStorage.setItem("admin", false)
             }
-
             { refreshPage() }
         }
     }
@@ -97,75 +95,29 @@ export default function Login() {
 
             <button type="submit" class="btn btn-primary"> Login </button>
 
-                <Modal show={showErr} onHide={handleCloseErr}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Error</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <p>Invalid Email or Password. Please try again</p>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="primary" onClick={handleCloseErr}>OK</Button>
-                    </Modal.Footer>
-                </Modal>
+            <Modal show={showErr} onHide={handleCloseErr}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Error</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>Invalid Email or Password. Please try again</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={handleCloseErr}>OK</Button>
+                </Modal.Footer>
+            </Modal>
 
-                <Modal show={show} onHide={handleClose}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Success</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <p>User loged in</p>
-                    </Modal.Body>
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Success</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>User loged in</p>
+                </Modal.Body>
                 <Modal.Footer>
                     <button type="button" class="btn btn-primary" onClick={refreshPage}> OK </button>
-                    </Modal.Footer>
+                </Modal.Footer>
             </Modal>
-            </Form>
+        </Form>
     );
 }
-
-///// line ~151
-//const [dates, setDates] = useState([]);
-
-///// line ~165
-//const [showDates, setShowDates] = useState(false);
-//const handleCloseDates = () => setShowDates(false);
-//const handleShowDates = () => setShowDates(true);
-
-//async function showCommingDates() {
-//    var id = "205666415"
-//    const requestOptions = {
-//        method: 'POST',
-//        headers: {
-//            'Content-Type': 'application/json',
-//            'Accept': 'application/json'
-//        }
-//    };
-//    const response = await fetch("https://localhost:44375/api/calendar/" + id, requestOptions)
-//    console.log(response)
-//    if (response.status == 200) {
-//        var datesArr = await response.json()
-//        setDates(datesArr)
-//        { handleShowDates() }
-//    }
-//    else {
-//        //setTitle("Error")
-//        //setMessage("Unexpected error! Fail to get comming to the office dates.")
-//        { handleShow() }
-//    }
-//}
-
-
-///// line ~413
-//<Modal show={showDates} onHide={handleCloseDates}>
-//    <Modal.Header closeButton>
-//        <Modal.Title>Your Office Dates</Modal.Title>
-//    </Modal.Header>
-//    <Modal.Body>
-//        <p>These are your scheduled days:</p>
-//        {dates}
-//    </Modal.Body>
-//    <Modal.Footer>
-//        <button type="button" class="btn btn-primary" onClick={handleCloseDates}> OK </button>
-//    </Modal.Footer>
-//</Modal>

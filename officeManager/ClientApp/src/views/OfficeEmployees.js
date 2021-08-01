@@ -129,7 +129,7 @@ export default function OfficeEmployees() {
     }
 
     async function EditEmployee() {
-        { handleCloseEditUser()}
+        { handleCloseEditUser() }
         mappedPermissionLevel = "1"
         if (permissionLevel.toUpperCase() === 'ADMINISTRATOR') {
             mappedPermissionLevel = "0"
@@ -204,13 +204,11 @@ export default function OfficeEmployees() {
             event.preventDefault();
             { AddEmployee() }
         }
-
         setValidatedAdd(true);
     };
 
     async function AddEmployee() {
         { handleCloseAddUser() }
-
         var mappedPermissionLevel = "1"
         if (permissionLevel.toUpperCase() === 'ADMINISTRATOR') {
             mappedPermissionLevel = "0"

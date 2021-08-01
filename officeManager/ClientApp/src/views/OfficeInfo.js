@@ -42,7 +42,6 @@ export default function OfficeInfo() {
             event.preventDefault();
             { editOffice() }
         }
-
         setValidatedEdit(true);
     };
 
@@ -54,7 +53,6 @@ export default function OfficeInfo() {
                 'Accept': 'application/json'
             }
         };
-
         var url = "https://localhost:44375/api/offices/" + id;
         handleRequest(url, requestOptions)
     }
@@ -73,7 +71,6 @@ export default function OfficeInfo() {
                     temp[1] = temp[1].replace("\"", "")
                     dictionary.push(temp[1].trim())
                 }
-
                 { showData(dictionary) }
             }
         }
@@ -81,11 +78,11 @@ export default function OfficeInfo() {
 
     function showData(dictionary) {
         var parking = dictionary[2]
-        if (dictionary[2] === '' || dictionary[2] === 'null') 
+        if (dictionary[2] === '' || dictionary[2] === 'null')
             parking = "0"
 
         var spots = dictionary[9]
-        if (dictionary[9] === 'null') 
+        if (dictionary[9] === 'null')
             spots = ""
 
         var open = "Yes"
@@ -139,7 +136,6 @@ export default function OfficeInfo() {
             })
         };
         var response = await fetch("https://localhost:44375/api/offices/" + id, requestOptions);
-
         if (response.status == 204) {
             setTitle("Info")
             setMessage("Organiztion was updated.")
@@ -155,8 +151,6 @@ export default function OfficeInfo() {
     useEffect(() => {
         loadPage("12345");
     }, []);
-
-
 
     return (
         <>
@@ -230,7 +224,7 @@ export default function OfficeInfo() {
                                         </Form.Group>
                                     </Row>
 
-                                        <Row className="mb-3">
+                                    <Row className="mb-3">
                                         <Form.Group as={Col}>
                                             <Form.Label>Meetting Rooms' Number</Form.Label>
                                             <Form.Control type="text" placeholder="Enter the number of meetting rooms in the office" required
@@ -297,7 +291,7 @@ export default function OfficeInfo() {
 
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>
-                        <Modal.Title>{ title }</Modal.Title>
+                        <Modal.Title>{title}</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <p>{message}</p>
