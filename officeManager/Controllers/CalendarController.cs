@@ -16,6 +16,7 @@ namespace officeManager.Controllers
     public class CalendarController : ControllerBase
     {
         string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
+        //private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
 
 
         /// <summary>
@@ -60,9 +61,42 @@ namespace officeManager.Controllers
             }
         }
 
+        //[HttpPost("{id}")]
+        //public ActionResult<List<string>> Post(string id)
+        //{
+        //    try
+        //    {
+        //        List<string> dates = new List<string>();
+        //        string sql = string.Format("SELECT * FROM tlbCalendar WHERE EmployeesArriving LIKE '%{0}%'", id);
+        //        DateTime today_date = DateTime.Today;
+
+        //        SqlConnection connection = new SqlConnection(connetionString);
+        //        connection.Open();
+        //        SqlCommand command = new SqlCommand(sql, connection);
+        //        SqlDataReader dataReader = command.ExecuteReader();
+        //        while (dataReader.Read())
+        //        {
+        //            string date = dataReader["Date"].ToString().Trim();
+        //            DateTime curr = Convert.ToDateTime(date);
+        //            if (DateTime.Compare(today_date, curr) <= 0)
+        //                dates.Add(date.Split(" ")[0]);
+        //        }
+        //        dataReader.Close();
+        //        command.Dispose();
+        //        connection.Close();
+
+        //        string json = JsonConvert.SerializeObject(dates);
+        //        return new OkObjectResult(json);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return new BadRequestResult();
+        //    }
+        //}
 
         /// <summary>
-        /// Performs GET request to https://localhost:44375/api/calendar
+        /// Performs POST request to https://localhost:44375/api/calendar
         /// Adding employee to EmployeesArriving in the requested day 
         /// </summary>
         /// <param name="calendarUser"> Employee to be added as <see cref="CalendarUser"/> 
@@ -218,6 +252,7 @@ namespace officeManager.Controllers
                 {
                     calendar.EmployeesArriving = dataReader["EmployeesArriving"].ToString();
                     calendar.SittingCapacity = dataReader["SittingCapacity"].ToString();
+   //                 calendar.WaitingList = dataReader["WaitingList"].ToString();
                     calendar.Date = dataReader["Date"].ToString();
                 }
                 dataReader.Close();
@@ -237,6 +272,17 @@ namespace officeManager.Controllers
                         string removeId = string.Format("{0};", calendarUser.Id);
                         calendar.EmployeesArriving = calendar.EmployeesArriving.Replace(removeId, "");
                         calendarUser.UpdateArrivingID(connection, calendar.EmployeesArriving);
+
+                        //if(calendar.WaitingList != null || calendar.WaitingList != "")
+                        //{
+                        //    calendarUser.UpdateCapacity(connection, --intCap);
+                        //    string waitId = calendar.WaitingList.Split(";")[0];
+                        //    string addId = string.Format(";{0}", waitId);
+                        //    calendar.EmployeesArriving += addId;
+                        //    calendarUser.UpdateArrivingID(connection, calendar.EmployeesArriving);
+                        //    calendar.WaitingList = calendar.EmployeesArriving.Replace(string.Format("{0};", waitId), "");
+                        //    calendarUser.UpdateWaitingList(connection, calendar.WaitingList);       
+                        //}
                     }
                     string employeesName = calendarUser.returnCommingName(calendar.EmployeesArriving, connection);
                     command.Dispose();
