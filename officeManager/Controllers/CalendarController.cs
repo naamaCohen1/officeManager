@@ -8,6 +8,8 @@ using System.Collections.Generic;
 
 namespace officeManager.Controllers
 {
+
+
     [Route("api/[controller]")]
     [Route("calendar")]
     [ApiController]
@@ -15,6 +17,7 @@ namespace officeManager.Controllers
     {
         string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
         //private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
+
 
         /// <summary>
         /// Performs GET request to https://localhost:44375/api/calendar
@@ -58,17 +61,48 @@ namespace officeManager.Controllers
             }
         }
 
+        //[HttpPost("{id}")]
+        //public ActionResult<List<string>> Post(string id)
+        //{
+        //    try
+        //    {
+        //        List<string> dates = new List<string>();
+        //        string sql = string.Format("SELECT * FROM tlbCalendar WHERE EmployeesArriving LIKE '%{0}%'", id);
+        //        DateTime today_date = DateTime.Today;
+
+        //        SqlConnection connection = new SqlConnection(connetionString);
+        //        connection.Open();
+        //        SqlCommand command = new SqlCommand(sql, connection);
+        //        SqlDataReader dataReader = command.ExecuteReader();
+        //        while (dataReader.Read())
+        //        {
+        //            string date = dataReader["Date"].ToString().Trim();
+        //            DateTime curr = Convert.ToDateTime(date);
+        //            if (DateTime.Compare(today_date, curr) <= 0)
+        //                dates.Add(date.Split(" ")[0]);
+        //        }
+        //        dataReader.Close();
+        //        command.Dispose();
+        //        connection.Close();
+
+        //        string json = JsonConvert.SerializeObject(dates);
+        //        return new OkObjectResult(json);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return new BadRequestResult();
+        //    }
+        //}
+
         /// <summary>
         /// Performs POST request to https://localhost:44375/api/calendar
         /// Adding employee to EmployeesArriving in the requested day 
         /// </summary>
         /// <param name="calendarUser"> Employee to be added as <see cref="CalendarUser"/> 
-        /// <code>
-        /// {
-        ///     "date": "07/21/2021",
-        ///     "id": "204049316"
-        /// }
-        /// </code>
+        /// {"date": "07/21/2021",
+        ///"id": "204049316"
+        ///}
         /// </param>
         /// <returns> calendar object as <see cref="Calendar"/> </returns>
         [HttpPost]
@@ -98,7 +132,7 @@ namespace officeManager.Controllers
                     intCapacity = int.Parse(calendar.SittingCapacity);
                     if (intCapacity == 0)
                         return new OkObjectResult("no space");
-                    string employeesName = calendarUser.GetComingEmployeesNames(calendar.EmployeesArriving, connection);
+                    string employeesName = calendarUser.returnCommingName(calendar.EmployeesArriving, connection);
 
                     if (calendar.EmployeesArriving == null || !calendar.EmployeesArriving.Contains(calendarUser.Id))
                     {
@@ -120,12 +154,6 @@ namespace officeManager.Controllers
             }
         }
 
-        /// <summary>
-        /// Performs PUT request to https://localhost:44375/api/calendar
-        /// Add User to Waiting list
-        /// </summary>
-        /// <param name="calendarUser"> User to add to waiting list as <see cref="CalendarUser"/></param>
-        /// <returns><see cref="IActionResult"/></returns>
         [HttpPut]
         public ActionResult Put([FromBody] CalendarUser calendarUser)
         {
@@ -165,12 +193,6 @@ namespace officeManager.Controllers
             }
         }
 
-        /// <summary>
-        /// Performs PUT request to https://localhost:44375/api/calendar/{date}
-        /// Update ParkingCapacity in the requested date
-        /// </summary>
-        /// <param name="date"> Date to update the details in </param>
-        /// <returns><see cref="ActionResult"/></returns>
         [HttpPut("{date}")]
         public ActionResult Put(string date)
         {
@@ -204,6 +226,7 @@ namespace officeManager.Controllers
                     else
                         return new OkObjectResult("no parking left");
                 }
+
                 connection.Close();
                 return NoContent();
             }
@@ -212,13 +235,6 @@ namespace officeManager.Controllers
                 return new BadRequestObjectResult(e.Message);
             }
         }
-
-        /// <summary>
-        /// Performs DELETE request to https://localhost:44375/api/calendar
-        /// Delete a user from the requested day
-        /// </summary>
-        /// <param name="calendarUser">User to delete and a date as <see cref="CalendarUser"/></param>
-        /// <returns>Updates calendar as <see cref="Calendar"/></returns>
         [HttpDelete]
         public ActionResult<Calendar> Delete([FromBody] CalendarUser calendarUser)
         {
@@ -238,14 +254,18 @@ namespace officeManager.Controllers
                     calendar.SittingCapacity = dataReader["SittingCapacity"].ToString().Trim();
                     calendar.Date = dataReader["Date"].ToString().Trim();
                     calendar.WaitingList = dataReader["WaitingList"].ToString().Trim();
+
                 }
                 dataReader.Close();
                 if (calendar.Date != null)
                 {
                     intCap = int.Parse(calendar.SittingCapacity);
+
+
                     if (calendar.EmployeesArriving == null || !calendar.EmployeesArriving.Contains(calendarUser.Id))
                     {
                         return NotFound();
+
                     }
                     else
                     {
@@ -266,19 +286,22 @@ namespace officeManager.Controllers
                         }
                     }
 
-                    string employeesName = calendarUser.GetComingEmployeesNames(calendar.EmployeesArriving, connection);
+                    string employeesName = calendarUser.returnCommingName(calendar.EmployeesArriving, connection);
                     command.Dispose();
                     connection.Close();
                     calendar.EmployeesArriving = employeesName;
                     return new OkObjectResult(JsonConvert.SerializeObject(calendar));
+
                 }
                 return BadRequest();
+
             }
             catch (Exception e)
             {
                 return new BadRequestObjectResult(e.Message);
             }
         }
+
 
         /// <summary>
         /// Performs GET request to https://localhost:44375/api/calendar/mm.dd.yyyy
@@ -302,6 +325,7 @@ namespace officeManager.Controllers
                 {
                     calendar.EmployeesArriving = dataReader["EmployeesArriving"].ToString();
                     calendar.Date = dataReader["Date"].ToString();
+
                 }
                 dataReader.Close();
                 command.Dispose();
@@ -310,7 +334,7 @@ namespace officeManager.Controllers
                     if (calendar.EmployeesArriving != null)
                     {
                         CalendarUser calUser = new CalendarUser();
-                        calendar.EmployeesArriving = calUser.GetComingEmployeesNames(calendar.EmployeesArriving, connection);
+                        calendar.EmployeesArriving = calUser.returnCommingName(calendar.EmployeesArriving, connection);
                         connection.Close();
                         return new OkObjectResult(JsonConvert.SerializeObject(calendar));
                     }
@@ -320,10 +344,12 @@ namespace officeManager.Controllers
                 sql = string.Format("insert into tlbCalendar values('{0}',null,6,6,null)", date);
                 command = new SqlCommand(sql, connection);
                 dataReader = command.ExecuteReader();
+                ///dataReader.Read();
                 command.Dispose();
                 connection.Close();
                 //add date to calendar. defualt values
                 return NotFound();
+
             }
             catch (Exception)
             {
@@ -331,12 +357,6 @@ namespace officeManager.Controllers
             }
         }
 
-        /// <summary>
-        /// Performs POST request to https://localhost:44375/api/calendar/id
-        /// Gets all dates users signed to 
-        /// </summary>
-        /// <param name="id">User to get his dates</param>
-        /// <returns>List of Dates</returns>
         [HttpPost("{id}")]
         public ActionResult<List<string>> Post(string id)
         {
@@ -363,11 +383,13 @@ namespace officeManager.Controllers
 
                 string json = JsonConvert.SerializeObject(dates);
                 return new OkObjectResult(json);
+
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return new BadRequestResult();
             }
         }
+
     }
 }
