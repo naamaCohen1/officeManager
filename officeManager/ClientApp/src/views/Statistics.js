@@ -45,7 +45,8 @@ export default class Statistics extends React.Component {
         statOption: 'Departments',
         Amount: '',
         showPie: false,
-        showBar: false
+        showBar: false,
+        employeesName: []
     }
 
     handleClosePie = () => { this.setState({ showPie: false }) };
@@ -185,8 +186,9 @@ export default class Statistics extends React.Component {
         for (var i = 0; i < Object.keys(obj["Employees"]).length; i++) {
             seriesVals.push((obj["Employees"][employees[i]]))
         }
+        { this.getEmployeesNames(employees) }
         var dataReturn = {
-            //       labels: this.getEmployeesNames(employees),
+            //labels: this.state.employeesName,
             labels: employees,
             series: [seriesVals]
         }
@@ -204,12 +206,10 @@ export default class Statistics extends React.Component {
                 ids
             )
         };
-        var test = []
         const results = await fetch("https://localhost:44375/api/statistics/", requestOptions).then(response => response.json())
             .then(names => {
-                test = names
+                this.setState({ employeesName: names });
             });
-        return test;
     };
 
     componentDidMount = () => {
