@@ -43,9 +43,16 @@ function HealthAvailabilityCertification() {
     };
 
     async function sendToHR() {
-        // send email
-        var response = 204
-        if (response == 204) {
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        };
+
+        const response = await fetch("https://localhost:44375/api/gmail/" + id, requestOptions)
+        if (response.status == 200) {
             setTitle("Info")
             setMessage("Health Availability Certification was sent to HR.")
             { handleShow() }
