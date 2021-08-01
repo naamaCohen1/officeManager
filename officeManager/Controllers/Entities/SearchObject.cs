@@ -83,7 +83,7 @@ namespace officeManager.Controllers.Entities
                             foreach (string employee in currEemployees)
                             {
 
-                                if (employee.Equals(""))
+                                if (employee.Equals("") || employee.Equals(Id))
                                     continue;
                                 string sql = string.Format("select *  from tlbEmployees WHERE id = '{0}'", employee);
                                 SqlCommand command = new SqlCommand(sql, connection);
@@ -142,7 +142,7 @@ namespace officeManager.Controllers.Entities
                             foreach (string employee in currEemployees)
                             {
 
-                                if (employee.Equals(""))
+                                if (employee.Equals("")|| employee.Equals(Id))
                                     continue;
                                 string sql = string.Format("select *  from tlbEmployees WHERE id = '{0}'", employee);
                                 SqlCommand command = new SqlCommand(sql, connection);
@@ -193,7 +193,7 @@ namespace officeManager.Controllers.Entities
                     DateTime curr = Convert.ToDateTime(calendar.Date);
                     if (DateTime.Compare(curr, week_ahead) <= 0 && DateTime.Compare(curr, date_test) >= 0)
                     {
-                        if (!calendar.EmployeesArriving.Equals(""))
+                        if (!calendar.EmployeesArriving.Equals("") )
                         {
                             List<string> currEemployees = new List<string>(calendar.EmployeesArriving.Trim().Split(';'));
                             SqlConnection connection = new SqlConnection(connetionString);
@@ -201,7 +201,7 @@ namespace officeManager.Controllers.Entities
                             foreach (string employee in currEemployees)
                             {
 
-                                if (employee.Equals(""))
+                                if (employee.Equals("") || employee.Equals(Id))
                                     continue;
                                 string sql = string.Format("select *  from tlbEmployees WHERE id = '{0}'", employee);
                                 SqlCommand command = new SqlCommand(sql, connection);

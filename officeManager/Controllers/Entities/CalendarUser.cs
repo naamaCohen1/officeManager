@@ -24,7 +24,21 @@ namespace officeManager.Controllers.Entities
         {
 
         }
-
+        public void UpdateWaitingList(SqlConnection connection, string names)
+        {
+            string sql = string.Format("UPDATE tlbCalendar SET WaitingList = '{0}' where date = '{1}'", names, Date);
+            try
+            {
+                SqlCommand command = new SqlCommand(sql, connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                dataReader.Close();
+                command.Dispose();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
         public string GetEmployeeName(SqlConnection connection)
         {
             string sql = string.Format("select * from tlbEmployees where id = {0}", Id);

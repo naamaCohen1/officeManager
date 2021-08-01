@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import Popup from 'react-popup';
 import {
     Button,
     Card,
@@ -17,28 +18,38 @@ import {
 } from "react-bootstrap";
 
 var date;
-var user_id = '205488349'
+
 class NameForm extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { value: '', label: 'Search By', people: []};
+        this.state = { value: '', label: 'Search By', people: [], id: sessionStorage.getItem("id") };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelect = this.handleSelect.bind(this);
-        //const [id, setId] = React.useState(sessionStorage.getItem("id"));
+
 
 
     }
 
     handleChange(event) {
         let value = event.target.value;
-        this.setState({ value: value });
+        console.log(event.which)
+        //if (this.state.label == 'Floor' && event.keyCode != 8) {
+        //    let isnum = /^\d+$/.test(value);
+        //    console.log(isnum)
+        //    if (isnum === false) {
+        //        alert('in Floor label you need to enter only numbers');
+        //        value = '';
+        //    }
+                
+        //}
+         this.setState({ value: value });
         
     }
 
     handleSubmit(event) {
-        //console.log(id)
-        if (this.state.label == '') {
+        console.log(user_id)
+        if (this.state.label == 'Search By') {
             alert('please select catogory');
             
         }
@@ -55,15 +66,27 @@ class NameForm extends React.Component {
                     "input": this.state.value
                 })
             };
-            var url = "https://localhost:44375/api/search/" + user_id 
-            console.log("sending get function")
-           var test = fetch(url, requestOptions).then(response =>  response.json()).then(data => {
-                    this.setState({ people: data });
-                    console.log(data)
-                    console.log("here!")
+            if (this.state.label == 'Floor') {
+                let isnum = /^\d+$/.test(this.state.value);
+                console.log(isnum)
+                if (isnum === false) {
+                    alert('in Floor label you need to enter only numbers');
+                    this.setState({value:''})
+                }
 
-           })
-            console.log(test)
+            }
+            var url = "https://localhost:44375/api/search/" + this.state.id 
+            console.log("sending get function")
+            fetch(url, requestOptions).then(response => {
+                if (response.status == 200) {
+                    var data = response.json().then(data => {
+                        this.setState({ people: data });
+                        console.log(data)
+                    })
+
+                }
+            })
+            
             
         } 
           event.preventDefault();
@@ -147,7 +170,7 @@ export default function Results() {
     const [DateIsClick, setDateIsClick] = useState(false);
     const [people, setPeople] = useState([]);
     const [buttons, setButtons] = useState(true);
-   const [id, setId] = React.useState(sessionStorage.getItem("id"));
+    const [id, setId] = React.useState(sessionStorage.getItem("id"));
 
     const [message, setMessage] = useState();
     const [title, setTitle] = useState();
@@ -162,7 +185,34 @@ export default function Results() {
     const [showParking, setShowParking] = useState(false);
     const handleCloseParking = () => setShowParking(false);
     const handleShowParking = () => setShowParking(true);
-  
+
+    const [dates, setDates] = useState([]);
+    const [showDates, setShowDates] = useState(false);
+    const handleCloseDates = () => setShowDates(false);
+    const handleShowDates = () => setShowDates(true);
+
+
+    async function showCommingDates() {
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        };
+        const response = await fetch("https://localhost:44375/api/calendar/" + id, requestOptions)
+        if (response.status == 200) {
+            var datesArr = await response.json()
+            setDates(datesArr)
+            { handleShowDates() }
+        }
+        else {
+            setTitle("Error")
+            setMessage("Unexpected error! Fail to get coming to the office dates.")
+            { handleShow() }
+        }
+    }
+
     function showSearchBar() {
         let button;
         if (DateIsClick) {
@@ -304,6 +354,26 @@ export default function Results() {
 
     }
 
+    function showUpcomingDates() {
+        console.log(dates)
+
+        if (dates.length > 0) {
+            var testDates = JSON.parse(dates)
+            console.log(testDates)
+            return (
+                < React.Fragment >
+                    <ListGroup>
+                        {testDates.map(listitem => (
+                            <ListGroup.Item sm='4'>
+                                {listitem}
+                            </ListGroup.Item >
+                        ))}
+                    </ListGroup>
+                </React.Fragment >
+            );
+        }
+    }
+
     async function AddToWaitingList() {
         { handleCloseWaitingList() } 
         var newCalDateFormat = calDate.toLocaleString().split(",")[0]
@@ -334,6 +404,7 @@ export default function Results() {
         }
     }
 
+    
     async function AddToParking() {
         { handleCloseParking() }
         var newCalDateFormat = calDate.toLocaleString().split(",")[0]
@@ -361,12 +432,14 @@ export default function Results() {
         }
     }
 
-    
+    useEffect(() => {
+        showCommingDates();
+    }, []);
+
     return (
         <div className="result-calendar" style={{ display: 'flex', justifyContent: 'space-between' }}>
             <Calendar onChange={onChange} value={calDate} />
             {showSearchBar()}
-
             <div style={{ position: 'fixed',left: '260px', top: '450px', width: '300px' }}>
                 <Container fluid="md" >
                     {showAddButton()}
@@ -385,7 +458,6 @@ export default function Results() {
                         <Button variant="secondary" onClick={handleClose}>OK</Button>
                     </Modal.Footer>
                 </Modal>
-
                 <Modal show={showWaitingList} onHide={handleCloseWaitingList}>
                     <Modal.Header closeButton>
                         <Modal.Title>No available space</Modal.Title>
@@ -398,7 +470,6 @@ export default function Results() {
                         <Button variant="secondary" onClick={handleCloseWaitingList}>No</Button>
                     </Modal.Footer>
                 </Modal>
-
                 <Modal show={showParking} onHide={handleCloseParking}>
                     <Modal.Header closeButton>
                         <Modal.Title>Comming with a car?</Modal.Title>
@@ -409,6 +480,19 @@ export default function Results() {
                     <Modal.Footer>
                         <Button variant="Primary" onClick={AddToParking}>Yes</Button>
                         <Button variant="secondary" onClick={handleCloseParking}>No</Button>
+                    </Modal.Footer>
+                </Modal>
+                <Modal show={showDates} onHide={handleCloseDates}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Your Office Dates</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>These are your scheduled days:</p>
+                        
+                        {showUpcomingDates() }
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <button type="button" class="btn btn-primary" onClick={handleCloseDates}> OK </button>
                     </Modal.Footer>
                 </Modal>
             </div>
