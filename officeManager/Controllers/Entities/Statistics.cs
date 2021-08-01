@@ -145,27 +145,5 @@ namespace officeManager.Controllers.Entities
                 throw new Exception(e.Message);
             }
         }
-
-        public ArrivalStatistics GetPercentages(ArrivalStatistics arrivalStatistics)
-        {
-            ArrivalStatistics precentage = new ArrivalStatistics();
-            precentage.Employees = calcPrecentage(arrivalStatistics.Employees, arrivalStatistics.TotalArrivals);
-            precentage.Departments = calcPrecentage(arrivalStatistics.Departments, arrivalStatistics.TotalArrivals);
-            precentage.Floors = calcPrecentage(arrivalStatistics.Floors, arrivalStatistics.TotalArrivals);
-            precentage.Roles = calcPrecentage(arrivalStatistics.Roles, arrivalStatistics.TotalArrivals);
-
-            return precentage;
-        }
-
-        private Dictionary<string, int> calcPrecentage(Dictionary<string, int> pairs, int totalArrivals)
-        {
-            Dictionary<string, int> dictionary = new Dictionary<string, int>();
-            foreach (var item in pairs)
-            {
-                dictionary.Add(item.Key, (item.Value / totalArrivals));
-            }
-
-            return dictionary;
-        }
     }
 }

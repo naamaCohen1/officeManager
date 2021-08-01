@@ -14,6 +14,14 @@ namespace officeManager.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
+        /// <summary>
+        /// This methos checks the username and password are correct
+        /// </summary>
+        /// <param name="loginUser"> Login user to check </param>
+        /// <returns>User permission <see cref="IActionResult"/></returns>
+        /// <seealso cref="Validation.CheckValidationUserLogin(string, string)"/>
+        /// <seealso cref="LoginUser.CheckUsername"/>
+        /// <seealso cref="LoginUser.GetUserPermission"/>
         [HttpPost]
         public async Task<ActionResult<string>> Post([FromBody] LoginUser loginUser)
         {
