@@ -82,6 +82,21 @@ namespace officeManager.Controllers.Entities
             }
         }
 
+        //public void UpdateWaitingList(SqlConnection connection, string names)
+        //{
+        //    string sql = string.Format("UPDATE tlbCalendar SET WaitingList = '{0}' where date = '{1}'", names, Date);
+        //    try
+        //    {
+        //        SqlCommand command = new SqlCommand(sql, connection);
+        //        SqlDataReader dataReader = command.ExecuteReader();
+        //        dataReader.Close();
+        //        command.Dispose();
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw e;
+        //    }
+        //}
         public void UpdateCapacity(SqlConnection connection, int capacity)
         {
             string sql = string.Format("UPDATE tlbCalendar SET SittingCapacity = {0} where date = '{1}'", capacity.ToString(), Date);

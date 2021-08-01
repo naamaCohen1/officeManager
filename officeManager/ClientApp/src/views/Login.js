@@ -119,7 +119,53 @@ export default function Login() {
                 <Modal.Footer>
                     <button type="button" class="btn btn-primary" onClick={refreshPage}> OK </button>
                     </Modal.Footer>
-                </Modal>
+            </Modal>
             </Form>
     );
 }
+
+///// line ~151
+//const [dates, setDates] = useState([]);
+
+///// line ~165
+//const [showDates, setShowDates] = useState(false);
+//const handleCloseDates = () => setShowDates(false);
+//const handleShowDates = () => setShowDates(true);
+
+//async function showCommingDates() {
+//    var id = "205666415"
+//    const requestOptions = {
+//        method: 'POST',
+//        headers: {
+//            'Content-Type': 'application/json',
+//            'Accept': 'application/json'
+//        }
+//    };
+//    const response = await fetch("https://localhost:44375/api/calendar/" + id, requestOptions)
+//    console.log(response)
+//    if (response.status == 200) {
+//        var datesArr = await response.json()
+//        setDates(datesArr)
+//        { handleShowDates() }
+//    }
+//    else {
+//        //setTitle("Error")
+//        //setMessage("Unexpected error! Fail to get comming to the office dates.")
+//        { handleShow() }
+//    }
+//}
+
+
+///// line ~413
+//<Modal show={showDates} onHide={handleCloseDates}>
+//    <Modal.Header closeButton>
+//        <Modal.Title>Your Office Dates</Modal.Title>
+//    </Modal.Header>
+//    <Modal.Body>
+//        <p>These are your scheduled days:</p>
+//        {dates}
+//    </Modal.Body>
+//    <Modal.Footer>
+//        <button type="button" class="btn btn-primary" onClick={handleCloseDates}> OK </button>
+//    </Modal.Footer>
+//</Modal>
