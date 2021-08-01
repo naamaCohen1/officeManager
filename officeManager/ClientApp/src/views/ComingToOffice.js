@@ -172,7 +172,7 @@ export default function Results() {
     const handleShowDates = () => setShowDates(true);
 
 
-    async function showCommingDates() {
+    async function showComingDates() {
         const requestOptions = {
             method: 'POST',
             headers: {
@@ -408,7 +408,7 @@ export default function Results() {
     }
 
     useEffect(() => {
-        showCommingDates();
+        showComingDates();
     }, []);
 
     return (
@@ -447,7 +447,7 @@ export default function Results() {
                 </Modal>
                 <Modal show={showParking} onHide={handleCloseParking}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Comming with a car?</Modal.Title>
+                        <Modal.Title>Coming with a car?</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <p>Do you plan to come with a care to the office?</p>

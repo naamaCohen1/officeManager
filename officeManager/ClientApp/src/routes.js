@@ -36,8 +36,8 @@ const dashboardRoutes = [
         layout: "/admin",
     },
     {
-        path: "/comming-to-office",
-        name: "Comming To The Office",
+        path: "/coming-to-office",
+        name: "Coming To The Office",
         icon: "nc-icon nc-pin-3",
         component: CommingToOffice,
         layout: "/admin",
