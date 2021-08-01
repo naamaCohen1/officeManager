@@ -14,6 +14,7 @@ namespace officeManager.Controllers
     {
       
     string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
+
         //https://localhost:44375/api/search/{Id}
         //  {
         //     "date": "7.21.2021",
