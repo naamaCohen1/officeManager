@@ -112,13 +112,13 @@ namespace officeManager.Controllers.Entities
             }
         }
 
-        public string returnCommingName(string arraivingID, SqlConnection connection)
+        public string returnComingName(string arraivingID, SqlConnection connection)
         {
-            string commingEmployees = null;
+            string comingEmployees = null;
             try
             {
                 if (arraivingID == null)
-                    return commingEmployees;
+                    return comingEmployees;
                 arraivingID = arraivingID.Trim();
                 string[] employees = arraivingID.Split(';');
                 foreach (string employeeID in employees)
@@ -128,14 +128,14 @@ namespace officeManager.Controllers.Entities
                     CalendarUser user = new CalendarUser();
                     user.Id = employeeID;
                     string name = user.GetEmployeeName(connection);
-                    commingEmployees += name + ',';
+                    comingEmployees += name + ',';
                 }
             }
             catch (Exception e)
             {
                 throw e;
             }
-            return commingEmployees;
+            return comingEmployees;
         }
     }
 }

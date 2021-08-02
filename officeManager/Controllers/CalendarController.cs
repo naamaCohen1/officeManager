@@ -132,7 +132,7 @@ namespace officeManager.Controllers
                     intCapacity = int.Parse(calendar.SittingCapacity);
                     if (intCapacity == 0)
                         return new OkObjectResult("no space");
-                    string employeesName = calendarUser.returnCommingName(calendar.EmployeesArriving, connection);
+                    string employeesName = calendarUser.returnComingName(calendar.EmployeesArriving, connection);
 
                     if (calendar.EmployeesArriving == null || !calendar.EmployeesArriving.Contains(calendarUser.Id))
                     {
@@ -286,7 +286,7 @@ namespace officeManager.Controllers
                         }
                     }
 
-                    string employeesName = calendarUser.returnCommingName(calendar.EmployeesArriving, connection);
+                    string employeesName = calendarUser.returnComingName(calendar.EmployeesArriving, connection);
                     command.Dispose();
                     connection.Close();
                     calendar.EmployeesArriving = employeesName;
@@ -334,7 +334,7 @@ namespace officeManager.Controllers
                     if (calendar.EmployeesArriving != null)
                     {
                         CalendarUser calUser = new CalendarUser();
-                        calendar.EmployeesArriving = calUser.returnCommingName(calendar.EmployeesArriving, connection);
+                        calendar.EmployeesArriving = calUser.returnComingName(calendar.EmployeesArriving, connection);
                         connection.Close();
                         return new OkObjectResult(JsonConvert.SerializeObject(calendar));
                     }
