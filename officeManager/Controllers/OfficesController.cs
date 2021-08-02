@@ -18,8 +18,12 @@ namespace officeManager.Controllers
     {
         //private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
         private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
-        
-        //GET https://localhost:44375/api/offices
+
+        /// <summary>
+        /// Performs GET request to https://localhost:44375/api/offices
+        /// Gets all offices in DB
+        /// </summary>
+        /// <returns> List of offices as <see cref="Office"/></returns>
         [HttpGet]
         public async Task<ActionResult<List<Office>>> Get()
         {
@@ -45,7 +49,7 @@ namespace officeManager.Controllers
                     string HotSpotPlaces = dataReader["HotSpotPlaces"].ToString();
                     string ID = dataReader["ID"].ToString();
 
-                    offices.Add(new Office(Name, NumOfEmployees, ParkingAmount, FloorsAmount, 
+                    offices.Add(new Office(Name, NumOfEmployees, ParkingAmount, FloorsAmount,
                         RoomsAmount, MeetingRoomsAmount, OfficeCapacity, OpenSpace, HotSpot, HotSpotPlaces, ID));
                 }
                 dataReader.Close();
@@ -63,7 +67,12 @@ namespace officeManager.Controllers
             }
         }
 
-        //GET https://localhost:44375/api/offices/{id}
+        /// <summary>
+        /// Performs GET request to https://localhost:44375/api/offices/{id}
+        /// Gets a specific organizations
+        /// </summary>
+        /// <param name="id"> Organization ID to get </param>
+        /// <returns>Requested organization as <see cref="Office"/></returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<Office>> Get(string id)
         {
@@ -105,8 +114,12 @@ namespace officeManager.Controllers
             }
         }
 
-
-        //POST https://localhost:44375/api/offices
+        /// <summary>
+        /// Performs POST request to https://localhost:44375/api/offices
+        /// Add new organization to DB
+        /// </summary>
+        /// <param name="office">Organization to add as <see cref="Office"/></param>
+        /// <returns>Created organization</returns>
         [HttpPost]
         public async Task<ActionResult<Office>> Post([FromBody] Office office)
         {
@@ -134,7 +147,14 @@ namespace officeManager.Controllers
             }
         }
 
-        //PUT https://localhost:44375/api/offices/{id}
+        /// <summary>
+        /// Performs PUT request to https://localhost:44375/api/offices/{id}
+        /// Update an exist organization
+        /// </summary>
+        /// <param name="updated_office"> Updated organization as <see cref="Office"/></param>
+        /// <param name="id">Organization ID to update</param>
+        /// <returns><see cref="IActionResult"/></returns>
+        /// <seealso cref="Get(string)"/>
         [HttpPut("{id}")]
         public async Task<IActionResult> Put([FromBody] Office updated_office, string id)
         {
@@ -168,7 +188,13 @@ namespace officeManager.Controllers
             }
         }
 
-        //DELETE https://localhost:44375/api/offices/{id}
+        /// <summary>
+        /// Performs DELETE request to https://localhost:44375/api/offices/{id}
+        /// remove an exist organization
+        /// </summary>
+        /// <param name="id">Organization ID to remove</param>
+        /// <returns><see cref="IActionResult"/></returns>
+        /// <seealso cref="Get(string)"/>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {

@@ -10,13 +10,20 @@ namespace officeManager.Controllers.Entities
     public class Statistics
     {
         //private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
-       private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
+        private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
 
         //        public static int Compare(DateTime d1, DateTime d2);
         //        <0 − If date1 is earlier than date2
         //        0 − If date1 is the same as date2
         //        >0 − If date1 is later than date2
 
+        /// <summary>
+        /// This method gets all the events in the requested reriod of time
+        /// </summary>
+        /// <param name="periodToGet"> Amount of days to get</param>
+        /// <returns>Data as <see cref="ArrivalStatistics"/></returns>
+        /// <seealso cref="getCalendar"/>
+        /// <seealso cref="updateLists"/>
         public ArrivalStatistics GetLastActivities(int periodToGet)
         {
             ArrivalStatistics arrivalStatistics = new ArrivalStatistics();
@@ -51,6 +58,12 @@ namespace officeManager.Controllers.Entities
             }
         }
 
+        /// <summary>
+        /// This method update the counter of the requested user
+        /// </summary>
+        /// <param name="arrivalStatistics">Current <see cref="ArrivalStatistics"/> object </param>
+        /// <param name="employee">Employee ID To update his arrival counter</param>
+        /// <seealso cref="getUser(string)"/>
         private void updateLists(ArrivalStatistics arrivalStatistics, string employee)
         {
             User user = getUser(employee);
@@ -76,6 +89,12 @@ namespace officeManager.Controllers.Entities
                 arrivalStatistics.Floors.Add(user.Floor, 1);
         }
 
+        /// <summary>
+        /// Performs GET request to https://localhost:44375/api/users/{id}
+        /// Gets a specific user's details
+        /// </summary>
+        /// <param name="id">User ID to get</param>
+        /// <returns>Requested user as <see cref="User"/></returns>
         private User getUser(string id)
         {
             string sql = string.Format("select * from tlbEmployees where ID={0}", id);
@@ -113,6 +132,11 @@ namespace officeManager.Controllers.Entities
             }
         }
 
+        /// <summary>
+        /// Performs GET request to https://localhost:44375/api/calendar
+        /// Gets all events from calendar
+        /// </summary>
+        /// <returns>All Calendar events as list of <see cref="Calendar"/></returns>
         public List<Calendar> getCalendar()
         {
             List<Calendar> calendars = new List<Calendar>();
@@ -144,28 +168,6 @@ namespace officeManager.Controllers.Entities
             {
                 throw new Exception(e.Message);
             }
-        }
-
-        public ArrivalStatistics GetPercentages(ArrivalStatistics arrivalStatistics)
-        {
-            ArrivalStatistics precentage = new ArrivalStatistics();
-            precentage.Employees = calcPrecentage(arrivalStatistics.Employees, arrivalStatistics.TotalArrivals);
-            precentage.Departments = calcPrecentage(arrivalStatistics.Departments, arrivalStatistics.TotalArrivals);
-            precentage.Floors = calcPrecentage(arrivalStatistics.Floors, arrivalStatistics.TotalArrivals);
-            precentage.Roles = calcPrecentage(arrivalStatistics.Roles, arrivalStatistics.TotalArrivals);
-
-            return precentage;
-        }
-
-        private Dictionary<string, int> calcPrecentage(Dictionary<string, int> pairs, int totalArrivals)
-        {
-            Dictionary<string, int> dictionary = new Dictionary<string, int>();
-            foreach (var item in pairs)
-            {
-                dictionary.Add(item.Key, (item.Value / totalArrivals));
-            }
-
-            return dictionary;
         }
     }
 }

@@ -19,11 +19,16 @@ namespace officeManager.Controllers.Entities
         public string HotSpotPlaces { get; set; }
         public string ID { get; set; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public Office()
         {
-
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public Office(string Name, string NumOfEmployees, string ParkingAmount, string FloorsAmount,
             string RoomsAmount, string MeetingRoomsAmount, string OfficeCapacity,
             string OpenSpace, string HotSpot, string HotSpotPlaces, string Id)

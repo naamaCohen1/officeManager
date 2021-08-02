@@ -149,6 +149,7 @@ namespace officeManager.Controllers
         /// <param name="updated_user"> Updated employee as <see cref="User"/> </param>
         /// <param name="id"> Employee's ID to be update </param>
         /// <returns> <see cref="IActionResult"/> </returns>
+        /// <seealso cref="Get(string)"/>
         [HttpPut("{id}")]
         public async Task<IActionResult> Put([FromBody] User updated_user, string id)
         {
@@ -188,6 +189,7 @@ namespace officeManager.Controllers
         /// </summary>
         /// <param name="id"> Employee's ID to delete </param>
         /// <returns> <see cref="IActionResult"/> </returns>
+        /// <seealso cref="Get(string)"/>
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
