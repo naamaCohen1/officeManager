@@ -12,51 +12,59 @@ namespace officeManager.Controllers
     [ApiController]
     public class SearchController : ControllerBase
     {
-      
-    string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
+        private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
 
-        //https://localhost:44375/api/search/{Id}
-        //  {
-        //     "date": "7.21.2021",
-        //     "category": "EmployeeName",
-        //     "input":"ma"
-        //}
-
+        /// <summary>
+        /// Performs POST request to https://localhost:44375/api/search/{Id}
+        /// Gets employees names according to the requested filter
+        /// </summary>
+        /// <param name="id"> Logged in user ID </param>
+        /// <param name="searchObject"> Filter to search the users according to as <see cref="SearchObject"/>
+        /// For example:
+        /// <code>
+        /// {
+        ///     "date": "7.21.2021",
+        ///     "category": "EmployeeName",
+        ///     "input":"ma"
+        /// }
+        /// </code>
+        /// </param>
+        /// <returns>Requested users as string</returns>
+        /// <seealso cref="SearchObject.GetEmployeeByFloor(int)"/>
+        /// <seealso cref="SearchObject.GetEmployeeByDeparment(string)"/>
+        /// <seealso cref="SearchObject.GetEmployeeByName(string)"/>
         [HttpPost("{Id}")]
-        public ActionResult<string> Post(string id,SearchObject searchObject)
+        public ActionResult<string> Post(string id, SearchObject searchObject)
         {
-            searchObject.Id =id.Replace("\"","");
+            searchObject.Id = id.Replace("\"", "");
             try
             {
                 Console.WriteLine(searchObject.Date);
                 if (searchObject.Category.Equals("Floor"))
                 {
                     int floor = int.Parse(searchObject.Input);
-                    List<string> employees = searchObject.GetImployeeByFloor(floor);
+                    List<string> employees = searchObject.GetEmployeeByFloor(floor);
                     return new OkObjectResult(employees);
                 }
                 else if (searchObject.Category.Equals("Department"))
                 {
-                    List<string> employees = searchObject.GetImployeeByDeparment(searchObject.Input);
+                    List<string> employees = searchObject.GetEmployeeByDeparment(searchObject.Input);
                     return new OkObjectResult(employees);
                 }
                 else if (searchObject.Category.Equals("EmployeeName"))
                 {
-                    List<string> employees = searchObject.GetImployeeByName(searchObject.Input);
+                    List<string> employees = searchObject.GetEmployeeByName(searchObject.Input);
                     return new OkObjectResult(employees);
                 }
                 else
                 {
                     return new OkResult();
                 }
-
             }
-
             catch (Exception e)
             {
                 return new BadRequestObjectResult("Fail to search on these values " + e.Message);
             }
-           
         }
     }
 }

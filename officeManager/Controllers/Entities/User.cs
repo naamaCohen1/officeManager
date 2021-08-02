@@ -10,9 +10,6 @@ namespace officeManager
 {
     public class User
     {
-
-        //https://localhost:44375/api/users/{id}
-
         public string ID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -24,11 +21,16 @@ namespace officeManager
         public string PermissionLevel { get; set; }
         public string Department { get; set; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public User()
         {
-
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public User(string ID, string FirstName, string LastName, string Email, string CarNumber,
             string Floor, string RoomNumber, string Role, string PermissionLevel, string Department)
         {

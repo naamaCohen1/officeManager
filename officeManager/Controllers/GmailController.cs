@@ -9,7 +9,6 @@ namespace officeManager.Controllers
     [Route("api/[controller]")]
     [Route("gmail")]
     [ApiController]
-
     public class GmailController : ControllerBase
     {
         // user: 'officemanagerhealth@gmail.com',
@@ -18,6 +17,12 @@ namespace officeManager.Controllers
         // Client Secret - Yn_mg_jRWehQgfwVFpBpZEQE
         // RefreshToken - 1//04xzCRP0pE5qpCgYIARAAGAQSNwF-L9IrZxumQG_ti_91FWUMQJ46oi8Oq4qLskWXI8ZhoquvoEaAn3i9tHLEvkMr-EHSUGCaX6k
 
+
+        /// <summary>
+        /// This methos aends an email using Gmail to officemanagerhealth@gmail.com
+        /// </summary>
+        /// <param name="id"> User ID which fill the Health Availability Certification</param>
+        /// <returns><<see cref="IActionResult"/>/returns>
         [HttpPost("{id}")]
         public ActionResult<List<string>> Post(string id)
         {
@@ -38,7 +43,7 @@ namespace officeManager.Controllers
                 }
                 return new OkResult();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return new BadRequestResult();
             }

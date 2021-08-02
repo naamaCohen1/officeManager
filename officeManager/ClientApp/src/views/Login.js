@@ -44,7 +44,6 @@ export default function Login() {
                 "password": password
             })
         };
-
         const response = await fetch("https://localhost:44375/api/login/", requestOptions)
         if (response.status != 200) {
             { handleShowErr() }
@@ -59,7 +58,6 @@ export default function Login() {
             else {
                 sessionStorage.setItem("admin", false)
             }
-
             { refreshPage() }
         }
     }
@@ -76,10 +74,7 @@ export default function Login() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
-                    <Form.Control.Feedback type="invalid">
-                        This field is required.
-          </Form.Control.Feedback>
-
+                    <Form.Control.Feedback type="invalid"> This field is required. </Form.Control.Feedback>
 
                     <Form.Label>Password</Form.Label>
                     <Form.Control
@@ -89,37 +84,35 @@ export default function Login() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    <Form.Control.Feedback type="invalid">
-                        This field is required.
-          </Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid"> This field is required. </Form.Control.Feedback>
                 </Form.Group>
             </Row>
 
             <button type="submit" class="btn btn-primary"> Login </button>
 
-                <Modal show={showErr} onHide={handleCloseErr}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Error</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <p>Invalid Email or Password. Please try again</p>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="primary" onClick={handleCloseErr}>OK</Button>
-                    </Modal.Footer>
-                </Modal>
+            <Modal show={showErr} onHide={handleCloseErr}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Error</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>Invalid Email or Password. Please try again</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="primary" onClick={handleCloseErr}>OK</Button>
+                </Modal.Footer>
+            </Modal>
 
-                <Modal show={show} onHide={handleClose}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Success</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <p>User loged in</p>
-                    </Modal.Body>
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Success</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>User loged in</p>
+                </Modal.Body>
                 <Modal.Footer>
                     <button type="button" class="btn btn-primary" onClick={refreshPage}> OK </button>
-                    </Modal.Footer>
+                </Modal.Footer>
             </Modal>
-            </Form>
+        </Form>
     );
 }

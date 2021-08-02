@@ -64,7 +64,6 @@ export default function OfficeEmployees() {
                 'Accept': 'application/json'
             }
         };
-
         var url = "https://localhost:44375/api/users/";
         handleRequest(url, requestOptions)
     }
@@ -110,7 +109,6 @@ export default function OfficeEmployees() {
             event.preventDefault();
             { EditEmployee() }
         }
-
         setValidatedEdit(true);
     };
 
@@ -129,7 +127,7 @@ export default function OfficeEmployees() {
     }
 
     async function EditEmployee() {
-        { handleCloseEditUser()}
+        { handleCloseEditUser() }
         mappedPermissionLevel = "1"
         if (permissionLevel.toUpperCase() === 'ADMINISTRATOR') {
             mappedPermissionLevel = "0"
@@ -156,7 +154,6 @@ export default function OfficeEmployees() {
         };
         var url = "https://localhost:44375/api/users/" + id;
         const response = await fetch(url, requestOptions);
-
         if (response.status == 204) {
             setMessage("Employee was updated.")
             { handleShowInfo() }
@@ -204,7 +201,6 @@ export default function OfficeEmployees() {
             event.preventDefault();
             { AddEmployee() }
         }
-
         setValidatedAdd(true);
     };
 
