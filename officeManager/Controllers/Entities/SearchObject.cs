@@ -34,20 +34,7 @@ namespace officeManager.Controllers.Entities
             this.Id = Id;
             updateCalendar();
         }
-      
-        /// <summary>
-        /// This method initialize the statistics object
-        /// </summary>
-        private void updateCalendar()
-        {
-            statistics = new Statistics();
-        }
-
-        /// <summary>
-        /// This method gets a date and fix to correct format
-        /// </summary>
-        /// <returns> Fixed date</returns>
-        private string fixDateFormat()
+        private string calcDateAsNeeded()
         {
             char[] dateIndex = Date.ToArray<char>();
             string newDate = null;
