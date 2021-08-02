@@ -56,59 +56,74 @@ namespace officeManager.Controllers.Entities
             }
             return newDate;
         }
+
+        private Calendar getDate()
+        {
+            Calendar calendar = new Calendar();
+            try
+            {
+                string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", Date);
+                SqlConnection connection = new SqlConnection(connetionString);
+                connection.Open();
+                SqlCommand command = new SqlCommand(sql, connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    calendar.EmployeesArriving = dataReader["EmployeesArriving"].ToString().Trim();
+                }
+                dataReader.Close();
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Fail to search by floor " + e.Message);
+            }
+            return calendar;
+        }
+
         public List<string> GetImployeeByFloor(int floor)
         {
-            
-            List<Calendar> calendars = statistics.getCalendar();
-
-            string newDate = calcDateAsNeeded();
-            DateTime date_test = DateTime.ParseExact(newDate, "MM.dd.yyyy", CultureInfo.InvariantCulture);
-            
-            DateTime week_ahead = date_test.AddDays(7);
             string currentFloor = null;
             string fullName = null;
             List<string> employees = new List<string>();
+       
+
             try
             {
-                foreach (Calendar calendar in calendars)
+               
+                Calendar calendar = getDate();
+                if (!calendar.EmployeesArriving.Equals(""))
                 {
-                    DateTime curr = Convert.ToDateTime(calendar.Date);
-                    if (DateTime.Compare(curr, week_ahead) <= 0 && DateTime.Compare(curr, date_test) >= 0)
+                    SqlConnection connection = new SqlConnection(connetionString);
+                    connection.Open();
+                    List<string> currEemployees = new List<string>(calendar.EmployeesArriving.Trim().Split(';'));
+                    foreach (string employee in currEemployees)
                     {
-                        if (!calendar.EmployeesArriving.Equals(""))
+                        if (employee.Equals("") || employee.Equals(Id))
+                            continue;
+                        string sql = string.Format("select *  from tlbEmployees WHERE id = '{0}'", employee);
+                        SqlCommand command = new SqlCommand(sql, connection);
+                        SqlDataReader dataReader = command.ExecuteReader();
+                        while (dataReader.Read())
                         {
-                            List<string> currEemployees = new List<string>(calendar.EmployeesArriving.Trim().Split(';'));
-                            SqlConnection connection = new SqlConnection(connetionString);
-                            connection.Open();
-                            foreach (string employee in currEemployees)
-                            {
-
-                                if (employee.Equals("") || employee.Equals(Id))
-                                    continue;
-                                string sql = string.Format("select *  from tlbEmployees WHERE id = '{0}'", employee);
-                                SqlCommand command = new SqlCommand(sql, connection);
-                                SqlDataReader dataReader = command.ExecuteReader();
-                                while (dataReader.Read())
-                                {
-                                    currentFloor = dataReader["Floor"].ToString().Trim();
-                                    fullName = dataReader["FirstName"].ToString().Trim();
-                                    fullName += " " + dataReader["LastName"].ToString().Trim();
-                                }
-                                dataReader.Close();
-                                command.Dispose();
-                                int intFloor = int.Parse(currentFloor);
-
-                                if (intFloor == floor)
-                                {
-                                    addOnlyIfTheNameIsNew(ref employees, fullName);
-                                }
-                                   
-                            }
-                            connection.Close();
+                            currentFloor = dataReader["Floor"].ToString().Trim();
+                            fullName = dataReader["FirstName"].ToString().Trim();
+                            fullName += " " + dataReader["LastName"].ToString().Trim();
                         }
+                        dataReader.Close();
+                        command.Dispose();
+                        int intFloor = int.Parse(currentFloor);
+
+                        if (intFloor == floor)
+                        {
+                            addOnlyIfTheNameIsNew(ref employees, fullName);
+                        }
+
                     }
+                    connection.Close();
+
                 }
-                
                 return employees;
             }
             catch (Exception e)
@@ -120,52 +135,41 @@ namespace officeManager.Controllers.Entities
         public List<string> GetImployeeByName(string name)
         {
 
-            List<Calendar> calendars = statistics.getCalendar();
-            string newDate = calcDateAsNeeded();
-            DateTime date_test = DateTime.ParseExact(newDate, "MM.dd.yyyy", CultureInfo.InvariantCulture);
-
-            DateTime week_ahead = date_test.AddDays(7);
             string fullName = null;
             List<string> employees = new List<string>();
             try
             {
-                foreach (Calendar calendar in calendars)
+
+                Calendar calendar = getDate();
+                if (!calendar.EmployeesArriving.Equals(""))
                 {
-                    DateTime curr = Convert.ToDateTime(calendar.Date);
-                    if (DateTime.Compare(curr, week_ahead) <= 0 && DateTime.Compare(curr, date_test) >= 0)
+                    List<string> currEemployees = new List<string>(calendar.EmployeesArriving.Trim().Split(';'));
+                    SqlConnection connection = new SqlConnection(connetionString);
+                    connection.Open();
+                    foreach (string employee in currEemployees)
                     {
-                        if (!calendar.EmployeesArriving.Equals(""))
+
+                        if (employee.Equals("") || employee.Equals(Id))
+                            continue;
+                        string sql = string.Format("select *  from tlbEmployees WHERE id = '{0}'", employee);
+                        SqlCommand command = new SqlCommand(sql, connection);
+                        SqlDataReader dataReader = command.ExecuteReader();
+                        while (dataReader.Read())
                         {
-                            List<string> currEemployees = new List<string>(calendar.EmployeesArriving.Trim().Split(';'));
-                            SqlConnection connection = new SqlConnection(connetionString);
-                            connection.Open();
-                            foreach (string employee in currEemployees)
-                            {
-
-                                if (employee.Equals("")|| employee.Equals(Id))
-                                    continue;
-                                string sql = string.Format("select *  from tlbEmployees WHERE id = '{0}'", employee);
-                                SqlCommand command = new SqlCommand(sql, connection);
-                                SqlDataReader dataReader = command.ExecuteReader();
-                                while (dataReader.Read())
-                                {
-                                    fullName = dataReader["FirstName"].ToString().Trim();
-                                    fullName += " " + dataReader["LastName"].ToString().Trim();
-                                }
-                                dataReader.Close();
-                                command.Dispose();
-                             
-                                if (fullName.ToLower().Contains(name.ToLower()))
-                                {
-                                    addOnlyIfTheNameIsNew(ref employees, fullName);
-                                }
-
-                            }
-                            connection.Close();
+                            fullName = dataReader["FirstName"].ToString().Trim();
+                            fullName += " " + dataReader["LastName"].ToString().Trim();
                         }
-                    }
-                }
+                        dataReader.Close();
+                        command.Dispose();
 
+                        if (fullName.ToLower().Contains(name.ToLower()))
+                        {
+                            addOnlyIfTheNameIsNew(ref employees, fullName);
+                        }
+
+                    }
+                    connection.Close();
+                }
                 return employees;
             }
             catch (Exception e)
@@ -176,54 +180,40 @@ namespace officeManager.Controllers.Entities
 
         public List<string> GetImployeeByDeparment(string department)
         {
-
-            List<Calendar> calendars = statistics.getCalendar();
-            string newDate = calcDateAsNeeded();
-            DateTime date_test = DateTime.ParseExact(newDate, "MM.dd.yyyy", CultureInfo.InvariantCulture);
-
-
-            DateTime week_ahead = date_test.AddDays(7);
-            string fullName = null;
-            string dept = null;
-            List<string> employees = new List<string>();
             try
             {
-                foreach (Calendar calendar in calendars)
+                Calendar calendar = getDate();
+                string dept = null, fullName = null;
+                List<string> employees = new List<string>();
+                if (!calendar.EmployeesArriving.Equals(""))
                 {
-                    DateTime curr = Convert.ToDateTime(calendar.Date);
-                    if (DateTime.Compare(curr, week_ahead) <= 0 && DateTime.Compare(curr, date_test) >= 0)
+                    List<string> currEemployees = new List<string>(calendar.EmployeesArriving.Trim().Split(';'));
+                    SqlConnection connection = new SqlConnection(connetionString);
+                    connection.Open();
+                    foreach (string employee in currEemployees)
                     {
-                        if (!calendar.EmployeesArriving.Equals("") )
+
+                        if (employee.Equals("") || employee.Equals(Id))
+                            continue;
+                        string sql = string.Format("select *  from tlbEmployees WHERE id = '{0}'", employee);
+                        SqlCommand command = new SqlCommand(sql, connection);
+                        SqlDataReader dataReader = command.ExecuteReader();
+                        while (dataReader.Read())
                         {
-                            List<string> currEemployees = new List<string>(calendar.EmployeesArriving.Trim().Split(';'));
-                            SqlConnection connection = new SqlConnection(connetionString);
-                            connection.Open();
-                            foreach (string employee in currEemployees)
-                            {
-
-                                if (employee.Equals("") || employee.Equals(Id))
-                                    continue;
-                                string sql = string.Format("select *  from tlbEmployees WHERE id = '{0}'", employee);
-                                SqlCommand command = new SqlCommand(sql, connection);
-                                SqlDataReader dataReader = command.ExecuteReader();
-                                while (dataReader.Read())
-                                {
-                                    dept = dataReader["Department"].ToString().Trim();
-                                    fullName = dataReader["FirstName"].ToString().Trim();
-                                    fullName += " " + dataReader["LastName"].ToString().Trim();
-                                }
-                                dataReader.Close();
-                                command.Dispose();
-
-                                if (dept.ToLower().Equals(department.ToLower()))
-                                {
-                                    addOnlyIfTheNameIsNew(ref employees, fullName);
-                                }
-
-                            }
-                            connection.Close();
+                            dept = dataReader["Department"].ToString().Trim();
+                            fullName = dataReader["FirstName"].ToString().Trim();
+                            fullName += " " + dataReader["LastName"].ToString().Trim();
                         }
+                        dataReader.Close();
+                        command.Dispose();
+
+                        if (dept.ToLower().Equals(department.ToLower()))
+                        {
+                            addOnlyIfTheNameIsNew(ref employees, fullName);
+                        }
+
                     }
+                    connection.Close();
                 }
 
                 return employees;

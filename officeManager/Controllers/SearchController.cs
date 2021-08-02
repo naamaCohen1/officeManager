@@ -54,7 +54,6 @@ namespace officeManager.Controllers
 
             catch (Exception e)
             {
-                //throw new Exception();
                 return new BadRequestObjectResult("Fail to search on these values " + e.Message);
             }
            

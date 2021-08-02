@@ -33,7 +33,7 @@ class NameForm extends React.Component {
 
     handleChange(event) {
         let value = event.target.value;
-        console.log(event.which)
+        console.log(value)
         //if (this.state.label == 'Floor' && event.keyCode != 8) {
         //    let isnum = /^\d+$/.test(value);
         //    console.log(isnum)
@@ -48,7 +48,6 @@ class NameForm extends React.Component {
     }
 
     handleSubmit(event) {
-        console.log(user_id)
         if (this.state.label == 'Search By') {
             alert('please select catogory');
             
@@ -77,7 +76,7 @@ class NameForm extends React.Component {
             }
             var url = "https://localhost:44375/api/search/" + this.state.id 
             console.log("sending get function")
-            fetch(url, requestOptions).then(response => {
+            var test = fetch(url, requestOptions).then(response => {
                 if (response.status == 200) {
                     var data = response.json().then(data => {
                         this.setState({ people: data });
@@ -90,7 +89,7 @@ class NameForm extends React.Component {
             
         } 
           event.preventDefault();
-         //
+         
        
     }
 
