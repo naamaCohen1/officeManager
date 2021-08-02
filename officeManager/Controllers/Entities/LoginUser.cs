@@ -10,33 +10,25 @@ namespace officeManager
 {
     public class LoginUser
     {
+
+        //https://localhost:44375/api/login
         //private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
         private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
 
         public string Username { get; set; }
         public string Password { get; set; }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
         public LoginUser(string username, string password)
         {
             this.Username = username;
             this.Password = password;
         }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
         public LoginUser()
         {
         }
 
-        /// <summary>
-        /// This method checks if the login user parameters are correct
-        /// </summary>
-        /// <returns>True if valid, else false</returns>
-        public List<bool> CheckUser()
+        public List<bool> CheckUsername()
         {
             List<bool> isFound = new List<bool>() { false, false };
             string sql = string.Format("select *  from tlbEmployees where ID ={0}", Password);
@@ -56,6 +48,7 @@ namespace officeManager
                     if (string.Compare(Email.ToLower(), Username.ToLower()) == 0)
                         isFound[1] = true;
                 }
+
                 dataReader.Close();
                 command.Dispose();
                 connection.Close();
@@ -69,10 +62,6 @@ namespace officeManager
             return isFound;
         }
 
-        /// <summary>
-        /// This method gets the logged in user permissions
-        /// </summary>
-        /// <returns>User permissions</returns>
         public string GetUserPermission()
         {
             string permission = null;
@@ -88,6 +77,7 @@ namespace officeManager
                 {
                     permission = dataReader["PermissionLevel"].ToString();
                 }
+
                 dataReader.Close();
                 command.Dispose();
                 connection.Close();
@@ -98,6 +88,11 @@ namespace officeManager
                 connection.Close();
             }
             return permission;
+        }
+
+        public bool AddUser()
+        {
+            return true;
         }
     }
 }

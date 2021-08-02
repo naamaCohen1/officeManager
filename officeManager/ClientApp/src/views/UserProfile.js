@@ -40,6 +40,7 @@ export default function User() {
             event.preventDefault();
             { editEmployee() }
         }
+
         setValidatedEdit(true);
     };
 
@@ -51,6 +52,7 @@ export default function User() {
                 'Accept': 'application/json'
             }
         };
+
         var url = "https://localhost:44375/api/users/" + id;
         handleRequest(url, requestOptions)
     }
@@ -69,7 +71,7 @@ export default function User() {
                     temp[1] = temp[1].replace("\"", "")
                     dictionary.push(temp[1].trim())
                 }
-
+                
                 if (dictionary[8] == 0)
                     dictionary[8] = "ADMINISTRATOR"
                 else
