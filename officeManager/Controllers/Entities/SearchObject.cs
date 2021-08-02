@@ -37,7 +37,6 @@ namespace officeManager.Controllers.Entities
             updateCalendar();
         }
 
-
         /// <summary>
         /// This method initialize the statistics object
         /// </summary>
