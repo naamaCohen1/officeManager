@@ -261,6 +261,7 @@ namespace officeManager.Controllers
                             calendarUser.UpdateArrivingID(connection, calendar.EmployeesArriving);
                             calendar.WaitingList = calendar.WaitingList.Replace(addId, "");
                             calendarUser.UpdateWaitingList(connection, calendar.WaitingList);
+                            calendarUser.SendWaitingListEmail(connection, waitId, calendar.Date);
                         }
                     }
 
