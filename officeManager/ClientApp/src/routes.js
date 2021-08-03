@@ -5,6 +5,7 @@ import ComingToOffice from "views/ComingToOffice.js";
 import OfficeEmployees from "./views/OfficeEmployees";
 import OfficeInfo from "./views/OfficeInfo";
 import Login from "./views/Login";
+import SendAnEmail from "./views/SendAnEmail";
 
 const dashboardRoutes = [
     {
@@ -54,6 +55,14 @@ const dashboardRoutes = [
         name: "Office Information",
         icon: "nc-icon nc-bank",
         component: OfficeInfo,
+        layout: "/admin",
+    },
+    {
+        path: "/send-mail",
+        name: "Send An Email",
+        icon: "nc-icon nc-send",
+        //icon: "nc-icon nc-email-85",
+        component: SendAnEmail,
         layout: "/admin",
     },
 ];

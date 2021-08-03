@@ -20,7 +20,7 @@ namespace officeManager.Controllers
 
 
         /// <summary>
-        /// This methos aends an email using Gmail to officemanagerhealth@gmail.com
+        /// This methos sends an email using Gmail to officemanagerhealth@gmail.com
         /// </summary>
         /// <param name="id"> User ID which fill the Health Availability Certification</param>
         /// <returns><<see cref="IActionResult"/>/returns>
@@ -42,6 +42,25 @@ namespace officeManager.Controllers
                     mailMessage.Body = "Health Availability Certification for " + id + " in " + DateTime.Today.ToShortDateString() + " was submitted sucssesfully";
                     client.Send(mailMessage);
                 }
+                return new OkResult();
+            }
+            catch (Exception)
+            {
+                return new BadRequestResult();
+            }
+        }
+
+        /// <summary>
+        /// This methos sends an email using Gmail to the requested users
+        /// </summary>
+        /// <param name="emailMessage"> Email parameters as <see cref="GmailMessage"/></param>
+        /// <returns><see cref="ActionResult"/></returns>
+        [HttpPost]
+        public ActionResult<string> Post([FromBody] GmailMessage emailMessage)
+        {
+            try
+            {
+                SendMail(emailMessage);
                 return new OkResult();
             }
             catch (Exception)
