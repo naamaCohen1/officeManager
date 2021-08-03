@@ -30,6 +30,12 @@ namespace officeManager.Controllers.Entities
         {
         }
 
+        /// <summary>
+        /// This method sends an email for the added user
+        /// </summary>
+        /// <param name="connection"><see cref="SqlConnection"/></param>
+        /// <param name="id">User ID to send the email to</param>
+        /// <param name="calendar_date">Arrival date</param>
         public void SendWaitingListEmail(SqlConnection connection, string id, string calendar_date)
         {
             string sql = string.Format("SELECT * FROM tlbEmployees WHERE ID='{0}'", id);
