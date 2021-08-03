@@ -70,12 +70,12 @@ namespace officeManager
         }
 
         /// <summary>
-        /// This method gets the logged in user permissions
+        /// This method gets the logged in user permissions and Organization ID
         /// </summary>
-        /// <returns>User permissions</returns>
-        public string GetUserPermission()
+        /// <returns>User permissions and organization ID</returns>
+        public string GetUserPermissionandOrgID()
         {
-            string permission = null;
+            string permission = null, org_id = null;
             string sql = string.Format("select *  from tlbEmployees where ID ={0}", Password);
             SqlConnection connection = new SqlConnection(connetionString);
             SqlCommand command = new SqlCommand(sql, connection);
@@ -87,6 +87,7 @@ namespace officeManager
                 if (dataReader.Read())
                 {
                     permission = dataReader["PermissionLevel"].ToString();
+                    org_id = dataReader["OrgID"].ToString();
                 }
                 dataReader.Close();
                 command.Dispose();
@@ -97,7 +98,7 @@ namespace officeManager
                 command.Dispose();
                 connection.Close();
             }
-            return permission;
+            return permission + "," + org_id;
         }
     }
 }

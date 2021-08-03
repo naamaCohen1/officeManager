@@ -196,7 +196,12 @@ export default function Login() {
         else {
             sessionStorage.setItem("id", password)
             sessionStorage.setItem("loggedin", true)
-            var permission = await response.json()
+            let permissionAndOrgid = await response.json()
+            var arr = permissionAndOrgid.split(",")
+            var permission = arr[0]
+            var orgID = arr[1]
+            sessionStorage.setItem("org_id", orgID)
+
             if (permission == 0) {
                 sessionStorage.setItem("admin", true)
             }

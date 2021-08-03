@@ -46,9 +46,10 @@ namespace officeManager.Controllers
                     string PermissionLevel = dataReader["PermissionLevel"].ToString().Trim();
                     string Department = dataReader["Department"].ToString().Trim();
                     string Email = dataReader["Email"].ToString().Trim();
+                    string OrgID = dataReader["OrgID"].ToString().Trim();
 
                     employees.Add(new User(
-                        ID, FirstName, LastName, Email, CarNumber, Floor, RoomNumber, Role, PermissionLevel, Department));
+                        ID, FirstName, LastName, Email, CarNumber, Floor, RoomNumber, Role, PermissionLevel, Department, OrgID));
                 }
                 dataReader.Close();
                 command.Dispose();
@@ -120,10 +121,10 @@ namespace officeManager.Controllers
         public async Task<ActionResult<User>> Post([FromBody] User user)
         {
             string sql = string.Format("INSERT into tlbEmployees " +
-                "(ID,FirstName,LastName,Email,CarNumber,Floor,RoomNumber,Role,PermissionLevel,Department) " +
-                "values ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}')", user.ID, user.FirstName,
+                "(ID,FirstName,LastName,Email,CarNumber,Floor,RoomNumber,Role,PermissionLevel,Department,OrgID) " +
+                "values ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}','{8}','{9}', '{10}')", user.ID, user.FirstName,
                 user.LastName, user.Email, user.CarNumber, user.Floor, user.RoomNumber, user.Role,
-                user.PermissionLevel, user.Department);
+                user.PermissionLevel, user.Department, user.OrgID);
             try
             {
                 SqlConnection connection = new SqlConnection(connetionString);
@@ -131,13 +132,14 @@ namespace officeManager.Controllers
                 SqlCommand command = new SqlCommand(sql, connection);
                 command.ExecuteNonQuery();
                 command.Dispose();
+
+                user.SendWelcomeEmail(connection);
                 connection.Close();
 
                 string json = JsonConvert.SerializeObject(user);
-
                 return Created(this.Request.Path.ToString(), json);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return new BadRequestResult();
             }

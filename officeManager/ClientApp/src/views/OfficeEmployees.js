@@ -149,7 +149,8 @@ export default function OfficeEmployees() {
                 "roomNumber": roomNumber,
                 "role": role,
                 "department": department,
-                "permissionLevel": mappedPermissionLevel
+                "permissionLevel": mappedPermissionLevel,
+                "orgid": sessionStorage.getItem("org_id")
             })
         };
         var url = "https://localhost:44375/api/users/" + id;
@@ -228,7 +229,8 @@ export default function OfficeEmployees() {
                 "roomNumber": roomNumber,
                 "role": role,
                 "permissionLevel": mappedPermissionLevel,
-                "department": department
+                "department": department,
+                "orgid": sessionStorage.getItem("org_id")
             })
         };
         var url = "https://localhost:44375/api/users";
