@@ -30,6 +30,31 @@ namespace officeManager.Controllers.Entities
         {
         }
 
+        public void SendWaitingListEmail(SqlConnection connection, string id, string calendar_date)
+        {
+            string sql = string.Format("SELECT * FROM tlbEmployees WHERE ID='{0}'", id);
+            string email = null;
+
+            SqlCommand command = new SqlCommand(sql, connection);
+            SqlDataReader dataReader = command.ExecuteReader();
+            while (dataReader.Read())
+            {
+                email = dataReader["Email"].ToString().Trim();
+            }
+            dataReader.Close();
+            command.Dispose();
+            if (email == null)
+                throw new ArgumentNullException("User email can not be null");
+            GmailMessage gmailMessage = new GmailMessage();
+            DateTime date = Convert.ToDateTime(calendar_date);
+            gmailMessage.To = email;
+            gmailMessage.Subject = "you have been added to the office at " + date.ToShortDateString();
+            gmailMessage.Body = "You are lucky!\n" +
+                "Someone has just canceled his arriving at " + date.ToShortDateString() + ", We Added you instead.\n" +
+                "Enjoy (:";
+            new GmailController().SendMail(gmailMessage);
+        }
+
         /// <summary>
         /// This method update the waiting list
         /// </summary>
