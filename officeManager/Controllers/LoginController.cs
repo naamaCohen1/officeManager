@@ -21,7 +21,7 @@ namespace officeManager.Controllers
         /// <returns>User permission <see cref="IActionResult"/></returns>
         /// <seealso cref="Validation.CheckValidationUserLogin(string, string)"/>
         /// <seealso cref="LoginUser.CheckUser"/>
-        /// <seealso cref="LoginUser.GetUserPermission"/>
+        /// <seealso cref="LoginUser.GetUserPermissionandOrgID"/>
         [HttpPost]
         public async Task<ActionResult<string>> Post([FromBody] LoginUser loginUser)
         {
@@ -32,7 +32,7 @@ namespace officeManager.Controllers
                 {
                     return new NotFoundObjectResult("Invalid username or password");
                 }
-                string userRole = loginUser.GetUserPermission();
+                string userRole = loginUser.GetUserPermissionandOrgID();
                 return new OkObjectResult(userRole);
             }
             else
