@@ -12,8 +12,6 @@ import {
 } from "react-bootstrap";
 
 export default function OfficeEmployees() {
-    var mappedPermissionLevel = ""
-
     const [employeesArray, setEmployeesArray] = useState([]);
     const [message, setMessage] = useState();
 
@@ -128,10 +126,6 @@ export default function OfficeEmployees() {
 
     async function EditEmployee() {
         { handleCloseEditUser() }
-        mappedPermissionLevel = "1"
-        if (permissionLevel.toUpperCase() === 'ADMINISTRATOR') {
-            mappedPermissionLevel = "0"
-        }
 
         const requestOptions = {
             method: 'PUT',
@@ -149,7 +143,7 @@ export default function OfficeEmployees() {
                 "roomNumber": roomNumber,
                 "role": role,
                 "department": department,
-                "permissionLevel": mappedPermissionLevel,
+                "permissionLevel": permissionLevel,
                 "orgid": sessionStorage.getItem("org_id")
             })
         };
@@ -208,11 +202,6 @@ export default function OfficeEmployees() {
     async function AddEmployee() {
         { handleCloseAddUser() }
 
-        var mappedPermissionLevel = "1"
-        if (permissionLevel.toUpperCase() === 'ADMINISTRATOR') {
-            mappedPermissionLevel = "0"
-        }
-
         const requestOptions = {
             method: 'POST',
             headers: {
@@ -228,7 +217,7 @@ export default function OfficeEmployees() {
                 "floor": floor,
                 "roomNumber": roomNumber,
                 "role": role,
-                "permissionLevel": mappedPermissionLevel,
+                "permissionLevel": permissionLevel,
                 "department": department,
                 "orgid": sessionStorage.getItem("org_id")
             })
@@ -441,10 +430,19 @@ export default function OfficeEmployees() {
                                 </Form.Group>
 
                                 <Form.Group as={Col}>
-                                    <Form.Label>Permission Level</Form.Label>
-                                    <Form.Control type="text" placeholder="Permission Level" required
+                                    <label>Permission Level</label>
+                                    <Form.Control
+                                        required
+                                        as="select"
+                                        className="hotspots-select"
+                                        id="hotspots-select"
+                                        style={{ width: '230x' }}
+                                        value={permissionLevel}
                                         onChange={(e) => setPermissionLevel(e.target.value)}
-                                    />
+                                    >
+                                        <option value="0">ADMINISTRATOR</option>
+                                        <option value="1">STANDARD</option>
+                                                ></Form.Control>
                                     <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
                                 </Form.Group>
                             </Row>
@@ -548,11 +546,19 @@ export default function OfficeEmployees() {
                                 </Form.Group>
 
                                 <Form.Group as={Col}>
-                                    <Form.Label>Permission Level</Form.Label>
-                                    <Form.Control type="text" placeholder="Permission Level" required
+                                    <label>Permission Level</label>
+                                    <Form.Control
+                                        required
+                                        as="select"
+                                        className="hotspots-select"
+                                        id="hotspots-select"
+                                        style={{ width: '230x' }}
                                         value={permissionLevel}
                                         onChange={(e) => setPermissionLevel(e.target.value)}
-                                    />
+                                    >
+                                        <option value="0">ADMINISTRATOR</option>
+                                        <option value="1">STANDARD</option>
+                                                ></Form.Control>
                                     <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
                                 </Form.Group>
                             </Row>

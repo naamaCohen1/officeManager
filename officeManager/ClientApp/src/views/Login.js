@@ -89,11 +89,6 @@ export default function Login() {
     };
 
     async function AddAdminUser() {
-        var mappedPermissionLevel = "1"
-        if (permissionLevel.toUpperCase() === 'ADMINISTRATOR') {
-            mappedPermissionLevel = "0"
-        }
-
         const requestOptions = {
             method: 'POST',
             headers: {
@@ -109,7 +104,7 @@ export default function Login() {
                 "floor": floor,
                 "roomNumber": roomNumber,
                 "role": role,
-                "permissionLevel": mappedPermissionLevel,
+                "permissionLevel": permissionLevel,
                 "department": department
             })
         };
@@ -471,10 +466,18 @@ export default function Login() {
                             </Form.Group>
 
                             <Form.Group as={Col}>
-                                <Form.Label>Permission Level</Form.Label>
-                                <Form.Control type="text" placeholder="Permission Level" required
+                                <label>Permission Level</label>
+                                <Form.Control
+                                    required disabled
+                                    as="select"
+                                    className="hotspots-select"
+                                    id="hotspots-select"
+                                    style={{ width: '230x' }}
+                                    value={permissionLevel}
                                     onChange={(e) => setPermissionLevel(e.target.value)}
-                                />
+                                >
+                                    <option value="0">ADMINISTRATOR</option>
+                                                ></Form.Control>
                                 <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
                             </Form.Group>
                         </Row>

@@ -78,6 +78,7 @@ export default function SendAnEmail() {
                     employeesArray.push(dictionary)
                     employeesEmails.push(dictionary[3])
                 }
+                console.log(employeesEmails)
             }
         }
     }
@@ -110,7 +111,7 @@ export default function SendAnEmail() {
             { handleShow() }
         }
     }
-
+    
     useEffect(() => {
         getEmployees();
     }, []);
@@ -127,14 +128,18 @@ export default function SendAnEmail() {
                             <Card.Body>
                                 <Form noValidate validated={validatedEdit} onSubmit={handleSend}>
                                     <Row className="mb-3">
-                                        <Form.Group as={Col}>
-                                            <Form.Label>TO</Form.Label>
-                                            <Form.Control required type="text" placeholder="Please choose email destination"
-                                                value={to}
-                                                onChange={(e) => setTo(e.target.value)}
-                                            />
-                                            <Form.Control.Feedback type="invalid"> This field is required.</Form.Control.Feedback>
+                                        <Form.Group as={Col} controlId="my_multiselect_field">
+                                            <Form.Label>To</Form.Label>
+                                            <Form.Control as="select" multiple value={to} onChange={e => setTo([].slice.call(e.target.selectedOptions).map(item => item.value))}>
+                                                <option value="All">Show All</option>
+                                                {
+                                                    employeesArray.map(listitem => (
+                                                        <option value={listitem[3]}>{listitem[1] + " " + listitem[2]}</option>
+                                                    ))
+                                                }
+                                            </Form.Control>
                                         </Form.Group>
+
                                     </Row>
 
                                     <Row>
