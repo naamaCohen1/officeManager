@@ -70,11 +70,6 @@ export default function User() {
                     dictionary.push(temp[1].trim())
                 }
 
-                if (dictionary[8] == 0)
-                    dictionary[8] = "ADMINISTRATOR"
-                else
-                    dictionary[8] = "STANDARD"
-
                 setId(dictionary[0])
                 setFirstName(dictionary[1])
                 setLastName(dictionary[2])
@@ -90,10 +85,6 @@ export default function User() {
     }
 
     async function editEmployee() {
-        var permission = "1"
-        if (permissionLevel.toUpperCase() === 'ADMINISTRATOR')
-            permission = "0"
-
         const requestOptions = {
             method: 'PUT',
             headers: {
@@ -110,7 +101,7 @@ export default function User() {
                 "roomNumber": roomNumber,
                 "role": role,
                 "department": department,
-                "permissionLevel": permission
+                "permissionLevel": permissionLevel
             })
         };
         var response = await fetch("https://localhost:44375/api/users/" + id, requestOptions);
@@ -228,12 +219,20 @@ export default function User() {
                                             <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
                                         </Form.Group>
 
-                                        <Form.Group as={Col}>
-                                            <Form.Label>Permission Level (disabled)</Form.Label>
-                                            <Form.Control type="text" placeholder="Permission Level" required disabled
+                                        <Form.Group>
+                                            <label>Permission Level (disabled)</label>
+                                            <Form.Control
+                                                required disabled
+                                                as="select"
+                                                className="permission-select"
+                                                id="permission-select"
+                                                style={{ width: '230x' }}
                                                 value={permissionLevel}
                                                 onChange={(e) => setPermissionLevel(e.target.value)}
-                                            />
+                                            >
+                                                <option value="0">ADMINISTRATOR</option>
+                                                <option value="1">STANDARD</option>
+                                                ></Form.Control>
                                             <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
                                         </Form.Group>
                                     </Row>
