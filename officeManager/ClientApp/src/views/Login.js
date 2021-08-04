@@ -470,8 +470,8 @@ export default function Login() {
                                 <Form.Control
                                     required disabled
                                     as="select"
-                                    className="hotspots-select"
-                                    id="hotspots-select"
+                                    className="permission-select"
+                                    id="permission-select"
                                     style={{ width: '230x' }}
                                     value={permissionLevel}
                                     onChange={(e) => setPermissionLevel(e.target.value)}
