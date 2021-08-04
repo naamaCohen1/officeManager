@@ -68,6 +68,8 @@ function Sidebar({ color, image, routes }) {
                                     show = false
                                 else if (prop.name == 'Statistics')
                                     show = false
+                                else if (prop.name == 'Send An Email')
+                                    show = false
                                 else
                                     show = true
                             }
