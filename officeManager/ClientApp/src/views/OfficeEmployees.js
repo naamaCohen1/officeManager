@@ -12,6 +12,7 @@ import {
 } from "react-bootstrap";
 
 export default function OfficeEmployees() {
+    const [orgID, setOrgID] = useState(sessionStorage.getItem("org_id"));
     const [employeesArray, setEmployeesArray] = useState([]);
     const [message, setMessage] = useState();
 
@@ -62,7 +63,7 @@ export default function OfficeEmployees() {
                 'Accept': 'application/json'
             }
         };
-        var url = "https://localhost:44375/api/users/";
+        var url = "https://localhost:44375/api/users/" + orgID;
         handleRequest(url, requestOptions)
     }
 
@@ -144,10 +145,10 @@ export default function OfficeEmployees() {
                 "role": role,
                 "department": department,
                 "permissionLevel": permissionLevel,
-                "orgid": sessionStorage.getItem("org_id")
+                "orgid": orgID
             })
         };
-        var url = "https://localhost:44375/api/users/" + id;
+        var url = "https://localhost:44375/api/users/" + orgID + "/" + id;
         const response = await fetch(url, requestOptions);
         if (response.status == 204) {
             setMessage("Employee was updated.")
@@ -174,7 +175,7 @@ export default function OfficeEmployees() {
                 'Accept': 'application/json'
             }
         };
-        var url = "https://localhost:44375/api/users/" + id;
+        var url = "https://localhost:44375/api/users/" + orgID + "/" + id;
         const response = await fetch(url, requestOptions);
         if (response.status == 204) {
             setMessage("Employee was Deleted.")
@@ -219,7 +220,7 @@ export default function OfficeEmployees() {
                 "role": role,
                 "permissionLevel": permissionLevel,
                 "department": department,
-                "orgid": sessionStorage.getItem("org_id")
+                "orgid": orgID
             })
         };
         var url = "https://localhost:44375/api/users";

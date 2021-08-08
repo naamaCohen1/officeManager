@@ -1,4 +1,5 @@
-﻿using System;
+﻿using officeManager.constants;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Globalization;
@@ -9,8 +10,6 @@ namespace officeManager.Controllers.Entities
 {
     public class SearchObject
     {
-        private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
-
         public string Id { get; set; }
         public string Date { get; set; }
         public string Category { get; set; }
@@ -74,14 +73,15 @@ namespace officeManager.Controllers.Entities
         /// <summary>
         /// This method gets the employees arriving the this day
         /// </summary>
+        /// <param name="orgID"> Organization ID </param>
         /// <returns>Arriving Enployees as <see cref="Calendar"/></returns>
-        private Calendar getDate()
+        private Calendar getDate(string orgID)
         {
             Calendar calendar = new Calendar();
             try
             {
-                string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", Date);
-                SqlConnection connection = new SqlConnection(connetionString);
+                string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}' and OrgID={1}", Date, orgID);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
                 SqlCommand command = new SqlCommand(sql, connection);
                 SqlDataReader dataReader = command.ExecuteReader();
@@ -104,27 +104,28 @@ namespace officeManager.Controllers.Entities
         /// This method gets all the employees from the requested floor in this day
         /// </summary>
         /// <param name="floor">Floor to search</param>
+        /// <param name="orgID"> Organization ID </param>
         /// <returns>Employees names </returns>
-        /// <seealso cref="fixDateFormat"/>
+        /// <seealso cref="getDate(string)"/>
         /// <seealso cref="addNameToList(ref List{string}, string)"/>
-        public List<string> GetEmployeeByFloor(int floor)
+        public List<string> GetEmployeeByFloor(int floor, string orgID)
         {
             string currentFloor = null, fullName = null;
             List<string> employees = new List<string>();
 
             try
             {
-                Calendar calendar = getDate();
+                Calendar calendar = getDate(orgID);
                 if (!calendar.EmployeesArriving.Equals(""))
                 {
-                    SqlConnection connection = new SqlConnection(connetionString);
+                    SqlConnection connection = new SqlConnection(Params.connetionString);
                     connection.Open();
                     List<string> currEemployees = new List<string>(calendar.EmployeesArriving.Trim().Split(';'));
                     foreach (string employee in currEemployees)
                     {
                         if (employee.Equals("") || employee.Equals(Id))
                             continue;
-                        string sql = string.Format("select *  from tlbEmployees WHERE id = '{0}'", employee);
+                        string sql = string.Format("select *  from tlbEmployees WHERE id = '{0}' and OrgID={1}", employee,orgID);
                         SqlCommand command = new SqlCommand(sql, connection);
                         SqlDataReader dataReader = command.ExecuteReader();
                         while (dataReader.Read())
@@ -156,26 +157,26 @@ namespace officeManager.Controllers.Entities
         /// This method search for the employee Name in this day
         /// </summary>
         /// <param name="name">Employee name to get </param>
+        /// <param name="orgID"> Organization ID </param>
         /// <returns>Employees names</returns>
-        /// <seealso cref="fixDateFormat"/>
         /// <seealso cref="addNameToList(ref List{string}, string)"/>
-        public List<string> GetEmployeeByName(string name)
+        public List<string> GetEmployeeByName(string name, string orgID)
         {
             string fullName = null;
             List<string> employees = new List<string>();
             try
             {
-                Calendar calendar = getDate();
+                Calendar calendar = getDate(orgID);
                 if (!calendar.EmployeesArriving.Equals(""))
                 {
                     List<string> currEemployees = new List<string>(calendar.EmployeesArriving.Trim().Split(';'));
-                    SqlConnection connection = new SqlConnection(connetionString);
+                    SqlConnection connection = new SqlConnection(Params.connetionString);
                     connection.Open();
                     foreach (string employee in currEemployees)
                     {
                         if (employee.Equals("") || employee.Equals(Id))
                             continue;
-                        string sql = string.Format("select *  from tlbEmployees WHERE id = '{0}'", employee);
+                        string sql = string.Format("select *  from tlbEmployees WHERE id = '{0}' and OrgID={1}", employee, orgID);
                         SqlCommand command = new SqlCommand(sql, connection);
                         SqlDataReader dataReader = command.ExecuteReader();
                         while (dataReader.Read())
@@ -205,26 +206,26 @@ namespace officeManager.Controllers.Entities
         /// This method gets all the employees from the requested department in this day
         /// </summary>
         /// <param name="department">Department to search </param>
+        /// <param name="orgID"> Organization ID </param>
         /// <returns>Employees names </returns>
-        /// <seealso cref="fixDateFormat"/>
         /// <seealso cref="addNameToList(ref List{string}, string)"/>
-        public List<string> GetEmployeeByDeparment(string department)
+        public List<string> GetEmployeeByDeparment(string department, string orgID)
         {
             try
             {
-                Calendar calendar = getDate();
+                Calendar calendar = getDate(orgID);
                 string dept = null, fullName = null;
                 List<string> employees = new List<string>();
                 if (!calendar.EmployeesArriving.Equals(""))
                 {
                     List<string> currEemployees = new List<string>(calendar.EmployeesArriving.Trim().Split(';'));
-                    SqlConnection connection = new SqlConnection(connetionString);
+                    SqlConnection connection = new SqlConnection(Params.connetionString);
                     connection.Open();
                     foreach (string employee in currEemployees)
                     {
                         if (employee.Equals("") || employee.Equals(Id))
                             continue;
-                        string sql = string.Format("select *  from tlbEmployees WHERE id = '{0}'", employee);
+                        string sql = string.Format("select *  from tlbEmployees WHERE id = '{0}' and OrgID={1}", employee, orgID );
                         SqlCommand command = new SqlCommand(sql, connection);
                         SqlDataReader dataReader = command.ExecuteReader();
                         while (dataReader.Read())

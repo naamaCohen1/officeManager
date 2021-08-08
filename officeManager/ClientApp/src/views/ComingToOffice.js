@@ -21,7 +21,10 @@ var date;
 class NameForm extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { value: '', label: 'Search By', people: [], id: sessionStorage.getItem("id") };
+        this.state = {
+            value: '', label: 'Search By', people: [], id: sessionStorage.getItem("id"),
+            orgID: sessionStorage.getItem("org_id")
+        };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSelect = this.handleSelect.bind(this);
@@ -64,7 +67,7 @@ class NameForm extends React.Component {
                     this.setState({ value: '' })
                 }
             }
-            var url = "https://localhost:44375/api/search/" + this.state.id
+            var url = "https://localhost:44375/api/search/" + this.state.orgID + "/" + this.state.id
             var test = fetch(url, requestOptions).then(response => {
                 if (response.status == 200) {
                     var data = response.json().then(data => {
@@ -167,7 +170,7 @@ export default function Results() {
                 'Accept': 'application/json'
             }
         };
-        const response = await fetch("https://localhost:44375/api/calendar/" + id, requestOptions)
+        const response = await fetch("https://localhost:44375/api/calendar/" + this.state.orgID  + "/" + id, requestOptions)
         if (response.status == 200) {
             var datesArr = await response.json()
             setDates(datesArr)
@@ -219,7 +222,7 @@ export default function Results() {
         newCalDateFormat = newCalDateFormat.replace('/', '.')
         newCalDateFormat = newCalDateFormat.replace('/', '.')
         date = newCalDateFormat
-        var url = "https://localhost:44375/api/calendar/" + newCalDateFormat;
+        var url = "https://localhost:44375/api/calendar/" + this.state.orgID + "/" + newCalDateFormat;
         handleRequest(url, requestOptions)
     }
 
@@ -261,7 +264,7 @@ export default function Results() {
             })
         };
         setDateIsClick(true)
-        var data = await handleRequest("https://localhost:44375/api/calendar", requestOptions)
+        var data = await handleRequest("https://localhost:44375/api/calendar" + this.state.orgID, requestOptions)
         if (data == "no space") {
             handleShowWaitingList()
         }
@@ -286,7 +289,7 @@ export default function Results() {
             })
         };
         setDateIsClick(true)
-        handleRequest("https://localhost:44375/api/calendar", requestOptions)
+        handleRequest("https://localhost:44375/api/calendar" + this.state.orgID , requestOptions)
     }
 
     function showPeopleCame() {
@@ -334,7 +337,7 @@ export default function Results() {
                 "date": newCalDateFormat
             })
         };
-        var url = "https://localhost:44375/api/calendar/";
+        var url = "https://localhost:44375/api/calendar/" + this.state.orgID;
         const response = await fetch(url, requestOptions);
         if (response.status == 204) {
             setTitle("Info")
@@ -359,7 +362,7 @@ export default function Results() {
             }
         };
         newCalDateFormat = newCalDateFormat.replaceAll('/', '.')
-        var url = "https://localhost:44375/api/calendar/" + newCalDateFormat;
+        var url = "https://localhost:44375/api/calendar/" + this.state.orgID + "/" + newCalDateFormat;
         const response = await fetch(url, requestOptions);
         if (response.status == 204) {
             setTitle("Info")
