@@ -59,6 +59,8 @@ function Sidebar({ color, image, routes }) {
                                     show = false
                                 else if (prop.name == 'Offices')
                                     show = true
+                                else if (prop.name == 'Employees')
+                                    show = true
                                 else
                                     show = false
 
@@ -69,24 +71,22 @@ function Sidebar({ color, image, routes }) {
                                     show = false
                                 else if (prop.name == 'Offices')
                                     show = false
+                                else if (prop.name == 'Employees')
+                                    show = false
                                 else
                                     show = true
                             }
                             else {
                                 if (prop.name == 'Login')
                                     show = false
-                                else if (prop.name == 'Office Information')
-                                    show = false
-                                else if (prop.name == 'Office Employees')
-                                    show = false
-                                else if (prop.name == 'Statistics')
-                                    show = false
-                                else if (prop.name == 'Send An Email')
-                                    show = false
-                                else if (prop.name == 'Offices')
-                                    show = false
-                                else
+                                else if (prop.name == 'Health Availability Certification')
                                     show = true
+                                else if (prop.name == 'User Profile')
+                                    show = true
+                                else if (prop.name == 'Coming To The Office')
+                                    show = true
+                                else
+                                    show = false
                             }
                         }
 

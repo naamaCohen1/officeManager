@@ -194,6 +194,7 @@ export default function Login() {
         else {
             sessionStorage.setItem("id", password)
             sessionStorage.setItem("loggedin", true)
+            sessionStorage.setItem("selected_org","All")
             let permissionAndOrgid = await response.json()
             var arr = permissionAndOrgid.split(",")
             var permission = arr[0]
