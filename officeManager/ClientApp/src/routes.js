@@ -6,6 +6,7 @@ import OfficeEmployees from "./views/OfficeEmployees";
 import OfficeInfo from "./views/OfficeInfo";
 import Login from "./views/Login";
 import SendAnEmail from "./views/SendAnEmail";
+import Offices from "./views/Offices";
 
 const dashboardRoutes = [
     {
@@ -60,9 +61,15 @@ const dashboardRoutes = [
     {
         path: "/send-mail",
         name: "Send An Email",
-        icon: "nc-icon nc-send",
-        //icon: "nc-icon nc-email-85",
+        icon: "nc-icon nc-email-85",
         component: SendAnEmail,
+        layout: "/admin",
+    },
+    {
+        path: "/offices",
+        name: "Offices",
+        icon: "nc-icon nc-bullet-list-67",
+        component: Offices,
         layout: "/admin",
     },
 ];

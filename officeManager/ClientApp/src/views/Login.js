@@ -166,8 +166,11 @@ export default function Login() {
     }
 
     async function refreshPage() {
-        { handleClose() }
-        window.location.replace("https://localhost:44375/admin/user");
+        { handleClose() }   
+        if (sessionStorage.getItem("super_admin") === 'true')
+            window.location.replace("https://localhost:44375/admin/offices");
+        else
+            window.location.replace("https://localhost:44375/admin/user");
     }
 
     async function login() {
@@ -199,9 +202,15 @@ export default function Login() {
 
             if (permission == 0) {
                 sessionStorage.setItem("admin", true)
+                sessionStorage.setItem("super_admin", false)
+            }
+            else if (permission == 2) {
+                sessionStorage.setItem("admin", false)
+                sessionStorage.setItem("super_admin", true)
             }
             else {
                 sessionStorage.setItem("admin", false)
+                sessionStorage.setItem("super_admin", false)
             }
             { refreshPage() }
         }

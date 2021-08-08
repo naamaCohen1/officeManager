@@ -9,9 +9,11 @@ function Sidebar({ color, image, routes }) {
     var show = false;
     var loggedin = sessionStorage.getItem("loggedin");
     var admin = sessionStorage.getItem("admin");
+    var super_admin = sessionStorage.getItem("super_admin");
     if (loggedin == null) {
         loggedin = false
         admin = false
+        super_admin = false
     }
 
     const location = useLocation();
@@ -52,9 +54,20 @@ function Sidebar({ color, image, routes }) {
                                 show = false
                         }
                         else {
-                            if (admin === 'true') {
+                            if (super_admin === 'true') {
+                                if (prop.name == 'Login')
+                                    show = false
+                                else if (prop.name == 'Offices')
+                                    show = true
+                                else
+                                    show = false
+
+                            }
+                            else if (admin === 'true') {
 
                                 if (prop.name == 'Login')
+                                    show = false
+                                else if (prop.name == 'Offices')
                                     show = false
                                 else
                                     show = true
@@ -69,6 +82,8 @@ function Sidebar({ color, image, routes }) {
                                 else if (prop.name == 'Statistics')
                                     show = false
                                 else if (prop.name == 'Send An Email')
+                                    show = false
+                                else if (prop.name == 'Offices')
                                     show = false
                                 else
                                     show = true
