@@ -13,6 +13,7 @@ import {
 export default function SendAnEmail() {
     const [employeesArray, setEmployeesArray] = useState([]);
     const [employeesEmails, setEmployeesEmails] = useState([]);
+    const [orgID, setOrgID] = useState(sessionStorage.getItem("org_id"));
 
     const [subject, setSubject] = useState("");
     const [body, setBody] = useState("");
@@ -47,7 +48,7 @@ export default function SendAnEmail() {
                 'Accept': 'application/json'
             }
         };
-        var url = "https://localhost:44375/api/users/";
+        var url = "https://localhost:44375/api/users/" + orgID;
         handleRequest(url, requestOptions)
     }
 
@@ -59,7 +60,6 @@ export default function SendAnEmail() {
                 var dataChnage = data.replace("[", "")
                 dataChnage = dataChnage.replace("]", "")
                 var employees = dataChnage.split("},")
-                var array = []
                 for (var employee in employees) {
                     var dictionary = []
                     var employeeParams = (employees[employee]).split(",")
@@ -84,8 +84,6 @@ export default function SendAnEmail() {
     }
 
     async function sendEmail() {
-        console.log("in sendEmail")
-
         const requestOptions = {
             method: 'POST',
             headers: {
@@ -93,7 +91,7 @@ export default function SendAnEmail() {
                 'Accept': 'application/json'
             },
             body: JSON.stringify({
-                "to": to,
+                "toArray": to,
                 "subject": subject,
                 "body": body,
             })
@@ -139,7 +137,6 @@ export default function SendAnEmail() {
                                                 }
                                             </Form.Control>
                                         </Form.Group>
-
                                     </Row>
 
                                     <Row>
