@@ -244,8 +244,13 @@ export default function Login() {
             </Row>
 
 
-            <button type="submit" class="btn btn-primary"> Login </button>
-            <button type="button" class="btn btn-success" onClick={handleShowAddOffice}> Register </button>
+            <Form.Group as={Col}>
+                <button type="submit" class="btn btn-primary"> Login </button>
+            </Form.Group>
+            <Form.Group as={Col}>
+                <button type="button" class="btn btn-success" onClick={handleShowAddOffice}> Register </button>
+            </Form.Group>
+
 
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
