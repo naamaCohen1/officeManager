@@ -158,9 +158,6 @@ export default function OfficeInfo() {
                 <Row>
                     <Col md="12">
                         <Card>
-                            <Card.Header>
-                                <Card.Title as="h4">Office Information</Card.Title>
-                            </Card.Header>
                             <Card.Body>
                                 <Form noValidate validated={validatedEdit} onSubmit={handleEdit}>
                                     <Row className="mb-3">

@@ -247,11 +247,10 @@ export default function OfficeEmployees() {
                     <Col md="14">
                         <Card className="card-plain table-plain-bg">
                             <Card.Header>
-                                <Card.Title as="h4">Office Employees</Card.Title>
-                                <p className="card-category">
+                                <Card.Title as="h6" class="text-capitalize">
                                     All employees will be presented in this page.
                                     You can edit, add and delete employees.
-                                    </p>
+                                    </Card.Title>
                             </Card.Header>
                             <Card.Body className="table-full-width table-responsive px-0">
                                 <Table className="table-hover">

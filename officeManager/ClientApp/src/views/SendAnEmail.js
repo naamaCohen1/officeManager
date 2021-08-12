@@ -186,9 +186,6 @@ export default function SendAnEmail() {
                 <Row>
                     <Col md="12">
                         <Card>
-                            <Card.Header>
-                                <Card.Title as="h4">Send An Email </Card.Title>
-                            </Card.Header>
                             <Card.Body>
                                 <Form noValidate validated={validatedEdit} onSubmit={handleSend}>
                                     <Row>
