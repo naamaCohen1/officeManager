@@ -60,7 +60,16 @@ namespace officeManager.Controllers
         {
             try
             {
-                SendMail(emailMessage);
+                if (emailMessage.ToArray == null)
+                    SendMail(emailMessage);
+                else
+                {
+                    foreach (string to in emailMessage.ToArray)
+                    {
+                        emailMessage.To = to;
+                        SendMail(emailMessage);
+                    }
+                }
                 return new OkResult();
             }
             catch (Exception)

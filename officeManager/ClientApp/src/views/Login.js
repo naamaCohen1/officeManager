@@ -166,8 +166,11 @@ export default function Login() {
     }
 
     async function refreshPage() {
-        { handleClose() }
-        window.location.replace("https://localhost:44375/admin/user");
+        { handleClose() }   
+        if (sessionStorage.getItem("super_admin") === 'true')
+            window.location.replace("https://localhost:44375/admin/offices");
+        else
+            window.location.replace("https://localhost:44375/admin/user");
     }
 
     async function login() {
@@ -191,6 +194,7 @@ export default function Login() {
         else {
             sessionStorage.setItem("id", password)
             sessionStorage.setItem("loggedin", true)
+            sessionStorage.setItem("selected_org","All")
             let permissionAndOrgid = await response.json()
             var arr = permissionAndOrgid.split(",")
             var permission = arr[0]
@@ -199,9 +203,15 @@ export default function Login() {
 
             if (permission == 0) {
                 sessionStorage.setItem("admin", true)
+                sessionStorage.setItem("super_admin", false)
+            }
+            else if (permission == 2) {
+                sessionStorage.setItem("admin", false)
+                sessionStorage.setItem("super_admin", true)
             }
             else {
                 sessionStorage.setItem("admin", false)
+                sessionStorage.setItem("super_admin", false)
             }
             { refreshPage() }
         }
@@ -234,8 +244,13 @@ export default function Login() {
             </Row>
 
 
-            <button type="submit" class="btn btn-primary"> Login </button>
-            <button type="button" class="btn btn-success" onClick={handleShowAddOffice}> Register </button>
+            <Form.Group as={Col}>
+                <button type="submit" class="btn btn-primary"> Login </button>
+            </Form.Group>
+            <Form.Group as={Col}>
+                <button type="button" class="btn btn-success" onClick={handleShowAddOffice}> Register </button>
+            </Form.Group>
+
 
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
