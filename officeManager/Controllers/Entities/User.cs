@@ -12,6 +12,7 @@ namespace officeManager
 {
     public class User
     {
+        private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
         public string ID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -80,6 +81,63 @@ namespace officeManager
                 "Link: https://localhost:44375/admin/login \n\n" +
                 "If you have any problems, please contact your administrator.";
             new GmailController().SendMail(gmailMessage);
+        }
+
+        public void insertUserToDataBase()
+        {
+            try
+            {
+                string sql = null;
+                SqlConnection connection = new SqlConnection(connetionString);
+                connection.Open();
+                if(CarNumber==null)
+                    sql = string.Format("insert into tlbEmployees values({0},'{1}','{2}','{3}',{4},{5},{6},'{7}','{8}',{9},{10})", ID, FirstName, LastName, Email, "NULL", Floor, RoomNumber, Role, PermissionLevel, Department, OrgID);
+                  else
+                    sql = string.Format("insert into tlbEmployees values({0},'{1}','{2}','{3}',{4},{5},{6},'{7}','{8}',{9},{10})", ID, FirstName, LastName, Email, CarNumber, Floor, RoomNumber, Role, PermissionLevel, Department, OrgID);
+                SqlCommand command = new SqlCommand(sql, connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                dataReader.Close();
+                command.Dispose();
+                connection.Close();
+            }
+
+            catch (Exception e)
+            {
+                throw new Exception("failed to insert user");
+            }
+            
+        }
+
+        public bool checkIfUserExistInDateBase()
+        {
+            try
+            {
+                bool isExist = false;
+                SqlConnection connection = new SqlConnection(connetionString);
+                connection.Open();
+                string sql = string.Format("SELECT * FROM tlbEmployees WHERE ID='{0}'", this.ID);
+                SqlCommand command = new SqlCommand(sql, connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                string name = null;
+                while (dataReader.Read())
+                {
+                    name = dataReader["FirstName"].ToString().Trim();
+                }
+                if (name != null)
+                {
+                    isExist = true;
+
+                }
+                dataReader.Close();
+                command.Dispose();
+                connection.Close();
+                return isExist;
+            }
+
+            catch (Exception e)
+            {
+                throw new Exception("failed to read from DB");
+            }
         }
     }
 }

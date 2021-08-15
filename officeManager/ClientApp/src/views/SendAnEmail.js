@@ -1,4 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Component } from "react";
+import { Multiselect } from 'multiselect-react-dropdown';
+import DropdownMultiselect from "react-multiselect-dropdown-bootstrap";
+
+//import { colourOptions } from '../data';
 // react-bootstrap components
 import {
     Button,
@@ -10,14 +14,25 @@ import {
     Modal
 } from "react-bootstrap";
 
+
+
 export default function SendAnEmail() {
     const [employeesArray, setEmployeesArray] = useState([]);
     const [employeesEmails, setEmployeesEmails] = useState([]);
 
+
+    const [value, setValue] = useState(['orange', 'red'])
+
+    // handle onChange event of the dropdown
+    const handleChange = (e) => {
+        setSelectedValue(Array.isArray(e) ? e.map(x => x.value) : []);
+        console.log(selectedValue)
+    }
+
     const [subject, setSubject] = useState("");
     const [body, setBody] = useState("");
     const [to, setTo] = useState("");
-
+ 
     const [validatedEdit, setValidatedEdit] = useState(false);
 
     const [message, setMessage] = useState();
@@ -25,7 +40,7 @@ export default function SendAnEmail() {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-
+   
     const handleSend = (event) => {
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
@@ -82,10 +97,22 @@ export default function SendAnEmail() {
             }
         }
     }
-
+    //function getUserNames(selecedValue) {
+    //    console.log(selecedValue)
+    //}
+    //function showMultiSelect() {
+    //    return (
+    //        <Multiselect
+    //            options={["Australia", "Canada", "USA", "Poland", "Spain", "France"]}
+    //            //onChange={getUserNames()} value={selecedValue}
+    //            onChange={handleChange}
+    //            isObject={false}
+    //        />
+    //    );
+    //}
     async function sendEmail() {
         console.log("in sendEmail")
-
+        console.log('the selected valus is '+selectedValue)
         const requestOptions = {
             method: 'POST',
             headers: {
@@ -111,14 +138,17 @@ export default function SendAnEmail() {
             { handleShow() }
         }
     }
-    
+
+
     useEffect(() => {
         getEmployees();
     }, []);
 
+
     return (
         <>
             <Container fluid>
+                
                 <Row>
                     <Col md="12">
                         <Card>
@@ -138,8 +168,9 @@ export default function SendAnEmail() {
                                                     ))
                                                 }
                                             </Form.Control>
+                                           
                                         </Form.Group>
-
+                                       
                                     </Row>
 
                                     <Row>
@@ -186,3 +217,11 @@ export default function SendAnEmail() {
         </>
     );
 }
+//<Multiselect
+//    data={['Australia', 'Canada', 'USA', 'Poland', 'Spain', 'France']}
+//    //onChange={getUserNames()} value={selecedValue}
+//    //onChange={handleChange}
+//    value={value}
+//    onChange={value => console.log(value)}
+////isObject={false}
+///>

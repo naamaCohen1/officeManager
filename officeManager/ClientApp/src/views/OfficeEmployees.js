@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import axios from 'axios';
+
 // react-bootstrap components
 import {
     Button,
@@ -25,6 +27,7 @@ export default function OfficeEmployees() {
     const [roomNumber, setRoomNumber] = useState("");
     const [permissionLevel, setPermissionLevel] = useState("")
     const [department, setDepartment] = useState("")
+    const [fileName, setFileName] = useState("")
 
     const [showWarning, setShowWarning] = useState(false);
     const handleCloseWarning = () => setShowWarning(false);
@@ -51,7 +54,8 @@ export default function OfficeEmployees() {
 
     async function refreshPage() {
         { handleCloseInfo() }
-        window.location.reload();
+        //window.location.reload();
+        getEmployees()
     }
 
     async function getEmployees() {
@@ -233,6 +237,40 @@ export default function OfficeEmployees() {
             { handleShowErr() }
         }
     }
+    
+
+    function sendFile() {
+        const data = new FormData()
+        console.log(fileName)
+        //data.append("file", fileName,fileName.name);
+        data.append('file', fileName)
+        let org_id = 205488349
+        console.log(data)
+        console.log("https://localhost:44375/api/upload")
+        axios.post("https://localhost:44375/api/upload", data, { // receive two parameter endpoint url ,form data 
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }).then(res => { // then print response status
+            console.log(res.status)
+            if (res.status == 200) {
+                console.log("upload")
+                setMessage("Adding Employee ")
+                 handleShowInfo() 
+
+            }
+            else if (res.status == 204) {
+                    setMessage("emply file or not selected file")
+                    { handleShowInfo() }
+            }
+            else {
+                setMessage("fail to connect DB")
+                { handleShowInfo() }
+            }
+          })
+        
+
+    };    
 
     // Calling the function on component mount
     useEffect(() => {
@@ -242,6 +280,11 @@ export default function OfficeEmployees() {
     return (
         <>
             <Container fluid>
+                <Form.Group controlId="formFile" className="mb-3" >
+                    <Form.Label>Default file input example</Form.Label>
+                    <Form.Control type="file" onChange={(e) => setFileName(e.target.files[0])} />
+                    <Button variant="primary" onClick={sendFile}>Send</Button>
+                </Form.Group>
                 <Row>
                     <Col md="14">
                         <Card className="card-plain table-plain-bg">

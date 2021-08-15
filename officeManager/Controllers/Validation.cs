@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -25,6 +26,16 @@ namespace officeManager.Controllers
             bool isValidUsername = addr.Address == username;
 
             return isValidPassword && isValidUsername;
+        }
+
+        static public bool ValidateEmployee(DataTable csvTable)
+        {
+            return true;
+        }
+
+        static public bool ValidateHeader(DataTable csvTable)
+        {
+            return true;
         }
     }
 }
