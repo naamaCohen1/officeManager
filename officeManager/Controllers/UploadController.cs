@@ -33,7 +33,7 @@ namespace officeManager.Controllers
                     return new NoContentResult();
 
                 var path = Path.Combine(
-                            Directory.GetCurrentDirectory(), "wwwroot",
+                            Directory.GetCurrentDirectory(),
                             file.FileName);
 
                 using (var stream = new FileStream(path, FileMode.Create))

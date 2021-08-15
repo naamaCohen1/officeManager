@@ -112,19 +112,7 @@ export default function SendAnEmail() {
             }
         }
     }
-    //function getUserNames(selecedValue) {
-    //    console.log(selecedValue)
-    //}
-    //function showMultiSelect() {
-    //    return (
-    //        <Multiselect
-    //            options={["Australia", "Canada", "USA", "Poland", "Spain", "France"]}
-    //            //onChange={getUserNames()} value={selecedValue}
-    //            onChange={handleChange}
-    //            isObject={false}
-    //        />
-    //    );
-    //}
+
     async function sendEmail() {
         const requestOptions = {
             method: 'POST',
@@ -220,14 +208,14 @@ export default function SendAnEmail() {
                                     <Row>
                                         <Form.Group as={Col}>
                                             <Form.Label>To</Form.Label>
-                                            <Form.Control as="select" multiple value={to} onChange={e => setTo([].slice.call(e.target.selectedOptions).map(item => item.value))}>
+                                        </Form.Group>
                                         <Form.Group>
                                             <button type="button" class="btn btn-primary" onClick={handleShowSelectDate}>Get employees by date</button>
                                         </Form.Group>
                                         <Form.Group as={Col}>
                                             <button type="button" class="btn btn-primary" onClick={handleShowAll}>Gel All employees</button>
                                         </Form.Group>
-
+                                    </Row>
 
                                     <Row>
                                         <Form.Group as={Col}>
