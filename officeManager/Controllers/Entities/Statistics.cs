@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using officeManager.constants;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -9,9 +10,6 @@ namespace officeManager.Controllers.Entities
 {
     public class Statistics
     {
-        //private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
-        private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
-
         //        public static int Compare(DateTime d1, DateTime d2);
         //        <0 − If date1 is earlier than date2
         //        0 − If date1 is the same as date2
@@ -20,14 +18,15 @@ namespace officeManager.Controllers.Entities
         /// <summary>
         /// This method gets all the events in the requested reriod of time
         /// </summary>
+        /// <param name="orgID"> Organization ID </param>
         /// <param name="periodToGet"> Amount of days to get</param>
         /// <returns>Data as <see cref="ArrivalStatistics"/></returns>
-        /// <seealso cref="getCalendar"/>
-        /// <seealso cref="updateLists"/>
-        public ArrivalStatistics GetLastActivities(int periodToGet)
+        /// <seealso cref="getCalendar(string)"/>
+        /// <seealso cref="updateLists(ArrivalStatistics, string, string)"/>
+        public ArrivalStatistics GetLastActivities(string orgID, int periodToGet)
         {
             ArrivalStatistics arrivalStatistics = new ArrivalStatistics();
-            var events = getCalendar();
+            var events = getCalendar(orgID);
             DateTime today_date = DateTime.Today;
             DateTime week_ago = DateTime.Today.AddDays(-periodToGet);
             try
@@ -45,7 +44,7 @@ namespace officeManager.Controllers.Entities
                                 if (employee.Equals(""))
                                     continue;
                                 arrivalStatistics.TotalArrivals++;
-                                updateLists(arrivalStatistics, employee);
+                                updateLists(arrivalStatistics, employee, orgID);
                             }
                         }
                     }
@@ -63,13 +62,14 @@ namespace officeManager.Controllers.Entities
         /// </summary>
         /// <param name="arrivalStatistics">Current <see cref="ArrivalStatistics"/> object </param>
         /// <param name="employee">Employee ID To update his arrival counter</param>
-        /// <seealso cref="getUser(string)"/>
-        private void updateLists(ArrivalStatistics arrivalStatistics, string employee)
+        /// <param name="orgID"> Organization ID </param>
+        /// <seealso cref="getUser(string, string)"/>
+        private void updateLists(ArrivalStatistics arrivalStatistics, string employee, string orgID)
         {
-            User user = getUser(employee);
+            User user = getUser(orgID, employee);
 
-            if (arrivalStatistics.Employees.ContainsKey(employee))
-                arrivalStatistics.Employees[employee] = ++arrivalStatistics.Employees[user.ID];
+            if (arrivalStatistics.Employees.ContainsKey(user.ID))
+                arrivalStatistics.Employees[user.ID] = ++arrivalStatistics.Employees[user.ID];
             else
                 arrivalStatistics.Employees.Add(user.ID, 1);
 
@@ -90,18 +90,19 @@ namespace officeManager.Controllers.Entities
         }
 
         /// <summary>
-        /// Performs GET request to https://localhost:44375/api/users/{id}
+        /// Performs GET request to https://localhost:44375/api/users/{orgID}/{id}
         /// Gets a specific user's details
         /// </summary>
+        /// <param name="orgID"> Organization ID </param>
         /// <param name="id">User ID to get</param>
         /// <returns>Requested user as <see cref="User"/></returns>
-        private User getUser(string id)
+        private User getUser(string orgID, string id)
         {
-            string sql = string.Format("select * from tlbEmployees where ID={0}", id);
+            string sql = string.Format("select * from tlbEmployees where ID={0} and OrgID={1}", id, orgID);
             var user = new User();
             try
             {
-                SqlConnection connection = new SqlConnection(connetionString);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
                 SqlCommand command = new SqlCommand(sql, connection);
                 SqlDataReader dataReader = command.ExecuteReader();
@@ -133,17 +134,18 @@ namespace officeManager.Controllers.Entities
         }
 
         /// <summary>
-        /// Performs GET request to https://localhost:44375/api/calendar
+        /// Performs GET request to https://localhost:44375/api/calendar/{orgID}
         /// Gets all events from calendar
         /// </summary>
+        /// <param name="orgID"> Organization ID </param>
         /// <returns>All Calendar events as list of <see cref="Calendar"/></returns>
-        public List<Calendar> getCalendar()
+        public List<Calendar> getCalendar(string orgID)
         {
             List<Calendar> calendars = new List<Calendar>();
-            string sql = "select * from tlbCalendar";
+            string sql = string.Format("select * from tlbCalendar where OrgID={0}",orgID);
             try
             {
-                SqlConnection connection = new SqlConnection(connetionString);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
                 SqlCommand command = new SqlCommand(sql, connection);
                 SqlDataReader dataReader = command.ExecuteReader();
@@ -156,7 +158,7 @@ namespace officeManager.Controllers.Entities
                     string Date = dataReader["Date"].ToString().Trim();
 
                     calendars.Add(new Calendar(
-                        Date, EmployeesArriving, SittingCapacity, ParkingCapacity, WaitingList));
+                        Date, EmployeesArriving, SittingCapacity, ParkingCapacity, WaitingList, orgID));
                 }
                 dataReader.Close();
                 command.Dispose();

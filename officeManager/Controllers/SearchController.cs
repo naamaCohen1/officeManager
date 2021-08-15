@@ -12,12 +12,11 @@ namespace officeManager.Controllers
     [ApiController]
     public class SearchController : ControllerBase
     {
-        private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
-
         /// <summary>
-        /// Performs POST request to https://localhost:44375/api/search/{Id}
+        /// Performs POST request to https://localhost:44375/api/search/{orgID}/{Id}
         /// Gets employees names according to the requested filter
         /// </summary>
+        /// <param name="orgID"> Organization ID </param>
         /// <param name="id"> Logged in user ID </param>
         /// <param name="searchObject"> Filter to search the users according to as <see cref="SearchObject"/>
         /// For example:
@@ -30,11 +29,11 @@ namespace officeManager.Controllers
         /// </code>
         /// </param>
         /// <returns>Requested users as string</returns>
-        /// <seealso cref="SearchObject.GetEmployeeByFloor(int)"/>
-        /// <seealso cref="SearchObject.GetEmployeeByDeparment(string)"/>
-        /// <seealso cref="SearchObject.GetEmployeeByName(string)"/>
-        [HttpPost("{Id}")]
-        public ActionResult<string> Post(string id, SearchObject searchObject)
+        /// <seealso cref="SearchObject.GetEmployeeByFloor(int, string)"/>
+        /// <seealso cref="SearchObject.GetEmployeeByDeparment(string, string)"/>
+        /// <seealso cref="SearchObject.GetEmployeeByName(string, string)"/>
+        [HttpPost("{orgID}/{Id}")]
+        public ActionResult<string> Post(string orgID, string id, SearchObject searchObject)
         {
             searchObject.Id = id.Replace("\"", "");
             try
@@ -43,17 +42,17 @@ namespace officeManager.Controllers
                 if (searchObject.Category.Equals("Floor"))
                 {
                     int floor = int.Parse(searchObject.Input);
-                    List<string> employees = searchObject.GetEmployeeByFloor(floor);
+                    List<string> employees = searchObject.GetEmployeeByFloor(floor,orgID);
                     return new OkObjectResult(employees);
                 }
                 else if (searchObject.Category.Equals("Department"))
                 {
-                    List<string> employees = searchObject.GetEmployeeByDeparment(searchObject.Input);
+                    List<string> employees = searchObject.GetEmployeeByDeparment(searchObject.Input,orgID);
                     return new OkObjectResult(employees);
                 }
                 else if (searchObject.Category.Equals("EmployeeName"))
                 {
-                    List<string> employees = searchObject.GetEmployeeByName(searchObject.Input);
+                    List<string> employees = searchObject.GetEmployeeByName(searchObject.Input,orgID);
                     return new OkObjectResult(employees);
                 }
                 else

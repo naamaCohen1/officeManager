@@ -6,13 +6,12 @@ using System.Data.SqlClient;
 using Newtonsoft.Json;
 using Microsoft.Web.WebPages.OAuth;
 using officeManager.Controllers;
+using officeManager.constants;
+
 namespace officeManager
 {
     public class LoginUser
     {
-        //private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
-        private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
-
         public string Username { get; set; }
         public string Password { get; set; }
 
@@ -40,7 +39,7 @@ namespace officeManager
         {
             List<bool> isFound = new List<bool>() { false, false };
             string sql = string.Format("select *  from tlbEmployees where ID ={0}", Password);
-            SqlConnection connection = new SqlConnection(connetionString);
+            SqlConnection connection = new SqlConnection(Params.connetionString);
             SqlCommand command = new SqlCommand(sql, connection);
             SqlDataReader dataReader;
             try
@@ -77,7 +76,7 @@ namespace officeManager
         {
             string permission = null, org_id = null;
             string sql = string.Format("select *  from tlbEmployees where ID ={0}", Password);
-            SqlConnection connection = new SqlConnection(connetionString);
+            SqlConnection connection = new SqlConnection(Params.connetionString);
             SqlCommand command = new SqlCommand(sql, connection);
             SqlDataReader dataReader;
             try

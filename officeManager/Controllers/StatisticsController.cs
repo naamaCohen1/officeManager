@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
 using officeManager.Controllers.Entities;
 using System.Data.SqlClient;
+using officeManager.constants;
 
 namespace officeManager.Controllers
 {
@@ -14,9 +15,6 @@ namespace officeManager.Controllers
     [ApiController]
     public class StatisticsController : ControllerBase
     {
-        //private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
-        private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
-
         private Statistics statistics = new Statistics();
 
         /// <summary>
@@ -24,17 +22,17 @@ namespace officeManager.Controllers
         /// </summary>
         /// <param name="daysAgo"> Amount of days to get the data about </param>
         /// <returns>Arrival data as <see cref="ArrivalStatistics"/></returns>
-        [HttpGet("{daysAgo}")]
-        public ActionResult<List<User>> Get(string daysAgo)
+        [HttpGet("{orgID}/{daysAgo}")]
+        public ActionResult<List<User>> Get(string orgID, string daysAgo)
         {
             try
             {
                 int intDaysAgo = int.Parse(daysAgo);
-                ArrivalStatistics arrivalStatistics = statistics.GetLastActivities(intDaysAgo);
+                ArrivalStatistics arrivalStatistics = statistics.GetLastActivities(orgID,intDaysAgo);
                 string json = JsonConvert.SerializeObject(arrivalStatistics);
                 return new OkObjectResult(json);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return new BadRequestResult();
             }
@@ -43,17 +41,18 @@ namespace officeManager.Controllers
         /// <summary>
         /// This method gets the employees' names of the given employees' IDs
         /// </summary>
+        /// <param name="orgID"> Organization ID </param>
         /// <param name="ids"> IDs to get their names</param>
         /// <returns>List of requested employees names </returns>
         [HttpPost]
-        public ActionResult<List<string>> Post([FromBody] string[] ids)
+        public ActionResult<List<string>> Post(string orgID, [FromBody] string[] ids)
         {
             List<string> names = new List<string>();
             try
             {
                 foreach (string id in ids)
                 {
-                    var user = getUser(id.Trim());
+                    var user = getUser(id.Trim(), orgID);
                     names.Add(user.FirstName + " " + user.LastName);
                 }
 
@@ -69,15 +68,16 @@ namespace officeManager.Controllers
         /// <summary>
         /// This method gets a requested user
         /// </summary>
+        /// <param name="orgID"> Organization ID </param>
         /// <param name="id"> User ID to get </param>
         /// <returns> Requested user as <see cref="User"/></returns>
-        private User getUser(string id)
+        private User getUser(string id, string orgID)
         {
-            string sql = string.Format("select * from tlbEmployees where ID={0}", id);
+            string sql = string.Format("select * from tlbEmployees where ID={0} and OrgID={1}", id, orgID);
             var user = new User();
             try
             {
-                SqlConnection connection = new SqlConnection(connetionString);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
                 SqlCommand command = new SqlCommand(sql, connection);
                 SqlDataReader dataReader = command.ExecuteReader();

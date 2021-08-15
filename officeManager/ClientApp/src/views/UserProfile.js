@@ -11,6 +11,8 @@ import {
 } from "react-bootstrap";
 
 export default function User() {
+    const [orgID, setOrgID] = useState(sessionStorage.getItem("org_id"));
+
     const [id, setId] = React.useState(sessionStorage.getItem("id"));
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
@@ -51,7 +53,7 @@ export default function User() {
                 'Accept': 'application/json'
             }
         };
-        var url = "https://localhost:44375/api/users/" + id;
+        var url = "https://localhost:44375/api/users/" + orgID + "/" + id;
         handleRequest(url, requestOptions)
     }
 
@@ -104,7 +106,7 @@ export default function User() {
                 "permissionLevel": permissionLevel
             })
         };
-        var response = await fetch("https://localhost:44375/api/users/" + id, requestOptions);
+        var response = await fetch("https://localhost:44375/api/users/" + orgID + "/" + id, requestOptions);
         if (response.status == 204) {
             setTitle("Info")
             setMessage("Profile was updated.")

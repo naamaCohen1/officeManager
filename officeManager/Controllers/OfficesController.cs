@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using officeManager.constants;
 
 namespace officeManager.Controllers
 {
@@ -16,9 +17,6 @@ namespace officeManager.Controllers
     [ApiController]
     public class OfficesController : ControllerBase
     {
-        //private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
-        private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
-
         /// <summary>
         /// Performs GET request to https://localhost:44375/api/offices
         /// Gets all offices in DB
@@ -31,7 +29,7 @@ namespace officeManager.Controllers
             string sql = "select * from tlbOffice";
             try
             {
-                SqlConnection connection = new SqlConnection(connetionString);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
                 SqlCommand command = new SqlCommand(sql, connection);
                 SqlDataReader dataReader = command.ExecuteReader();
@@ -81,7 +79,7 @@ namespace officeManager.Controllers
             string sql = string.Format("select * from tlbOffice WHERE CONVERT(VARCHAR, ID) = '{0}'", id);
             try
             {
-                SqlConnection connection = new SqlConnection(connetionString);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
                 SqlCommand command = new SqlCommand(sql, connection);
                 SqlDataReader dataReader = command.ExecuteReader();
@@ -131,7 +129,7 @@ namespace officeManager.Controllers
                 office.HotSpot, office.HotSpotPlaces, office.ID);
             try
             {
-                SqlConnection connection = new SqlConnection(connetionString);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
                 SqlCommand command = new SqlCommand(sql, connection);
                 command.ExecuteNonQuery();
@@ -173,7 +171,7 @@ namespace officeManager.Controllers
                 updated_office.HotSpot, updated_office.HotSpotPlaces, updated_office.Name, updated_office.ID, id);
             try
             {
-                SqlConnection connection = new SqlConnection(connetionString);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
                 SqlCommand command = new SqlCommand(sql, connection);
                 command.ExecuteNonQuery();
@@ -208,7 +206,7 @@ namespace officeManager.Controllers
             string sql = string.Format("DELETE FROM tlbOffice WHERE CONVERT(VARCHAR, ID) = '{0}'", id);
             try
             {
-                SqlConnection connection = new SqlConnection(connetionString);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
                 SqlCommand command = new SqlCommand(sql, connection);
                 command.ExecuteNonQuery();

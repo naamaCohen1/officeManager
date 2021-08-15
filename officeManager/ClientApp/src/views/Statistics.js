@@ -46,7 +46,8 @@ export default class Statistics extends React.Component {
         Amount: '',
         showPie: false,
         showBar: false,
-        employeesName: []
+        employeesName: [],
+        orgID: sessionStorage.getItem("org_id")
     }
 
     handleClosePie = () => { this.setState({ showPie: false }) };
@@ -70,7 +71,7 @@ export default class Statistics extends React.Component {
                 'Accept': 'application/json'
             }
         }
-        const result = fetch("https://localhost:44375/api/Statistics/" + this.state.Amount, requestOptions).then(response => response.json())
+        const result = fetch("https://localhost:44375/api/Statistics/" + this.state.orgID + "/" + this.state.Amount, requestOptions).then(response => response.json())
             .then(data => {
                 this.setTotalAmount(data);
                 if (this.state.statOption === 'Departments') {
@@ -206,7 +207,7 @@ export default class Statistics extends React.Component {
                 ids
             )
         };
-        const results = await fetch("https://localhost:44375/api/statistics/", requestOptions).then(response => response.json())
+        const results = await fetch("https://localhost:44375/api/statistics/" + this.state.orgID, requestOptions).then(response => response.json())
             .then(names => {
                 this.setState({ employeesName: names });
             });
@@ -220,7 +221,7 @@ export default class Statistics extends React.Component {
                 'Accept': 'application/json'
             }
         }
-        const result = fetch("https://localhost:44375/api/Statistics/7", requestOptions).then(response => response.json())
+        const result = fetch("https://localhost:44375/api/Statistics/" + this.state.orgID + "/7", requestOptions).then(response => response.json())
             .then(dataWeek => {
                 this.setTotalWeek(dataWeek);
                 const department = this.calculateDepartment(dataWeek);
@@ -232,7 +233,7 @@ export default class Statistics extends React.Component {
                 this.state.dataRolesWeek = roles;
                 this.setState({ dataEmployeesWeek: employees });
             });
-        const result1 = fetch("https://localhost:44375/api/Statistics/30", requestOptions).then(response => response.json())
+        const result1 = fetch("https://localhost:44375/api/Statistics/" + this.state.orgID + "/30", requestOptions).then(response => response.json())
             .then(dataMonth => {
                 this.setTotalMonth(dataMonth);
                 const departmentMonth = this.calculateDepartment(dataMonth);
@@ -289,7 +290,6 @@ export default class Statistics extends React.Component {
                                                 <Form.Control type="text"
                                                     style={{ width: '60px' }}
                                                     onChange={this.setAmount}
-                                                    value={this.state.value}
                                                 />
                                             </Form.Group>
                                             <Form.Group as={Col} md="2.5">
