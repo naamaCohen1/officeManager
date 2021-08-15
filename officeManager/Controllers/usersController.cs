@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using officeManager.constants;
 
 namespace officeManager.Controllers
 {
@@ -15,22 +16,19 @@ namespace officeManager.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        //private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
-        private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
-
         /// <summary>
-        /// Performs GET request to https://localhost:44375/api/users
-        /// Gets all employees
+        /// Performs GET request to https://localhost:44375/api/users/
+        /// Gets all employees 
         /// </summary>
-        /// <returns> Returns all office's employees </returns>
+        /// <returns> Returns all employees </returns>
         [HttpGet]
         public async Task<ActionResult<List<User>>> Get()
         {
             List<User> employees = new List<User>();
-            string sql = "select * from tlbEmployees";
+            string sql = string.Format("select * from tlbEmployees");
             try
             {
-                SqlConnection connection = new SqlConnection(connetionString);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
                 SqlCommand command = new SqlCommand(sql, connection);
                 SqlDataReader dataReader = command.ExecuteReader();
@@ -67,19 +65,69 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs GET request to https://localhost:44375/api/users/{id}
+        /// Performs GET request to https://localhost:44375/api/users/{orgID}
+        /// Gets all employees of specific orgID
+        /// </summary>
+        /// <param name="orgID"> Organization ID </param>
+        /// <returns> Returns all office's employees </returns>
+        [HttpGet("{orgID}")]
+        public async Task<ActionResult<List<User>>> Get(string orgID)
+        {
+            List<User> employees = new List<User>();
+            string sql = string.Format("select * from tlbEmployees where OrgID={0}", orgID);
+            try
+            {
+                SqlConnection connection = new SqlConnection(Params.connetionString);
+                connection.Open();
+                SqlCommand command = new SqlCommand(sql, connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    string ID = dataReader["ID"].ToString().Trim();
+                    string FirstName = dataReader["FirstName"].ToString().Trim();
+                    string LastName = dataReader["LastName"].ToString().Trim();
+                    string CarNumber = dataReader["CarNumber"].ToString().Trim();
+                    string Floor = dataReader["Floor"].ToString().Trim();
+                    string RoomNumber = dataReader["RoomNumber"].ToString().Trim();
+                    string Role = dataReader["Role"].ToString().Trim();
+                    string PermissionLevel = dataReader["PermissionLevel"].ToString().Trim();
+                    string Department = dataReader["Department"].ToString().Trim();
+                    string Email = dataReader["Email"].ToString().Trim();
+                    string OrgID = dataReader["OrgID"].ToString().Trim();
+
+                    employees.Add(new User(
+                        ID, FirstName, LastName, Email, CarNumber, Floor, RoomNumber, Role, PermissionLevel, Department, OrgID));
+                }
+                dataReader.Close();
+                command.Dispose();
+                connection.Close();
+
+                if (employees.Count == 0)
+                    return new NotFoundObjectResult("No users were found");
+                string json = JsonConvert.SerializeObject(employees);
+                return new OkObjectResult(json);
+            }
+            catch (Exception)
+            {
+                return new BadRequestResult();
+            }
+        }
+
+        /// <summary>
+        /// Performs GET request to https://localhost:44375/api/users/{orgID}/{id}
         /// Gets specific employee
         /// </summary>
+        /// <param name="orgID"> Organization ID </param>
         /// <param name="id"> Employee's ID </param>
         /// <returns> Returns requested employee </returns>
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> Get(string id)
+        [HttpGet("{orgID}/{id}")]
+        public async Task<ActionResult<User>> Get(string orgID, string id)
         {
-            string sql = string.Format("select * from tlbEmployees where ID={0}", id);
+            string sql = string.Format("select * from tlbEmployees where ID={0} and OrgID={1}", id, orgID);
             var user = new User();
             try
             {
-                SqlConnection connection = new SqlConnection(connetionString);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
                 SqlCommand command = new SqlCommand(sql, connection);
                 SqlDataReader dataReader = command.ExecuteReader();
@@ -112,7 +160,7 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs POST request to https://localhost:44375/api/users.
+        /// Performs POST request to https://localhost:44375/api/users/.
         /// Adding new employee to DB
         /// </summary>
         /// <param name="user"> Employee to Add as <see cref="User"/> </param>
@@ -127,7 +175,7 @@ namespace officeManager.Controllers
                 user.PermissionLevel, user.Department, user.OrgID);
             try
             {
-                SqlConnection connection = new SqlConnection(connetionString);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
                 SqlCommand command = new SqlCommand(sql, connection);
                 command.ExecuteNonQuery();
@@ -146,19 +194,20 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs PUT request to https://localhost:44375/api/users/{id}
+        /// Performs PUT request to https://localhost:44375/api/users/{orgID}/{id}
         /// </summary>
         /// <param name="updated_user"> Updated employee as <see cref="User"/> </param>
+        /// <param name="orgID"> Organization ID </param>
         /// <param name="id"> Employee's ID to be update </param>
         /// <returns> <see cref="IActionResult"/> </returns>
-        /// <seealso cref="Get(string)"/>
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put([FromBody] User updated_user, string id)
+        /// <seealso cref="Get(string, string)"/>
+        [HttpPut("{orgID}/{id}")]
+        public async Task<IActionResult> Put([FromBody] User updated_user, string id, string orgID)
         {
             if (id != updated_user.ID)
                 return new BadRequestResult();
 
-            var user = Get(id);
+            var user = Get(orgID, id);
             if (user.Result.Result.ToString().Contains("NotFoundResult"))
                 return new NotFoundObjectResult("User with ID [" + id + "] was not found");
             if (!user.Result.Result.ToString().Contains("OkObjectResult"))
@@ -166,12 +215,12 @@ namespace officeManager.Controllers
 
             string sql = string.Format("UPDATE tlbEmployees " +
                 "SET ID = '{0}', FirstName = '{1}', LastName = '{2}', Email = '{3}', CarNumber = '{4}', Floor = '{5}'," +
-                "RoomNumber = '{6}', Role = '{7}', PermissionLevel = '{8}', Department = '{9}' WHERE ID = {0}",
+                "RoomNumber = '{6}', Role = '{7}', PermissionLevel = '{8}', Department = '{9}' WHERE ID = {0} and OrgID={10}",
                 updated_user.ID, updated_user.FirstName, updated_user.LastName, updated_user.Email, updated_user.CarNumber, updated_user.Floor,
-                updated_user.RoomNumber, updated_user.Role, updated_user.PermissionLevel, updated_user.Department);
+                updated_user.RoomNumber, updated_user.Role, updated_user.PermissionLevel, updated_user.Department, orgID);
             try
             {
-                SqlConnection connection = new SqlConnection(connetionString);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
                 SqlCommand command = new SqlCommand(sql, connection);
                 command.ExecuteNonQuery();
@@ -187,24 +236,25 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs DELETE request to https://localhost:44375/api/users/{id}
+        /// Performs DELETE request to https://localhost:44375/api/users/{orgID}/{id}
         /// </summary>
+        /// <param name="orgID"> Organization ID </param>
         /// <param name="id"> Employee's ID to delete </param>
         /// <returns> <see cref="IActionResult"/> </returns>
-        /// <seealso cref="Get(string)"/>
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
+        /// <seealso cref="Get(string, string)"/>
+        [HttpDelete("{orgID}/{id}")]
+        public async Task<IActionResult> Delete(string orgID, string id)
         {
-            var user = Get(id);
+            var user = Get(orgID, id);
             if (user.Result.Result.ToString().Contains("NotFoundResult"))
                 return new NotFoundObjectResult("User with ID [" + id + "] was not found");
             if (!user.Result.Result.ToString().Contains("OkObjectResult"))
                 return new BadRequestResult();
 
-            string sql = string.Format("DELETE FROM tlbEmployees WHERE ID={0}", id);
+            string sql = string.Format("DELETE FROM tlbEmployees WHERE ID={0} and OrgID={1}", id, orgID);
             try
             {
-                SqlConnection connection = new SqlConnection(connetionString);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
                 SqlCommand command = new SqlCommand(sql, connection);
                 command.ExecuteNonQuery();

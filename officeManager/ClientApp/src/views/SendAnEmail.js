@@ -18,7 +18,10 @@ import {
 
 export default function SendAnEmail() {
     const [employeesArray, setEmployeesArray] = useState([]);
+    const [dateEmployeesArray, setDateEmployeesArray] = useState([]);
     const [employeesEmails, setEmployeesEmails] = useState([]);
+    const [orgID, setOrgID] = useState(sessionStorage.getItem("org_id"));
+    const [date, setDate] = useState("");
 
 
     const [value, setValue] = useState(['orange', 'red'])
@@ -40,7 +43,19 @@ export default function SendAnEmail() {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-   
+
+    const [showAll, setShowAll] = useState(false);
+    const handleCloseAll = () => setShowAll(false);
+    const handleShowAll = () => setShowAll(true);
+
+    const [showSelectDate, setShowSelectDate] = useState(false);
+    const handleCloseSelectDate = () => setShowSelectDate(false);
+    const handleShowSelectDate = () => setShowSelectDate(true);
+
+    const [showDate, setShowDate] = useState(false);
+    const handleCloseShowDate = () => setShowDate(false);
+    const handleShowDate = () => setShowDate(true);
+
     const handleSend = (event) => {
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
@@ -55,6 +70,8 @@ export default function SendAnEmail() {
     };
 
     async function getEmployees() {
+        employeesArray.length = 0;
+
         const requestOptions = {
             method: 'GET',
             headers: {
@@ -62,7 +79,7 @@ export default function SendAnEmail() {
                 'Accept': 'application/json'
             }
         };
-        var url = "https://localhost:44375/api/users/";
+        var url = "https://localhost:44375/api/users/" + orgID;
         handleRequest(url, requestOptions)
     }
 
@@ -74,7 +91,6 @@ export default function SendAnEmail() {
                 var dataChnage = data.replace("[", "")
                 dataChnage = dataChnage.replace("]", "")
                 var employees = dataChnage.split("},")
-                var array = []
                 for (var employee in employees) {
                     var dictionary = []
                     var employeeParams = (employees[employee]).split(",")
@@ -93,7 +109,6 @@ export default function SendAnEmail() {
                     employeesArray.push(dictionary)
                     employeesEmails.push(dictionary[3])
                 }
-                console.log(employeesEmails)
             }
         }
     }
@@ -111,8 +126,6 @@ export default function SendAnEmail() {
     //    );
     //}
     async function sendEmail() {
-        console.log("in sendEmail")
-        console.log('the selected valus is '+selectedValue)
         const requestOptions = {
             method: 'POST',
             headers: {
@@ -120,7 +133,7 @@ export default function SendAnEmail() {
                 'Accept': 'application/json'
             },
             body: JSON.stringify({
-                "to": to,
+                "toArray": to,
                 "subject": subject,
                 "body": body,
             })
@@ -138,7 +151,57 @@ export default function SendAnEmail() {
             { handleShow() }
         }
     }
+    
+    async function getDate() {
+        dateEmployeesArray.length = 0;
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        };
+        var url = "https://localhost:44375/api/calendar/" + orgID + "/" + date;
+        const response = await fetch(url, requestOptions);
+        if (response.status == 200) {
+            const data = await response.json();
+            var obj = JSON.parse(data)
+            var dataChnage = obj["EmployeesArriving"]
+            if (dataChnage == null) {
+                dateEmployeesArray.length = 0;
+            }
+            if (dataChnage != null) {
+                dataChnage = dataChnage.slice(0, -1)
+                var employees = dataChnage.split(",")
+                employees.forEach(employee => {
+                    var arr = []
+                    var id = getID(employee);
+                    arr.push(id)
+                    arr.push(employee)
+                    dateEmployeesArray.push(arr)
+                })
+            }
+        }
+        else {
+            dateEmployeesArray.length = 0;
+        }
+        handleCloseSelectDate();
+        handleShowDate();
+    }
 
+    function getID(name) {
+        name = name + ''
+        var email = null
+        var first = name.split(" ")[0].replace(" ", "")
+        var last = name.split(" ")[1].replace(" ", "")
+
+        employeesArray.forEach(employee => {
+            if (employee[1] == first && employee[2] == last) {
+                email = employee[3].trim()
+            }
+        })
+        return email
+    }
 
     useEffect(() => {
         getEmployees();
@@ -152,26 +215,19 @@ export default function SendAnEmail() {
                 <Row>
                     <Col md="12">
                         <Card>
-                            <Card.Header>
-                                <Card.Title as="h4">Send An Email </Card.Title>
-                            </Card.Header>
                             <Card.Body>
                                 <Form noValidate validated={validatedEdit} onSubmit={handleSend}>
-                                    <Row className="mb-3">
-                                        <Form.Group as={Col} controlId="my_multiselect_field">
+                                    <Row>
+                                        <Form.Group as={Col}>
                                             <Form.Label>To</Form.Label>
                                             <Form.Control as="select" multiple value={to} onChange={e => setTo([].slice.call(e.target.selectedOptions).map(item => item.value))}>
-                                                <option value="All">Show All</option>
-                                                {
-                                                    employeesArray.map(listitem => (
-                                                        <option value={listitem[3]}>{listitem[1] + " " + listitem[2]}</option>
-                                                    ))
-                                                }
-                                            </Form.Control>
-                                           
+                                        <Form.Group>
+                                            <button type="button" class="btn btn-primary" onClick={handleShowSelectDate}>Get employees by date</button>
                                         </Form.Group>
-                                       
-                                    </Row>
+                                        <Form.Group as={Col}>
+                                            <button type="button" class="btn btn-primary" onClick={handleShowAll}>Gel All employees</button>
+                                        </Form.Group>
+
 
                                     <Row>
                                         <Form.Group as={Col}>
@@ -211,6 +267,78 @@ export default function SendAnEmail() {
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleClose}>OK</Button>
+                    </Modal.Footer>
+                </Modal>
+
+                <Modal show={showAll} onHide={handleCloseAll}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>To</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form>
+                            <Row className="mb-3">
+                                <Form.Group as={Col} controlId="my_multiselect_field">
+                                    <Form.Label>Please select the requested employees</Form.Label>
+                                    <Form.Control as="select" multiple value={to} onChange={e => setTo([].slice.call(e.target.selectedOptions).map(item => item.value))}>
+                                        {
+                                            employeesArray.map(listitem => (
+                                                <option value={listitem[3]}>{listitem[1] + " " + listitem[2]}</option>
+                                            ))
+                                        }
+                                    </Form.Control>
+                                </Form.Group>
+                            </Row>
+                        </Form>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <button type="button" class="btn btn-primary" onClick={handleCloseAll}> OK </button>
+                    </Modal.Footer>
+                </Modal>
+
+                <Modal show={showSelectDate} onHide={handleCloseSelectDate}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Select A Date</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form>
+                            <Row className="mb-3">
+                                <Form.Group as={Col} controlId="my_multiselect_field">
+                                    <Form.Label>Please enter a date (MM.DD.YYYY)</Form.Label>
+                                    <Form.Control type="text" placeholder="MM.DD.YYYY"
+                                        value={date}
+                                        onChange={(e) => setDate(e.target.value)}
+                                    />
+                                </Form.Group>
+                            </Row>
+                        </Form>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <button type="button" class="btn btn-primary" onClick={getDate}> OK </button>
+                    </Modal.Footer>
+                </Modal>
+
+                <Modal show={showDate} onHide={handleCloseShowDate}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>To</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form>
+                            <Row className="mb-3">
+                                <Form.Group as={Col} controlId="my_multiselect_field">
+                                    <Form.Label>Please select the requested employees</Form.Label>
+                                    <Form.Control as="select" multiple value={to} onChange={e => setTo([].slice.call(e.target.selectedOptions).map(item => item.value))}>
+                                        {
+                                            dateEmployeesArray.map(listitem => (
+                                                <option value={listitem[0]}>{listitem[1]}</option>
+                                            ))
+                                        }
+                                    </Form.Control>
+                                </Form.Group>
+                            </Row>
+                        </Form>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <button type="button" class="btn btn-primary" onClick={handleCloseShowDate}> OK </button>
                     </Modal.Footer>
                 </Modal>
             </Container>

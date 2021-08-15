@@ -9,8 +9,6 @@ namespace officeManager.Controllers.Entities
 {
     public class CalendarUser
     {
-        private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
-
         public string Id { get; set; }
         public string Date { get; set; }
 
@@ -36,9 +34,10 @@ namespace officeManager.Controllers.Entities
         /// <param name="connection"><see cref="SqlConnection"/></param>
         /// <param name="id">User ID to send the email to</param>
         /// <param name="calendar_date">Arrival date</param>
-        public void SendWaitingListEmail(SqlConnection connection, string id, string calendar_date)
+        /// <param name="orgID"> Organization ID </param>
+        public void SendWaitingListEmail(SqlConnection connection, string id, string calendar_date, string orgID)
         {
-            string sql = string.Format("SELECT * FROM tlbEmployees WHERE ID='{0}'", id);
+            string sql = string.Format("SELECT * FROM tlbEmployees WHERE ID='{0}' and OrgID={1}", id, orgID);
             string email = null;
 
             SqlCommand command = new SqlCommand(sql, connection);
@@ -66,9 +65,10 @@ namespace officeManager.Controllers.Entities
         /// </summary>
         /// <param name="connection"> <see cref="SqlConnection"/></param>
         /// <param name="names">Update waiting list value</param>
-        public void UpdateWaitingList(SqlConnection connection, string names)
+        /// <param name="orgID"> Organization ID </param>
+        public void UpdateWaitingList(SqlConnection connection, string names, string orgID)
         {
-            string sql = string.Format("UPDATE tlbCalendar SET WaitingList = '{0}' where date = '{1}'", names, Date);
+            string sql = string.Format("UPDATE tlbCalendar SET WaitingList = '{0}' where date = '{1}' and OrgID={2}", names, Date, orgID);
             try
             {
                 SqlCommand command = new SqlCommand(sql, connection);
@@ -86,9 +86,10 @@ namespace officeManager.Controllers.Entities
         /// This method gets the employee name
         /// </summary>
         /// <param name="connection"> <see cref="SqlConnection"/></param>
-        public string GetEmployeeName(SqlConnection connection)
+        /// <param name="orgID"> Organization ID </param>
+        public string GetEmployeeName(SqlConnection connection, string orgID)
         {
-            string sql = string.Format("select * from tlbEmployees where id = {0}", Id);
+            string sql = string.Format("select * from tlbEmployees where id = {0} and OrgID={1}", Id, orgID);
             string name = null;
             try
             {
@@ -118,9 +119,10 @@ namespace officeManager.Controllers.Entities
         /// </summary>
         /// <param name="connection"> <see cref="SqlConnection"/></param>
         /// <param name="names">Update Arriving ID list value</param>
-        public void UpdateArrivingID(SqlConnection connection, string names)
+        /// <param name="orgID"> Organization ID </param>
+        public void UpdateArrivingID(SqlConnection connection, string names, string orgID)
         {
-            string sql = string.Format("UPDATE tlbCalendar SET EmployeesArriving = '{0}' where date = '{1}'", names, Date);
+            string sql = string.Format("UPDATE tlbCalendar SET EmployeesArriving = '{0}' where date = '{1}' and OrgID={2}", names, Date, orgID);
             try
             {
                 SqlCommand command = new SqlCommand(sql, connection);
@@ -139,9 +141,10 @@ namespace officeManager.Controllers.Entities
         /// </summary>
         /// <param name="connection"> <see cref="SqlConnection"/></param>
         /// <param name="names">Update Capacity value</param>
-        public void UpdateCapacity(SqlConnection connection, int capacity)
+        /// <param name="orgID"> Organization ID </param>
+        public void UpdateCapacity(SqlConnection connection, int capacity, string orgID)
         {
-            string sql = string.Format("UPDATE tlbCalendar SET SittingCapacity = {0} where date = '{1}'", capacity.ToString(), Date);
+            string sql = string.Format("UPDATE tlbCalendar SET SittingCapacity = {0} where date = '{1}' and OrgID={2}", capacity.ToString(), Date,orgID);
             try
             {
                 SqlCommand command = new SqlCommand(sql, connection);
@@ -159,9 +162,10 @@ namespace officeManager.Controllers.Entities
         /// </summary>
         /// <param name="arraivingID">IDs to gets thier names</param>
         /// <param name="connection"><see cref="SqlConnection"/></param>
+        /// <param name="orgID"> Organization ID </param>
         /// <returns>Requested employees names</returns>
-        /// <seealso cref="GetEmployeeName(SqlConnection)"/>
-        public string GetComingEmployeesNames(string arraivingID, SqlConnection connection)
+        /// <seealso cref="GetEmployeeName(SqlConnection, string)"/>
+        public string GetComingEmployeesNames(string arraivingID, SqlConnection connection, string orgID)
         {
             string comingEmployees = null;
             try
@@ -176,7 +180,7 @@ namespace officeManager.Controllers.Entities
                         continue;
                     CalendarUser user = new CalendarUser();
                     user.Id = employeeID;
-                    string name = user.GetEmployeeName(connection);
+                    string name = user.GetEmployeeName(connection,orgID);
                     comingEmployees += name + ',';
                 }
             }

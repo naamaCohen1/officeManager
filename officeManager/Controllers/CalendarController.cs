@@ -5,6 +5,7 @@ using officeManager.Controllers.Entities;
 using System.Data.SqlClient;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using officeManager.constants;
 
 namespace officeManager.Controllers
 {
@@ -13,22 +14,19 @@ namespace officeManager.Controllers
     [ApiController]
     public class CalendarController : ControllerBase
     {
-        //private string connetionString = @"Data Source=DESKTOP-U9FO5L4,1433;Initial Catalog=OfficeManagerDB;User ID=naama;Password=naama";
-        string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
-
         /// <summary>
-        /// Performs GET request to https://localhost:44375/api/calendar
+        /// Performs GET request to https://localhost:44375/api/calendar/{orgID}
         /// Gets all calendar events
         /// </summary>
         /// <returns> List of all calendar events as <see cref="List{Calendar}"/> </returns>
-        [HttpGet]
-        public ActionResult<List<Calendar>> Get()
+        [HttpGet("{orgID}")]
+        public ActionResult<List<Calendar>> Get(string orgID)
         {
             List<Calendar> calendars = new List<Calendar>();
-            string sql = "select * from tlbCalendar";
+            string sql = string.Format("select * from tlbCalendar where orgID={0}", orgID);
             try
             {
-                SqlConnection connection = new SqlConnection(connetionString);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
                 SqlCommand command = new SqlCommand(sql, connection);
                 SqlDataReader dataReader = command.ExecuteReader();
@@ -41,7 +39,7 @@ namespace officeManager.Controllers
                     string Date = dataReader["Date"].ToString().Trim();
 
                     calendars.Add(new Calendar(
-                        Date, EmployeesArriving, SittingCapacity, ParkingCapacity, WaitingList));
+                        Date, EmployeesArriving, SittingCapacity, ParkingCapacity, WaitingList, orgID));
                 }
                 dataReader.Close();
                 command.Dispose();
@@ -59,7 +57,7 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs POST request to https://localhost:44375/api/calendar
+        /// Performs POST request to https://localhost:44375/api/calendar/{orgID}
         /// Adding employee to EmployeesArriving in the requested day 
         /// </summary>
         /// <param name="calendarUser"> Employee to be added as <see cref="CalendarUser"/> 
@@ -71,16 +69,16 @@ namespace officeManager.Controllers
         /// </code>
         /// </param>
         /// <returns> calendar object as <see cref="Calendar"/> </returns>
-        [HttpPost]
-        public ActionResult<Calendar> Post([FromBody] CalendarUser calendarUser)
+        [HttpPost("{orgID}")]
+        public ActionResult<Calendar> Post(string orgID, [FromBody] CalendarUser calendarUser)
         {
-            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", calendarUser.Date);
+            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}' and OrgID={1}", calendarUser.Date, orgID);
             Calendar calendar = new Calendar();
             int intCapacity;
 
             try
             {
-                SqlConnection connection = new SqlConnection(connetionString);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
                 SqlCommand command = new SqlCommand(sql, connection);
                 SqlDataReader dataReader = command.ExecuteReader();
@@ -98,14 +96,14 @@ namespace officeManager.Controllers
                     intCapacity = int.Parse(calendar.SittingCapacity);
                     if (intCapacity == 0)
                         return new OkObjectResult("no space");
-                    string employeesName = calendarUser.GetComingEmployeesNames(calendar.EmployeesArriving, connection);
+                    string employeesName = calendarUser.GetComingEmployeesNames(calendar.EmployeesArriving, connection, orgID);
 
                     if (calendar.EmployeesArriving == null || !calendar.EmployeesArriving.Contains(calendarUser.Id))
                     {
-                        calendarUser.UpdateCapacity(connection, --intCapacity);
+                        calendarUser.UpdateCapacity(connection, --intCapacity, orgID);
                         calendar.EmployeesArriving += string.Format("{0};", calendarUser.Id);
-                        calendarUser.UpdateArrivingID(connection, calendar.EmployeesArriving);
-                        employeesName += calendarUser.GetEmployeeName(connection) + ',';
+                        calendarUser.UpdateArrivingID(connection, calendar.EmployeesArriving, orgID);
+                        employeesName += calendarUser.GetEmployeeName(connection, orgID) + ',';
                     }
                     command.Dispose();
                     connection.Close();
@@ -121,19 +119,19 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs PUT request to https://localhost:44375/api/calendar
+        /// Performs PUT request to https://localhost:44375/api/calendar/{orgID}
         /// Add User to Waiting list
         /// </summary>
         /// <param name="calendarUser"> User to add to waiting list as <see cref="CalendarUser"/></param>
         /// <returns><see cref="IActionResult"/></returns>
-        [HttpPut]
-        public ActionResult Put([FromBody] CalendarUser calendarUser)
+        [HttpPut("{orgID}")]
+        public ActionResult Put(string orgID, [FromBody] CalendarUser calendarUser)
         {
-            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", calendarUser.Date);
+            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}' and OrgID={1}", calendarUser.Date, orgID);
             string waitingList = null, date = null;
             try
             {
-                SqlConnection connection = new SqlConnection(connetionString);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
                 SqlCommand command = new SqlCommand(sql, connection);
                 SqlDataReader dataReader = command.ExecuteReader();
@@ -166,19 +164,20 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs PUT request to https://localhost:44375/api/calendar/{date}
+        /// Performs PUT request to https://localhost:44375/api/calendar/{orgID}/{date}
         /// Update ParkingCapacity in the requested date
         /// </summary>
         /// <param name="date"> Date to update the details in </param>
-        /// <returns><see cref="ActionResult"/></returns>[HttpPut("{date}")]
-        public ActionResult Put(string date)
+        /// <returns><see cref="ActionResult"/></returns>
+        [HttpPut("{orgID}/{date}")]
+        public ActionResult Put(string orgID, string date)
         {
-            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", date);
+            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}' and OrgID={1}", date, orgID);
             string parkigCapacity = null, dateCal = null;
             int intPark;
             try
             {
-                SqlConnection connection = new SqlConnection(connetionString);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
                 SqlCommand command = new SqlCommand(sql, connection);
                 SqlDataReader dataReader = command.ExecuteReader();
@@ -213,20 +212,20 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs DELETE request to https://localhost:44375/api/calendar
+        /// Performs DELETE request to https://localhost:44375/api/calendar/{orgID}
         /// Delete a user from the requested day
         /// </summary>
         /// <param name="calendarUser">User to delete and a date as <see cref="CalendarUser"/></param>
         /// <returns>Updates calendar as <see cref="Calendar"/></returns>
-        [HttpDelete]
-        public ActionResult<Calendar> Delete([FromBody] CalendarUser calendarUser)
+        [HttpDelete("{orgID}")]
+        public ActionResult<Calendar> Delete(string orgID, [FromBody] CalendarUser calendarUser)
         {
             Calendar calendar = new Calendar();
-            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", calendarUser.Date);
+            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}' and orgID={1}", calendarUser.Date, orgID);
             int intCap;
             try
             {
-                SqlConnection connection = new SqlConnection(connetionString);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
                 SqlCommand command = new SqlCommand(sql, connection);
                 SqlDataReader dataReader = command.ExecuteReader();
@@ -247,25 +246,25 @@ namespace officeManager.Controllers
                     }
                     else
                     {
-                        calendarUser.UpdateCapacity(connection, ++intCap);
+                        calendarUser.UpdateCapacity(connection, ++intCap, orgID);
                         string removeId = string.Format("{0};", calendarUser.Id);
                         calendar.EmployeesArriving = calendar.EmployeesArriving.Replace(removeId, "");
-                        calendarUser.UpdateArrivingID(connection, calendar.EmployeesArriving);
+                        calendarUser.UpdateArrivingID(connection, calendar.EmployeesArriving, orgID);
 
-                        if (calendar.WaitingList != null || calendar.WaitingList != "")
+                        if (!string.IsNullOrEmpty(calendar.WaitingList))
                         {
-                            calendarUser.UpdateCapacity(connection, --intCap);
+                            calendarUser.UpdateCapacity(connection, --intCap, orgID);
                             string waitId = calendar.WaitingList.Split(";")[0];
                             string addId = string.Format("{0};", waitId);
                             calendar.EmployeesArriving += addId;
-                            calendarUser.UpdateArrivingID(connection, calendar.EmployeesArriving);
+                            calendarUser.UpdateArrivingID(connection, calendar.EmployeesArriving, orgID);
                             calendar.WaitingList = calendar.WaitingList.Replace(addId, "");
-                            calendarUser.UpdateWaitingList(connection, calendar.WaitingList);
-                            calendarUser.SendWaitingListEmail(connection, waitId, calendar.Date);
+                            calendarUser.UpdateWaitingList(connection, calendar.WaitingList, orgID);
+                            calendarUser.SendWaitingListEmail(connection, waitId, calendar.Date, orgID);
                         }
                     }
 
-                    string employeesName = calendarUser.GetComingEmployeesNames(calendar.EmployeesArriving, connection);
+                    string employeesName = calendarUser.GetComingEmployeesNames(calendar.EmployeesArriving, connection, orgID);
                     command.Dispose();
                     connection.Close();
                     calendar.EmployeesArriving = employeesName;
@@ -281,20 +280,20 @@ namespace officeManager.Controllers
 
 
         /// <summary>
-        /// Performs GET request to https://localhost:44375/api/calendar/mm.dd.yyyy
+        /// Performs GET request to https://localhost:44375/api/calendar/{orgID}/mm.dd.yyyy
         /// Adding employee to EmployeesArriving in the requested day 
         /// </summary>
         /// <param name="calendarUser"> Employee to be added as <see cref="CalendarUser"/> </param>
         /// <returns> ???????? </returns>
-        [HttpGet("{date}")]
-        public ActionResult<Calendar> Get(string date)
+        [HttpGet("{orgID}/{date}")]
+        public ActionResult<Calendar> Get(string orgID, string date)
         {
-            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}'", date);
+            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}' and OrgID={1}", date, orgID);
             Calendar calendar = new Calendar();
 
             try
             {
-                SqlConnection connection = new SqlConnection(connetionString);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
                 SqlCommand command = new SqlCommand(sql, connection);
                 SqlDataReader dataReader = command.ExecuteReader();
@@ -310,7 +309,7 @@ namespace officeManager.Controllers
                     if (calendar.EmployeesArriving != null)
                     {
                         CalendarUser calUser = new CalendarUser();
-                        calendar.EmployeesArriving = calUser.GetComingEmployeesNames(calendar.EmployeesArriving, connection);
+                        calendar.EmployeesArriving = calUser.GetComingEmployeesNames(calendar.EmployeesArriving, connection, orgID);
                         connection.Close();
                         return new OkObjectResult(JsonConvert.SerializeObject(calendar));
                     }
@@ -332,21 +331,21 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs POST request to https://localhost:44375/api/calendar/id
+        /// Performs POST request to https://localhost:44375/api/calendar/{orgID}/{id}
         /// Gets all dates users signed to 
         /// </summary>
         /// <param name="id">User to get his dates</param>
         /// <returns>List of Dates</returns>
-        [HttpPost("{id}")]
-        public ActionResult<List<string>> Post(string id)
+        [HttpPost("{orgID}/{id}")]
+        public ActionResult<List<string>> Post(string orgID, string id)
         {
             try
             {
                 List<string> dates = new List<string>();
-                string sql = string.Format("SELECT * FROM tlbCalendar WHERE EmployeesArriving LIKE '%{0}%'", id);
+                string sql = string.Format("SELECT * FROM tlbCalendar WHERE EmployeesArriving LIKE '%{0}%' and OrgID={1}", id, orgID);
                 DateTime today_date = DateTime.Today;
 
-                SqlConnection connection = new SqlConnection(connetionString);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
                 SqlCommand command = new SqlCommand(sql, connection);
                 SqlDataReader dataReader = command.ExecuteReader();

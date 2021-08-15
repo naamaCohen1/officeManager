@@ -63,8 +63,8 @@ export default function HealthAvailabilityCertification() {
                     <Col md="12">
                         <Card className="card-tasks">
                             <Card.Header>
-                                <Card.Title as="h4">Health  Availability Certification</Card.Title>
-                                <p className="card-category">Your ID will be recorded when you submit this form.</p>
+                                <Card.Title as="h6" class="text-capitalize">
+                                    Your ID will be recorded when you submit this form.</Card.Title>
                             </Card.Header>
                             <Card.Body>
                                 <Form noValidate validated={validatedSubmit} onSubmit={handleSubmit}>

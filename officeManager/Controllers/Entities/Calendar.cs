@@ -12,6 +12,7 @@ namespace officeManager.Controllers.Entities
         public string SittingCapacity { get; set; }
         public string ParkingCapacity { get; set; }
         public string WaitingList { get; set; }
+        public string orgID { get; set; }
 
         /// <summary>
         /// Constructor
@@ -23,26 +24,28 @@ namespace officeManager.Controllers.Entities
         /// <summary>
         /// Constructor
         /// </summary>
-        public Calendar(string date, string employeesArriving, string sittingCapacity, string parkingCapacity)
+        public Calendar(string date, string employeesArriving, string sittingCapacity, string parkingCapacity, string orgID)
         {
             this.Date = date;
             this.EmployeesArriving = employeesArriving;
             this.SittingCapacity = sittingCapacity;
             this.ParkingCapacity = parkingCapacity;
             this.WaitingList = String.Empty;
+            this.orgID = orgID;
         }
 
         /// <summary>
         /// Constructor
         /// </summary>
         public Calendar(string date, string employeesArriving, string sittingCapacity,
-            string parkingCapacity, string WaitingList)
+            string parkingCapacity, string WaitingList, string orgID)
         {
             this.Date = date;
             this.EmployeesArriving = employeesArriving;
             this.SittingCapacity = sittingCapacity;
             this.ParkingCapacity = parkingCapacity;
             this.WaitingList = WaitingList;
+            this.orgID = orgID;
         }
     }
 }

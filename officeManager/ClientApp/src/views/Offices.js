@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from 'axios';
-
 // react-bootstrap components
 import {
     Button,
@@ -13,22 +11,21 @@ import {
     Form
 } from "react-bootstrap";
 
-export default function OfficeEmployees() {
-    const [orgID, setOrgID] = useState(sessionStorage.getItem("org_id"));
-    const [employeesArray, setEmployeesArray] = useState([]);
+export default function Offices() {
+    const [officesArray, setOfficesArray] = useState([]);
     const [message, setMessage] = useState();
 
-    const [id, setId] = useState("");
-    const [firstName, setFirstName] = useState("")
-    const [lastName, setLastName] = useState("")
-    const [email, setEmail] = useState("")
-    const [carNumber, setCarNumber] = useState("")
-    const [role, setRole] = useState("")
-    const [floor, setFloor] = useState("")
-    const [roomNumber, setRoomNumber] = useState("");
-    const [permissionLevel, setPermissionLevel] = useState("")
-    const [department, setDepartment] = useState("")
-    const [fileName, setFileName] = useState("")
+    const [name, setName] = useState("");
+    const [numOfEmployees, setNumOfEmployees] = useState("")
+    const [parkingAmount, setParkingAmount] = useState("")
+    const [floorsAmount, setFloorsAmount] = useState("")
+    const [roomsAmount, setRoomsAmount] = useState("")
+    const [meetingRoomsAmount, setMeetingRoomsAmount] = useState("")
+    const [officeCapacity, setOfficeCapacity] = useState("")
+    const [openSpace, setOpenSpace] = useState("");
+    const [hotSpot, setHotSpot] = useState("")
+    const [hotSpotPlaces, setHotSpotPlaces] = useState("")
+    const [id, setID] = useState("")
 
     const [showWarning, setShowWarning] = useState(false);
     const handleCloseWarning = () => setShowWarning(false);
@@ -42,24 +39,23 @@ export default function OfficeEmployees() {
     const handleCloseErr = () => setShowErr(false);
     const handleShowErr = () => setShowErr(true);
 
-    const [showAddUser, setShowAddUser] = useState(false);
-    const handleCloseAddUser = () => setShowAddUser(false);
-    const handleShowAddUser = () => setShowAddUser(true);
+    const [showAddOffice, setShowAddOffice] = useState(false);
+    const handleCloseAddOffice = () => setShowAddOffice(false);
+    const handleShowAddOffice = () => setShowAddOffice(true);
 
-    const [showEditUser, setShowEditUser] = useState(false);
-    const handleCloseEditUser = () => setShowEditUser(false);
-    const handleShowEditUser = () => setShowEditUser(true);
+    const [showEditOffice, setShowEditOffice] = useState(false);
+    const handleCloseEditOffice = () => setShowEditOffice(false);
+    const handleShowEditOffice = () => setShowEditOffice(true);
 
     const [validatedAdd, setValidatedAdd] = useState(false);
     const [validatedEdit, setValidatedEdit] = useState(false);
 
     async function refreshPage() {
         { handleCloseInfo() }
-        //window.location.reload();
-        getEmployees()
+        window.location.reload();
     }
 
-    async function getEmployees() {
+    async function getOffices() {
         const requestOptions = {
             method: 'GET',
             headers: {
@@ -67,7 +63,7 @@ export default function OfficeEmployees() {
                 'Accept': 'application/json'
             }
         };
-        var url = "https://localhost:44375/api/users/" + orgID;
+        var url = "https://localhost:44375/api/offices/";
         handleRequest(url, requestOptions)
     }
 
@@ -78,26 +74,21 @@ export default function OfficeEmployees() {
             if (data != "null") {
                 var dataChnage = data.replace("[", "")
                 dataChnage = dataChnage.replace("]", "")
-                var employees = dataChnage.split("},")
+                var offices = dataChnage.split("},")
                 var array = []
-                for (var employee in employees) {
+                for (var office in offices) {
                     var dictionary = []
-                    var employeeParams = (employees[employee]).split(",")
-                    for (var param in employeeParams) {
-                        var temp = employeeParams[param].split(":")
+                    var officeParams = (offices[office]).split(",")
+                    for (var param in officeParams) {
+                        var temp = officeParams[param].split(":")
                         temp[1] = temp[1].replace("}", "")
                         temp[1] = temp[1].replace("\"", "")
                         temp[1] = temp[1].replace("\"", "")
                         dictionary.push(temp[1].trim())
                     }
-                    if (dictionary[8] == 0)
-                        dictionary[8] = "ADMINISTRATOR"
-                    else
-                        dictionary[8] = "STANDARD"
-
                     array.push(dictionary)
                 }
-                setEmployeesArray(array)
+                setOfficesArray(array)
             }
         }
     }
@@ -110,27 +101,28 @@ export default function OfficeEmployees() {
         }
         else {
             event.preventDefault();
-            { EditEmployee() }
+            { EditOffice() }
         }
         setValidatedEdit(true);
     };
 
-    async function handleEditEmployee(value) {
-        setId(value[0])
-        setFirstName(value[1])
-        setLastName(value[2])
-        setEmail(value[3])
-        setCarNumber(value[4])
-        setFloor(value[5])
-        setRoomNumber(value[6])
-        setRole(value[7])
-        setDepartment(value[9])
-        setPermissionLevel(value[8])
-        { handleShowEditUser() }
+    async function handleEditOffice(value) {
+        setName(value[0])
+        setNumOfEmployees(value[1])
+        setParkingAmount(value[2])
+        setFloorsAmount(value[3])
+        setRoomsAmount(value[4])
+        setMeetingRoomsAmount(value[5])
+        setOfficeCapacity(value[6])
+        setOpenSpace(value[7])
+        setHotSpot(value[8])
+        setHotSpotPlaces(value[9])
+        setID(value[10])
+        { handleShowEditOffice() }
     }
 
-    async function EditEmployee() {
-        { handleCloseEditUser() }
+    async function EditOffice() {
+        { handleCloseEditOffice() }
 
         const requestOptions = {
             method: 'PUT',
@@ -139,38 +131,38 @@ export default function OfficeEmployees() {
                 'Accept': 'application/json'
             },
             body: JSON.stringify({
-                "id": id,
-                "firstName": firstName,
-                "lastName": lastName,
-                "email": email,
-                "carNumber": carNumber,
-                "floor": floor,
-                "roomNumber": roomNumber,
-                "role": role,
-                "department": department,
-                "permissionLevel": permissionLevel,
-                "orgid": orgID
+                "name": name,
+                "numOfEmployees": numOfEmployees,
+                "parkingAmount": parkingAmount,
+                "floorsAmount": floorsAmount,
+                "roomsAmount": roomsAmount,
+                "meetingRoomsAmount": meetingRoomsAmount,
+                "officeCapacity": officeCapacity,
+                "openSpace": openSpace,
+                "hotSpot": hotSpot,
+                "hotSpotPlaces": hotSpotPlaces,
+                "id": id
             })
         };
-        var url = "https://localhost:44375/api/users/" + orgID + "/" + id;
+        var url = "https://localhost:44375/api/offices/" + id;
         const response = await fetch(url, requestOptions);
         if (response.status == 204) {
-            setMessage("Employee was updated.")
+            setMessage("Office was updated.")
             { handleShowInfo() }
         }
         else {
-            setMessage("Unexpected error! Fail to delete employee.")
+            setMessage("Unexpected error! Fail to update office.")
             { handleShowErr() }
         }
     }
 
-    async function handleDeleteEmployee(value) {
-        setId(value)
-        setMessage("Do you really want to delete this employee? This action can not be undone.")
+    async function handleDeleteOffice(value) {
+        setID(value)
+        setMessage("Do you really want to delete this office? This action can not be undone.")
         { handleShowWarning() }
     }
 
-    async function deleteEmployee() {
+    async function deleteOffice() {
         { handleCloseWarning() }
         const requestOptions = {
             method: 'DELETE',
@@ -179,14 +171,14 @@ export default function OfficeEmployees() {
                 'Accept': 'application/json'
             }
         };
-        var url = "https://localhost:44375/api/users/" + orgID + "/" + id;
+        var url = "https://localhost:44375/api/offices/" + id;
         const response = await fetch(url, requestOptions);
         if (response.status == 204) {
-            setMessage("Employee was Deleted.")
+            setMessage("Office was Deleted.")
             { handleShowInfo() }
         }
         else {
-            setMessage("Unexpected error! Fail to delete employee.")
+            setMessage("Unexpected error! Fail to delete office.")
             { handleShowErr() }
         }
     }
@@ -199,13 +191,13 @@ export default function OfficeEmployees() {
         }
         else {
             event.preventDefault();
-            { AddEmployee() }
+            { AddOffice() }
         }
         setValidatedAdd(true);
     };
 
-    async function AddEmployee() {
-        { handleCloseAddUser() }
+    async function AddOffice() {
+        { handleCloseAddOffice() }
 
         const requestOptions = {
             method: 'POST',
@@ -214,112 +206,73 @@ export default function OfficeEmployees() {
                 'Accept': 'application/json'
             },
             body: JSON.stringify({
-                "id": id,
-                "firstName": firstName,
-                "lastName": lastName,
-                "email": email,
-                "carNumber": carNumber,
-                "floor": floor,
-                "roomNumber": roomNumber,
-                "role": role,
-                "permissionLevel": permissionLevel,
-                "department": department,
-                "orgid": orgID
+                "name": name,
+                "numOfEmployees": numOfEmployees,
+                "parkingAmount": parkingAmount,
+                "floorsAmount": floorsAmount,
+                "roomsAmount": roomsAmount,
+                "meetingRoomsAmount": meetingRoomsAmount,
+                "officeCapacity": officeCapacity,
+                "openSpace": openSpace,
+                "hotSpot": hotSpot,
+                "hotSpotPlaces": hotSpotPlaces,
+                "id": id
             })
         };
-        var url = "https://localhost:44375/api/users";
+        var url = "https://localhost:44375/api/offices";
         const response = await fetch(url, requestOptions);
         if (response.status == 201) {
-            setMessage("Employee was Created.")
+            setMessage("Office was Created.")
             { handleShowInfo() }
         }
         else {
-            setMessage("Unexpected error! Fail to create employee.")
+            setMessage("Unexpected error! Fail to create Office.")
             { handleShowErr() }
         }
     }
-    
-
-    function sendFile() {
-        const data = new FormData()
-        console.log(fileName)
-        //data.append("file", fileName,fileName.name);
-        data.append('file', fileName)
-        let org_id = 205488349
-        console.log(data)
-        console.log("https://localhost:44375/api/upload")
-        axios.post("https://localhost:44375/api/upload", data, { // receive two parameter endpoint url ,form data 
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        }).then(res => { // then print response status
-            console.log(res.status)
-            if (res.status == 200) {
-                console.log("upload")
-                setMessage("Adding Employee ")
-                 handleShowInfo() 
-
-            }
-            else if (res.status == 204) {
-                    setMessage("emply file or not selected file")
-                    { handleShowInfo() }
-            }
-            else {
-                setMessage("fail to connect DB")
-                { handleShowInfo() }
-            }
-          })
-        
-
-    };    
 
     // Calling the function on component mount
     useEffect(() => {
-        getEmployees();
+        getOffices();
     }, []);
 
     return (
         <>
             <Container fluid>
-                <Form.Group controlId="formFile" className="mb-3" >
-                    <Form.Label>Default file input example</Form.Label>
-                    <Form.Control type="file" onChange={(e) => setFileName(e.target.files[0])} />
-                    <Button variant="primary" onClick={sendFile}>Send</Button>
-                </Form.Group>
                 <Row>
                     <Col md="14">
                         <Card className="card-plain table-plain-bg">
                             <Card.Header>
-                                <Card.Title as="h6" class="text-capitalize">
-                                    All employees will be presented in this page.
-                                    You can edit, add and delete employees.
-                                    </Card.Title>
+                                <Card.Title as="h6" class="text-capitalize"> All Offices will be presented in this page.
+                                    You can edit, add and delete offices.</Card.Title>
                             </Card.Header>
                             <Card.Body className="table-full-width table-responsive px-0">
                                 <Table className="table-hover">
                                     <thead>
-                                        <button type="button" class="btn btn-primary btn-sm" onClick={handleShowAddUser}>
-                                            Add Employee
+                                        <button type="button" class="btn btn-primary btn-sm" onClick={handleShowAddOffice}>
+                                            Add Office
                                             </button>
                                         <tr>
                                             <th>ID</th>
-                                            <th>First Name</th>
-                                            <th>Last Name</th>
-                                            <th>Email</th>
-                                            <th>Car Number</th>
-                                            <th>Floor</th>
-                                            <th>Room Number</th>
-                                            <th>Role</th>
-                                            <th>Department</th>
-                                            <th>Permission Level</th>
+                                            <th>Name</th>
+                                            <th>Employees' Number</th>
+                                            <th>Parking Places</th>
+                                            <th>Floors' Amount</th>
+                                            <th>Rooms' Amount</th>
+                                            <th>Meeting Rooms' Amount</th>
+                                            <th>Office Capacity</th>
+                                            <th>Open Space</th>
+                                            <th>Hot Spot</th>
+                                            <th>Hot Spot Places </th>
                                             <th></th>
                                             <th></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {
-                                            employeesArray.map((item) => (
+                                            officesArray.map((item) => (
                                                 <tr key={item.id}>
+                                                    <td style={{ fontSize: 12 }}>{item[10]}</td>
                                                     <td style={{ fontSize: 12 }}>{item[0]}</td>
                                                     <td style={{ fontSize: 12 }}>{item[1]}</td>
                                                     <td style={{ fontSize: 12 }}>{item[2]}</td>
@@ -328,15 +281,15 @@ export default function OfficeEmployees() {
                                                     <td style={{ fontSize: 12 }}>{item[5]}</td>
                                                     <td style={{ fontSize: 12 }}>{item[6]}</td>
                                                     <td style={{ fontSize: 12 }}>{item[7]}</td>
-                                                    <td style={{ fontSize: 12 }}>{item[9]}</td>
                                                     <td style={{ fontSize: 12 }}>{item[8]}</td>
+                                                    <td style={{ fontSize: 12 }}>{item[9]}</td>
                                                     <td>
-                                                        <button type="button" class="btn btn-info btn-sm" value={item} onClick={() => handleEditEmployee(item)}>
+                                                        <button type="button" class="btn btn-info btn-sm" value={item} onClick={() => handleEditOffice(item)}>
                                                             Edit
                                                             </button>
                                                     </td>
                                                     <td>
-                                                        <button type="button" class="btn btn-danger btn-sm" value={item[0]} onClick={() => handleDeleteEmployee(item[0])}>
+                                                        <button type="button" class="btn btn-danger btn-sm" value={item[10]} onClick={() => handleDeleteOffice(item[10])}>
                                                             Delete
                                                             </button>
                                                     </td>
@@ -359,7 +312,7 @@ export default function OfficeEmployees() {
                         <p>{message}</p>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="danger" onClick={deleteEmployee}>Yes</Button>
+                        <Button variant="danger" onClick={deleteOffice}>Yes</Button>
                         <Button variant="secondary" onClick={handleCloseWarning}>No</Button>
                     </Modal.Footer>
                 </Modal>
@@ -388,68 +341,51 @@ export default function OfficeEmployees() {
                     </Modal.Footer>
                 </Modal>
 
-                <Modal show={showAddUser} onHide={handleCloseAddUser}>
+                <Modal show={showAddOffice} onHide={handleCloseAddOffice}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Add New Employee</Modal.Title>
+                        <Modal.Title>Add New Office</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form noValidate validated={validatedAdd} onSubmit={handleAdd}>
                             <Row className="mb-3">
+
                                 <Form.Group as={Col}>
                                     <Form.Label>ID</Form.Label>
-                                    <Form.Control required type="text" placeholder="ID"
-                                        onChange={(e) => setId(e.target.value)}
+                                    <Form.Control type="text" placeholder="ID" required
+                                        onChange={(e) => setID(e.target.value)}
                                     />
                                     <Form.Control.Feedback type="invalid"> This field is required.</Form.Control.Feedback>
                                 </Form.Group>
 
                                 <Form.Group as={Col}>
-                                    <Form.Label>First name</Form.Label>
-                                    <Form.Control required type="text" placeholder="First name"
-                                        onChange={(e) => setFirstName(e.target.value)}
-                                    />
-                                    <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
-                                </Form.Group>
-
-                                <Form.Group as={Col}>
-                                    <Form.Label>Last name</Form.Label>
-                                    <Form.Control required type="text" placeholder="Last name"
-                                        onChange={(e) => setLastName(e.target.value)}
+                                    <Form.Label>Name</Form.Label>
+                                    <Form.Control required type="text" placeholder="Name"
+                                        onChange={(e) => setName(e.target.value)}
                                     />
                                     <Form.Control.Feedback type="invalid"> This field is required.</Form.Control.Feedback>
                                 </Form.Group>
-                            </Row>
-
-                            <Row className="mb-3">
-                                <Form.Group as={Col}>
-                                    <Form.Label>Email</Form.Label>
-                                    <Form.Control required type="text" placeholder="Email"
-                                        onChange={(e) => setEmail(e.target.value)}
-                                    />
-                                    <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
-                                </Form.Group>
-                            </Row>
-
-                            <Row className="mb-3">
-                                <Form.Group as={Col}>
-                                    <Form.Label>Car Number</Form.Label>
-                                    <Form.Control type="text" placeholder="Car Number"
-                                        onChange={(e) => setCarNumber(e.target.value)}
-                                    />
-                                </Form.Group>
 
                                 <Form.Group as={Col}>
-                                    <Form.Label>Floor</Form.Label>
-                                    <Form.Control type="text" placeholder="Floor" required
-                                        onChange={(e) => setFloor(e.target.value)}
+                                    <Form.Label>Numer Of Employees</Form.Label>
+                                    <Form.Control required type="text" placeholder="Numer Of Employees"
+                                        onChange={(e) => setNumOfEmployees(e.target.value)}
                                     />
                                     <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
                                 </Form.Group>
 
                                 <Form.Group as={Col}>
-                                    <Form.Label>Room Number</Form.Label>
-                                    <Form.Control type="text" placeholder="Room Number" required
-                                        onChange={(e) => setRoomNumber(e.target.value)}
+                                    <Form.Label>Parking Amount</Form.Label>
+                                    <Form.Control type="text" placeholder="Parking Amount"
+                                        onChange={(e) => setParkingAmount(e.target.value)}
+                                    />
+                                </Form.Group>
+                            </Row>
+
+                            <Row className="mb-3">
+                                <Form.Group as={Col}>
+                                    <Form.Label>Floors Amount</Form.Label>
+                                    <Form.Control required type="text" placeholder="Floors Amount"
+                                        onChange={(e) => setFloorsAmount(e.target.value)}
                                     />
                                     <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
                                 </Form.Group>
@@ -457,36 +393,70 @@ export default function OfficeEmployees() {
 
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Role</Form.Label>
-                                    <Form.Control type="text" placeholder="Role" required
-                                        onChange={(e) => setRole(e.target.value)}
+                                    <Form.Label>Rooms Amount</Form.Label>
+                                    <Form.Control type="text" placeholder="Rooms Amount"
+                                        onChange={(e) => setRoomsAmount(e.target.value)}
+                                    />
+                                </Form.Group>
+
+                                <Form.Group as={Col}>
+                                    <Form.Label>Meeting Rooms Amount</Form.Label>
+                                    <Form.Control type="text" placeholder="Meeting Rooms Amount" required
+                                        onChange={(e) => setMeetingRoomsAmount(e.target.value)}
                                     />
                                     <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
                                 </Form.Group>
 
                                 <Form.Group as={Col}>
-                                    <Form.Label>Department</Form.Label>
-                                    <Form.Control type="text" placeholder="Department" required
-                                        onChange={(e) => setDepartment(e.target.value)}
+                                    <Form.Label>Office Capacity</Form.Label>
+                                    <Form.Control type="text" placeholder="Office Capacity" required
+                                        onChange={(e) => setOfficeCapacity(e.target.value)}
                                     />
                                     <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
                                 </Form.Group>
+                            </Row>
 
+                            <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <label>Permission Level</label>
+                                    <Form.Label>Open Space</Form.Label>
                                     <Form.Control
                                         required
                                         as="select"
-                                        className="permission-select"
-                                        id="permission-select"
+                                        className="hotSpot-select"
+                                        id="hotSpot-select"
                                         style={{ width: '230x' }}
-                                        value={permissionLevel}
-                                        onChange={(e) => setPermissionLevel(e.target.value)}
+                                        value={openSpace}
+                                        onChange={(e) => setOpenSpace(e.target.value)}
                                     >
-                                        <option value="0">ADMINISTRATOR</option>
-                                        <option value="1">STANDARD</option>
+                                        <option value="False">No</option>
+                                        <option value="True">Yes</option>
                                                 ></Form.Control>
                                     <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
+                                </Form.Group>
+
+
+                                <Form.Group as={Col}>
+                                    <label>Hot Spot</label>
+                                    <Form.Control
+                                        required
+                                        as="select"
+                                        className="hotSpot-select"
+                                        id="hotSpot-select"
+                                        style={{ width: '230x' }}
+                                        value={hotSpot}
+                                        onChange={(e) => setHotSpot(e.target.value)}
+                                    >
+                                        <option value="False">No</option>
+                                        <option value="True">Yes</option>
+                                                ></Form.Control>
+                                    <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
+                                </Form.Group>
+
+                                <Form.Group as={Col}>
+                                    <Form.Label>Hot Spot Places</Form.Label>
+                                    <Form.Control type="text" placeholder="Hot Spot Places"
+                                        onChange={(e) => setHotSpotPlaces(e.target.value)}
+                                    />
                                 </Form.Group>
                             </Row>
 
@@ -495,16 +465,16 @@ export default function OfficeEmployees() {
                     </Modal.Body>
                 </Modal>
 
-                <Modal show={showEditUser} onHide={handleCloseEditUser}>
+                <Modal show={showEditOffice} onHide={handleCloseEditOffice}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Edit Employee</Modal.Title>
+                        <Modal.Title>Edit Office</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <Form noValidate validated={validatedEdit} onSubmit={handleEdit}>
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
                                     <Form.Label>ID</Form.Label>
-                                    <Form.Control required type="text" placeholder="ID"
+                                    <Form.Control type="text" placeholder="ID" required
                                         value={id}
                                         onChange={(e) => setId(e.target.value)}
                                     />
@@ -512,58 +482,38 @@ export default function OfficeEmployees() {
                                 </Form.Group>
 
                                 <Form.Group as={Col}>
-                                    <Form.Label>First name</Form.Label>
-                                    <Form.Control required type="text" placeholder="First name"
-                                        value={firstName}
-                                        onChange={(e) => setFirstName(e.target.value)}
-                                    />
-                                    <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
-                                </Form.Group>
-
-                                <Form.Group as={Col}>
-                                    <Form.Label>Last name</Form.Label>
-                                    <Form.Control required type="text" placeholder="Last name"
-                                        value={lastName}
-                                        onChange={(e) => setLastName(e.target.value)}
+                                    <Form.Label>Name</Form.Label>
+                                    <Form.Control required type="text" placeholder="Name"
+                                        value={ name}
+                                        onChange={(e) => setName(e.target.value)}
                                     />
                                     <Form.Control.Feedback type="invalid"> This field is required.</Form.Control.Feedback>
                                 </Form.Group>
-                            </Row>
-
-                            <Row className="mb-3">
-                                <Form.Group as={Col}>
-                                    <Form.Label>Email</Form.Label>
-                                    <Form.Control required type="text" placeholder="Email"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                    />
-                                    <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
-                                </Form.Group>
-                            </Row>
-
-                            <Row className="mb-3">
-                                <Form.Group as={Col}>
-                                    <Form.Label>Car Number</Form.Label>
-                                    <Form.Control type="text" placeholder="Car Number"
-                                        value={carNumber}
-                                        onChange={(e) => setCarNumber(e.target.value)}
-                                    />
-                                </Form.Group>
 
                                 <Form.Group as={Col}>
-                                    <Form.Label>Floor</Form.Label>
-                                    <Form.Control type="text" placeholder="Floor" required
-                                        value={floor}
-                                        onChange={(e) => setFloor(e.target.value)}
+                                    <Form.Label>Numer Of Employees</Form.Label>
+                                    <Form.Control required type="text" placeholder="Numer Of Employees"
+                                        value={numOfEmployees}
+                                        onChange={(e) => setNumOfEmployees(e.target.value)}
                                     />
                                     <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
                                 </Form.Group>
 
                                 <Form.Group as={Col}>
-                                    <Form.Label>Room Number</Form.Label>
-                                    <Form.Control type="text" placeholder="Room Number" required
-                                        value={roomNumber}
-                                        onChange={(e) => setRoomNumber(e.target.value)}
+                                    <Form.Label>Parking Amount</Form.Label>
+                                    <Form.Control type="text" placeholder="Parking Amount"
+                                        value={parkingAmount}
+                                        onChange={(e) => setParkingAmount(e.target.value)}
+                                    />
+                                </Form.Group>
+                            </Row>
+
+                            <Row className="mb-3">
+                                <Form.Group as={Col}>
+                                    <Form.Label>Floors Amount</Form.Label>
+                                    <Form.Control required type="text" placeholder="Floors Amount"
+                                        value={floorsAmount}
+                                        onChange={(e) => setFloorsAmount(e.target.value)}
                                     />
                                     <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
                                 </Form.Group>
@@ -571,38 +521,74 @@ export default function OfficeEmployees() {
 
                             <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <Form.Label>Role</Form.Label>
-                                    <Form.Control type="text" placeholder="Role" required
-                                        value={role}
-                                        onChange={(e) => setRole(e.target.value)}
+                                    <Form.Label>Rooms Amount</Form.Label>
+                                    <Form.Control type="text" placeholder="Rooms Amount"
+                                        value={roomsAmount}
+                                        onChange={(e) => setRoomsAmount(e.target.value)}
+                                    />
+                                </Form.Group>
+
+                                <Form.Group as={Col}>
+                                    <Form.Label>Meeting Rooms Amount</Form.Label>
+                                    <Form.Control type="text" placeholder="Meeting Rooms Amount" required
+                                        value={meetingRoomsAmount}
+                                        onChange={(e) => setMeetingRoomsAmount(e.target.value)}
                                     />
                                     <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
                                 </Form.Group>
 
                                 <Form.Group as={Col}>
-                                    <Form.Label>Department</Form.Label>
-                                    <Form.Control type="text" placeholder="Department" required
-                                        value={department}
-                                        onChange={(e) => setDepartment(e.target.value)}
+                                    <Form.Label>Office Capacity</Form.Label>
+                                    <Form.Control type="text" placeholder="Office Capacity" required
+                                        value={officeCapacity}
+                                        onChange={(e) => setOfficeCapacity(e.target.value)}
                                     />
                                     <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
                                 </Form.Group>
+                            </Row>
 
+                            <Row className="mb-3">
                                 <Form.Group as={Col}>
-                                    <label>Permission Level</label>
+                                    <Form.Label>Open Space</Form.Label>
                                     <Form.Control
                                         required
                                         as="select"
-                                        className="permission-select"
-                                        id="permission-select"
+                                        className="hotSpot-select"
+                                        id="hotSpot-select"
                                         style={{ width: '230x' }}
-                                        value={permissionLevel}
-                                        onChange={(e) => setPermissionLevel(e.target.value)}
+                                        value={openSpace}
+                                        onChange={(e) => setOpenSpace(e.target.value)}
                                     >
-                                        <option value="0">ADMINISTRATOR</option>
-                                        <option value="1">STANDARD</option>
+                                        <option value="False">No</option>
+                                        <option value="True">Yes</option>
                                                 ></Form.Control>
                                     <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
+                                </Form.Group>
+
+
+                                <Form.Group as={Col}>
+                                    <label>Hot Spot</label>
+                                    <Form.Control
+                                        required
+                                        as="select"
+                                        className="hotSpot-select"
+                                        id="hotSpot-select"
+                                        style={{ width: '230x' }}
+                                        value={hotSpot}
+                                        onChange={(e) => setHotSpot(e.target.value)}
+                                    >
+                                        <option value="False">No</option>
+                                        <option value="True">Yes</option>
+                                                ></Form.Control>
+                                    <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
+                                </Form.Group>
+
+                                <Form.Group as={Col}>
+                                    <Form.Label>Hot Spot Places</Form.Label>
+                                    <Form.Control type="text" placeholder="Hot Spot Places"
+                                        value={hotSpotPlaces}
+                                        onChange={(e) => setHotSpotPlaces(e.target.value)}
+                                    />
                                 </Form.Group>
                             </Row>
 

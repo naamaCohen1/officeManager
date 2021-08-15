@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from 'axios';
-
 // react-bootstrap components
 import {
     Button,
@@ -13,10 +11,12 @@ import {
     Form
 } from "react-bootstrap";
 
-export default function OfficeEmployees() {
-    const [orgID, setOrgID] = useState(sessionStorage.getItem("org_id"));
+export default function Employees() {
     const [employeesArray, setEmployeesArray] = useState([]);
+    const [officesArray, setOfficesArray] = useState([]);
+
     const [message, setMessage] = useState();
+    const [selecteOrg, setSelecteOrg] = useState(sessionStorage.getItem("selected_org"));
 
     const [id, setId] = useState("");
     const [firstName, setFirstName] = useState("")
@@ -28,7 +28,8 @@ export default function OfficeEmployees() {
     const [roomNumber, setRoomNumber] = useState("");
     const [permissionLevel, setPermissionLevel] = useState("")
     const [department, setDepartment] = useState("")
-    const [fileName, setFileName] = useState("")
+    const [orgID, setOrgID] = useState("")
+
 
     const [showWarning, setShowWarning] = useState(false);
     const handleCloseWarning = () => setShowWarning(false);
@@ -55,8 +56,13 @@ export default function OfficeEmployees() {
 
     async function refreshPage() {
         { handleCloseInfo() }
-        //window.location.reload();
-        getEmployees()
+        window.location.reload();
+    }
+
+    function handleSelect(event) {
+        sessionStorage.setItem("selected_org", event.target.value)
+        setSelecteOrg(event.target.value);
+        window.location.reload();
     }
 
     async function getEmployees() {
@@ -67,7 +73,11 @@ export default function OfficeEmployees() {
                 'Accept': 'application/json'
             }
         };
-        var url = "https://localhost:44375/api/users/" + orgID;
+        if (selecteOrg == "All")
+            var url = "https://localhost:44375/api/users/";
+        else {
+            var url = "https://localhost:44375/api/users/" + selecteOrg
+        }
         handleRequest(url, requestOptions)
     }
 
@@ -126,6 +136,7 @@ export default function OfficeEmployees() {
         setRole(value[7])
         setDepartment(value[9])
         setPermissionLevel(value[8])
+        setOrgID(value[10])
         { handleShowEditUser() }
     }
 
@@ -238,54 +249,50 @@ export default function OfficeEmployees() {
             { handleShowErr() }
         }
     }
-    
 
-    function sendFile() {
-        const data = new FormData()
-        console.log(fileName)
-        //data.append("file", fileName,fileName.name);
-        data.append('file', fileName)
-        let org_id = 205488349
-        console.log(data)
-        console.log("https://localhost:44375/api/upload")
-        axios.post("https://localhost:44375/api/upload", data, { // receive two parameter endpoint url ,form data 
+    async function getOffices() {
+        const requestOptions = {
+            method: 'GET',
             headers: {
-                'Content-Type': 'multipart/form-data'
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             }
-        }).then(res => { // then print response status
-            console.log(res.status)
-            if (res.status == 200) {
-                console.log("upload")
-                setMessage("Adding Employee ")
-                 handleShowInfo() 
-
+        };
+        var url = "https://localhost:44375/api/offices/";
+        const response = await fetch(url, requestOptions);
+        if (response.status == 200) {
+            const data = await response.json();
+            if (data != "null") {
+                var dataChnage = data.replace("[", "")
+                dataChnage = dataChnage.replace("]", "")
+                var offices = dataChnage.split("},")
+                var array = []
+                for (var office in offices) {
+                    var dictionary = []
+                    var officeParams = (offices[office]).split(",")
+                    for (var param in officeParams) {
+                        var temp = officeParams[param].split(":")
+                        temp[1] = temp[1].replace("}", "")
+                        temp[1] = temp[1].replace("\"", "")
+                        temp[1] = temp[1].replace("\"", "")
+                        dictionary.push(temp[1].trim())
+                    }
+                    array.push(dictionary)
+                }
+                setOfficesArray(array)
             }
-            else if (res.status == 204) {
-                    setMessage("emply file or not selected file")
-                    { handleShowInfo() }
-            }
-            else {
-                setMessage("fail to connect DB")
-                { handleShowInfo() }
-            }
-          })
-        
-
-    };    
+        }
+    }
 
     // Calling the function on component mount
     useEffect(() => {
-        getEmployees();
+        getOffices();
+        getEmployees(selecteOrg);
     }, []);
 
     return (
         <>
             <Container fluid>
-                <Form.Group controlId="formFile" className="mb-3" >
-                    <Form.Label>Default file input example</Form.Label>
-                    <Form.Control type="file" onChange={(e) => setFileName(e.target.files[0])} />
-                    <Button variant="primary" onClick={sendFile}>Send</Button>
-                </Form.Group>
                 <Row>
                     <Col md="14">
                         <Card className="card-plain table-plain-bg">
@@ -295,7 +302,33 @@ export default function OfficeEmployees() {
                                     You can edit, add and delete employees.
                                     </Card.Title>
                             </Card.Header>
+
                             <Card.Body className="table-full-width table-responsive px-0">
+                                <Row>
+                                    <Col>
+                                        <Form.Text className="text-muted"> Filter employees by organization</Form.Text>
+                                        <Row className="mb-3">
+                                            <Form.Group as={Col} md="6">
+                                                <Form.Control
+                                                    as="select"
+                                                    className="org-select"
+                                                    id="org-select"
+                                                    style={{ width: '200px' }}
+                                                    value={selecteOrg}
+                                                    onChange={handleSelect}
+                                                >
+                                                    <option value="All">All</option>
+                                                    {
+                                                        officesArray.map((item) => (
+                                                            <option value={item[10]}>{item[0]}</option>
+                                                        ))
+                                                    }
+                                                ></Form.Control>
+                                            </Form.Group>
+                                        </Row>
+                                    </Col>
+                                </Row>
+
                                 <Table className="table-hover">
                                     <thead>
                                         <button type="button" class="btn btn-primary btn-sm" onClick={handleShowAddUser}>
@@ -312,6 +345,7 @@ export default function OfficeEmployees() {
                                             <th>Role</th>
                                             <th>Department</th>
                                             <th>Permission Level</th>
+                                            <th>Org ID</th>
                                             <th></th>
                                             <th></th>
                                         </tr>
@@ -330,6 +364,7 @@ export default function OfficeEmployees() {
                                                     <td style={{ fontSize: 12 }}>{item[7]}</td>
                                                     <td style={{ fontSize: 12 }}>{item[9]}</td>
                                                     <td style={{ fontSize: 12 }}>{item[8]}</td>
+                                                    <td style={{ fontSize: 12 }}>{item[10]}</td>
                                                     <td>
                                                         <button type="button" class="btn btn-info btn-sm" value={item} onClick={() => handleEditEmployee(item)}>
                                                             Edit
@@ -488,6 +523,18 @@ export default function OfficeEmployees() {
                                                 ></Form.Control>
                                     <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
                                 </Form.Group>
+
+                            </Row>
+
+                            <Row className="mb-3">
+                                <Form.Group as={Col}>
+                                    <Form.Label>Org ID</Form.Label>
+                                    <Form.Control type="text" placeholder="Org ID" required
+                                        value={orgID}
+                                        onChange={(e) => setOrgID(e.target.value)}
+                                    />
+                                    <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
+                                </Form.Group>
                             </Row>
 
                             <button type="submit" class="btn btn-primary" >Add</button>
@@ -602,6 +649,17 @@ export default function OfficeEmployees() {
                                         <option value="0">ADMINISTRATOR</option>
                                         <option value="1">STANDARD</option>
                                                 ></Form.Control>
+                                    <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
+                                </Form.Group>
+                            </Row>
+
+                            <Row className="mb-3">
+                                <Form.Group as={Col}>
+                                    <Form.Label>Org ID</Form.Label>
+                                    <Form.Control type="text" placeholder="Org ID" required
+                                        value={orgID}
+                                        onChange={(e) => setOrgID(e.target.value)}
+                                    />
                                     <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
                                 </Form.Group>
                             </Row>
