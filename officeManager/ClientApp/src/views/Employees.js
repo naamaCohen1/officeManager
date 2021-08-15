@@ -16,7 +16,7 @@ export default function Employees() {
     const [officesArray, setOfficesArray] = useState([]);
 
     const [message, setMessage] = useState();
-    const [selecteOrg, setSelecteOrg] = useState(sessionStorage.getItem("selected_org"));
+    const [selecteOrg, setSelecteOrg] = useState("All");
 
     const [id, setId] = useState("");
     const [firstName, setFirstName] = useState("")
@@ -60,12 +60,12 @@ export default function Employees() {
     }
 
     function handleSelect(event) {
-        sessionStorage.setItem("selected_org", event.target.value)
-        setSelecteOrg(event.target.value);
-        window.location.reload();
+        setSelecteOrg(event.target.value)
+        getEmployees(event.target.value)
     }
 
-    async function getEmployees() {
+    async function getEmployees(selecteOrg_1) {
+        console.log(selecteOrg_1)
         const requestOptions = {
             method: 'GET',
             headers: {
@@ -73,10 +73,10 @@ export default function Employees() {
                 'Accept': 'application/json'
             }
         };
-        if (selecteOrg == "All")
+        if (selecteOrg_1 == "All")
             var url = "https://localhost:44375/api/users/";
         else {
-            var url = "https://localhost:44375/api/users/" + selecteOrg
+            var url = "https://localhost:44375/api/users/" + selecteOrg_1
         }
         handleRequest(url, requestOptions)
     }

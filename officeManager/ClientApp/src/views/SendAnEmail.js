@@ -1,4 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Component } from "react";
+import { Multiselect } from 'multiselect-react-dropdown';
+import DropdownMultiselect from "react-multiselect-dropdown-bootstrap";
+
+//import { colourOptions } from '../data';
 // react-bootstrap components
 import {
     Button,
@@ -10,6 +14,8 @@ import {
     Modal
 } from "react-bootstrap";
 
+
+
 export default function SendAnEmail() {
     const [employeesArray, setEmployeesArray] = useState([]);
     const [dateEmployeesArray, setDateEmployeesArray] = useState([]);
@@ -17,10 +23,19 @@ export default function SendAnEmail() {
     const [orgID, setOrgID] = useState(sessionStorage.getItem("org_id"));
     const [date, setDate] = useState("");
 
+
+    const [value, setValue] = useState(['orange', 'red'])
+
+    // handle onChange event of the dropdown
+    const handleChange = (e) => {
+        setSelectedValue(Array.isArray(e) ? e.map(x => x.value) : []);
+        console.log(selectedValue)
+    }
+
     const [subject, setSubject] = useState("");
     const [body, setBody] = useState("");
     const [to, setTo] = useState("");
-
+ 
     const [validatedEdit, setValidatedEdit] = useState(false);
 
     const [message, setMessage] = useState();
@@ -124,7 +139,7 @@ export default function SendAnEmail() {
             { handleShow() }
         }
     }
-
+    
     async function getDate() {
         dateEmployeesArray.length = 0;
         const requestOptions = {
@@ -180,9 +195,11 @@ export default function SendAnEmail() {
         getEmployees();
     }, []);
 
+
     return (
         <>
             <Container fluid>
+                
                 <Row>
                     <Col md="12">
                         <Card>
@@ -316,3 +333,11 @@ export default function SendAnEmail() {
         </>
     );
 }
+//<Multiselect
+//    data={['Australia', 'Canada', 'USA', 'Poland', 'Spain', 'France']}
+//    //onChange={getUserNames()} value={selecedValue}
+//    //onChange={handleChange}
+//    value={value}
+//    onChange={value => console.log(value)}
+////isObject={false}
+///>

@@ -52,7 +52,7 @@ export default function Offices() {
 
     async function refreshPage() {
         { handleCloseInfo() }
-        window.location.reload();
+        getOffices()
     }
 
     async function getOffices() {
