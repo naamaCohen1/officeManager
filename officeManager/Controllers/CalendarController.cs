@@ -69,7 +69,7 @@ namespace officeManager.Controllers
         /// </code>
         /// </param>
         /// <returns> calendar object as <see cref="Calendar"/> </returns>
-        [HttpPost]
+        [HttpPost("{orgID}")]
         public ActionResult<Calendar> Post(string orgID, [FromBody] CalendarUser calendarUser)
         {
             string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}' and OrgID={1}", calendarUser.Date, orgID);
@@ -124,7 +124,7 @@ namespace officeManager.Controllers
         /// </summary>
         /// <param name="calendarUser"> User to add to waiting list as <see cref="CalendarUser"/></param>
         /// <returns><see cref="IActionResult"/></returns>
-        [HttpPut]
+        [HttpPut("{orgID}")]
         public ActionResult Put(string orgID, [FromBody] CalendarUser calendarUser)
         {
             string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}' and OrgID={1}", calendarUser.Date, orgID);
@@ -172,7 +172,7 @@ namespace officeManager.Controllers
         [HttpPut("{orgID}/{date}")]
         public ActionResult Put(string orgID, string date)
         {
-            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}' ans OrgID={1}", date, orgID);
+            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}' and OrgID={1}", date, orgID);
             string parkigCapacity = null, dateCal = null;
             int intPark;
             try
@@ -251,7 +251,7 @@ namespace officeManager.Controllers
                         calendar.EmployeesArriving = calendar.EmployeesArriving.Replace(removeId, "");
                         calendarUser.UpdateArrivingID(connection, calendar.EmployeesArriving, orgID);
 
-                        if (calendar.WaitingList != null || calendar.WaitingList != "")
+                        if (!string.IsNullOrEmpty(calendar.WaitingList))
                         {
                             calendarUser.UpdateCapacity(connection, --intCap, orgID);
                             string waitId = calendar.WaitingList.Split(";")[0];

@@ -12,7 +12,7 @@ import {
 } from "react-bootstrap";
 
 export default function OfficeInfo() {
-    const [id, setId] = useState("")
+    const [id, setId] = useState(sessionStorage.getItem("org_id"))
     const [name, setName] = useState("")
     const [numOfEmployees, setNumOfEmployees] = useState("")
     const [parkingAmount, setParkingAmount] = useState("")
@@ -149,7 +149,7 @@ export default function OfficeInfo() {
     }
 
     useEffect(() => {
-        loadPage("12345");
+        loadPage(id);
     }, []);
 
     return (
@@ -257,7 +257,7 @@ export default function OfficeInfo() {
                                                     value={openSpace}
                                                     onChange={(e) => setOpenSpace(e.target.value)}
                                                 >
-                                                    <option value="Yse">Yse</option>
+                                                    <option value="Yes">Yes</option>
                                                     <option value="No">No</option>
                                                 ></Form.Control>
                                             </Form.Group>
@@ -275,7 +275,7 @@ export default function OfficeInfo() {
                                                     value={hotSpot}
                                                     onChange={(e) => setHotSpot(e.target.value)}
                                                 >
-                                                    <option value="Yse">Yse</option>
+                                                    <option value="Yes">Yes</option>
                                                     <option value="No">No</option>
                                                 ></Form.Control>
                                             </Form.Group>

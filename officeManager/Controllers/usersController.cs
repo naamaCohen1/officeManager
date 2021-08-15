@@ -165,7 +165,7 @@ namespace officeManager.Controllers
         /// </summary>
         /// <param name="user"> Employee to Add as <see cref="User"/> </param>
         /// <returns> Added employee as <see cref="User"/> </returns>
-        [HttpPost("{orgID}")]
+        [HttpPost]
         public async Task<ActionResult<User>> Post([FromBody] User user)
         {
             string sql = string.Format("INSERT into tlbEmployees " +

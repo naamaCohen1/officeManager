@@ -53,7 +53,7 @@ namespace officeManager.Controllers.Entities
             }
             catch (Exception e)
             {
-                throw new Exception("Fail to get Last week activities. " + e.Message);
+                throw new Exception("Fail to get Last " + periodToGet + " activities. " + e.Message);
             }
         }
 
