@@ -142,6 +142,7 @@ export default function Results() {
     const [people, setPeople] = useState([]);
     const [buttons, setButtons] = useState(true);
     const [id, setId] = React.useState(sessionStorage.getItem("id"));
+    const [orgID, setOrgID] = React.useState(sessionStorage.getItem("org_id"));
 
     const [message, setMessage] = useState();
     const [title, setTitle] = useState();
@@ -170,7 +171,7 @@ export default function Results() {
                 'Accept': 'application/json'
             }
         };
-        const response = await fetch("https://localhost:44375/api/calendar/" + this.state.orgID  + "/" + id, requestOptions)
+        const response = await fetch("https://localhost:44375/api/calendar/" + orgID  + "/" + id, requestOptions)
         if (response.status == 200) {
             var datesArr = await response.json()
             setDates(datesArr)
@@ -222,7 +223,7 @@ export default function Results() {
         newCalDateFormat = newCalDateFormat.replace('/', '.')
         newCalDateFormat = newCalDateFormat.replace('/', '.')
         date = newCalDateFormat
-        var url = "https://localhost:44375/api/calendar/" + this.state.orgID + "/" + newCalDateFormat;
+        var url = "https://localhost:44375/api/calendar/" + orgID + "/" + newCalDateFormat;
         handleRequest(url, requestOptions)
     }
 
@@ -264,7 +265,7 @@ export default function Results() {
             })
         };
         setDateIsClick(true)
-        var data = await handleRequest("https://localhost:44375/api/calendar" + this.state.orgID, requestOptions)
+        var data = await handleRequest("https://localhost:44375/api/calendar/" + orgID, requestOptions)
         if (data == "no space") {
             handleShowWaitingList()
         }
@@ -289,7 +290,7 @@ export default function Results() {
             })
         };
         setDateIsClick(true)
-        handleRequest("https://localhost:44375/api/calendar" + this.state.orgID , requestOptions)
+        handleRequest("https://localhost:44375/api/calendar/" + orgID , requestOptions)
     }
 
     function showPeopleCame() {
@@ -337,7 +338,7 @@ export default function Results() {
                 "date": newCalDateFormat
             })
         };
-        var url = "https://localhost:44375/api/calendar/" + this.state.orgID;
+        var url = "https://localhost:44375/api/calendar/" + orgID;
         const response = await fetch(url, requestOptions);
         if (response.status == 204) {
             setTitle("Info")
@@ -362,7 +363,7 @@ export default function Results() {
             }
         };
         newCalDateFormat = newCalDateFormat.replaceAll('/', '.')
-        var url = "https://localhost:44375/api/calendar/" + this.state.orgID + "/" + newCalDateFormat;
+        var url = "https://localhost:44375/api/calendar/" + orgID + "/" + newCalDateFormat;
         const response = await fetch(url, requestOptions);
         if (response.status == 204) {
             setTitle("Info")

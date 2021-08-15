@@ -74,7 +74,6 @@ namespace officeManager.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Office>> Get(string id)
         {
-            id = id.Replace(" ", "-");
             Office office = new Office();
             string sql = string.Format("select * from tlbOffice WHERE CONVERT(VARCHAR, ID) = '{0}'", id);
             try
@@ -106,7 +105,7 @@ namespace officeManager.Controllers
                 string json = JsonConvert.SerializeObject(office);
                 return new OkObjectResult(json);
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 return new BadRequestResult();
             }
