@@ -213,6 +213,11 @@ namespace officeManager.Controllers
             if (!user.Result.Result.ToString().Contains("OkObjectResult"))
                 return new BadRequestResult();
 
+            if (updated_user.PermissionLevel.ToUpper().Contains("ADMINISTRATOR"))
+                updated_user.PermissionLevel = "0";
+            else if (updated_user.PermissionLevel.ToUpper().Contains("STANDARD"))
+                updated_user.PermissionLevel = "1";
+
             string sql = string.Format("UPDATE tlbEmployees " +
                 "SET ID = '{0}', FirstName = '{1}', LastName = '{2}', Email = '{3}', CarNumber = '{4}', Floor = '{5}'," +
                 "RoomNumber = '{6}', Role = '{7}', PermissionLevel = '{8}', Department = '{9}' WHERE ID = {0} and OrgID={10}",

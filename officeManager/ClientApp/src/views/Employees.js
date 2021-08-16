@@ -56,7 +56,7 @@ export default function Employees() {
 
     async function refreshPage() {
         { handleCloseInfo() }
-        window.location.reload();
+        getEmployees(selecteOrg)
     }
 
     function handleSelect(event) {

@@ -238,40 +238,32 @@ export default function OfficeEmployees() {
             { handleShowErr() }
         }
     }
-    
 
     function sendFile() {
         const data = new FormData()
         console.log(fileName)
-        //data.append("file", fileName,fileName.name);
         data.append('file', fileName)
-        let org_id = 205488349
         console.log(data)
         console.log("https://localhost:44375/api/upload")
         axios.post("https://localhost:44375/api/upload", data, { // receive two parameter endpoint url ,form data 
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
-        }).then(res => { // then print response status
-            console.log(res.status)
+        }).then(res => {
             if (res.status == 200) {
-                console.log("upload")
-                setMessage("Adding Employee ")
-                 handleShowInfo() 
-
+                setMessage("Employees were added")
+                handleShowInfo()
             }
             else if (res.status == 204) {
-                    setMessage("emply file or not selected file")
-                    { handleShowInfo() }
-            }
-            else {
-                setMessage("fail to connect DB")
+                setMessage("File is Empty or was not selected, Please try again.")
                 { handleShowInfo() }
             }
-          })
-        
-
-    };    
+            else {
+                setMessage("Fail to load employees from file")
+                { handleShowErr() }
+            }
+        })
+    };
 
     // Calling the function on component mount
     useEffect(() => {
@@ -281,11 +273,7 @@ export default function OfficeEmployees() {
     return (
         <>
             <Container fluid>
-                <Form.Group controlId="formFile" className="mb-3" >
-                    <Form.Label>Default file input example</Form.Label>
-                    <Form.Control type="file" onChange={(e) => setFileName(e.target.files[0])} />
-                    <Button variant="primary" onClick={sendFile}>Send</Button>
-                </Form.Group>
+
                 <Row>
                     <Col md="14">
                         <Card className="card-plain table-plain-bg">
@@ -296,56 +284,75 @@ export default function OfficeEmployees() {
                                     </Card.Title>
                             </Card.Header>
                             <Card.Body className="table-full-width table-responsive px-0">
-                                <Table className="table-hover">
-                                    <thead>
-                                        <button type="button" class="btn btn-primary btn-sm" onClick={handleShowAddUser}>
-                                            Add Employee
+
+                                <Card>
+                                    <Card.Body>
+                                        <Form>
+                                            <Row className="mb-3">
+                                                <Form.Group as={Col} controlId="formFile" md="3">
+                                                    <Form.Label>Upload employees from file</Form.Label>
+                                                    <Form.Control type="file" onChange={(e) => setFileName(e.target.files[0])} />
+                                                </Form.Group>
+                                                <Button type="button" class="btn btn-primary btn-sm" onClick={sendFile}>Load</Button>
+                                            </Row>
+                                        </Form>
+                                    </Card.Body>
+                                </Card>
+
+                                <Card>
+                                    <Card.Body>
+                                        <Table className="table-hover">
+                                            <thead>
+                                                <button type="button" class="btn btn-primary btn-sm" onClick={handleShowAddUser}>
+                                                    Add Employee
                                             </button>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>First Name</th>
-                                            <th>Last Name</th>
-                                            <th>Email</th>
-                                            <th>Car Number</th>
-                                            <th>Floor</th>
-                                            <th>Room Number</th>
-                                            <th>Role</th>
-                                            <th>Department</th>
-                                            <th>Permission Level</th>
-                                            <th></th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            employeesArray.map((item) => (
-                                                <tr key={item.id}>
-                                                    <td style={{ fontSize: 12 }}>{item[0]}</td>
-                                                    <td style={{ fontSize: 12 }}>{item[1]}</td>
-                                                    <td style={{ fontSize: 12 }}>{item[2]}</td>
-                                                    <td style={{ fontSize: 12 }}>{item[3]}</td>
-                                                    <td style={{ fontSize: 12 }}>{item[4]}</td>
-                                                    <td style={{ fontSize: 12 }}>{item[5]}</td>
-                                                    <td style={{ fontSize: 12 }}>{item[6]}</td>
-                                                    <td style={{ fontSize: 12 }}>{item[7]}</td>
-                                                    <td style={{ fontSize: 12 }}>{item[9]}</td>
-                                                    <td style={{ fontSize: 12 }}>{item[8]}</td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-info btn-sm" value={item} onClick={() => handleEditEmployee(item)}>
-                                                            Edit
-                                                            </button>
-                                                    </td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-danger btn-sm" value={item[0]} onClick={() => handleDeleteEmployee(item[0])}>
-                                                            Delete
-                                                            </button>
-                                                    </td>
-                                                    <td />
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>First Name</th>
+                                                    <th>Last Name</th>
+                                                    <th>Email</th>
+                                                    <th>Car Number</th>
+                                                    <th>Floor</th>
+                                                    <th>Room Number</th>
+                                                    <th>Role</th>
+                                                    <th>Department</th>
+                                                    <th>Permission Level</th>
+                                                    <th></th>
+                                                    <th></th>
                                                 </tr>
-                                            ))
-                                        }
-                                    </tbody>
-                                </Table>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    employeesArray.map((item) => (
+                                                        <tr key={item.id}>
+                                                            <td style={{ fontSize: 12 }}>{item[0]}</td>
+                                                            <td style={{ fontSize: 12 }}>{item[1]}</td>
+                                                            <td style={{ fontSize: 12 }}>{item[2]}</td>
+                                                            <td style={{ fontSize: 12 }}>{item[3]}</td>
+                                                            <td style={{ fontSize: 12 }}>{item[4]}</td>
+                                                            <td style={{ fontSize: 12 }}>{item[5]}</td>
+                                                            <td style={{ fontSize: 12 }}>{item[6]}</td>
+                                                            <td style={{ fontSize: 12 }}>{item[7]}</td>
+                                                            <td style={{ fontSize: 12 }}>{item[9]}</td>
+                                                            <td style={{ fontSize: 12 }}>{item[8]}</td>
+                                                            <td>
+                                                                <button type="button" class="btn btn-info btn-sm" value={item} onClick={() => handleEditEmployee(item)}>
+                                                                    Edit
+                                                            </button>
+                                                            </td>
+                                                            <td>
+                                                                <button type="button" class="btn btn-danger btn-sm" value={item[0]} onClick={() => handleDeleteEmployee(item[0])}>
+                                                                    Delete
+                                                            </button>
+                                                            </td>
+                                                            <td />
+                                                        </tr>
+                                                    ))
+                                                }
+                                            </tbody>
+                                        </Table>
+                                    </Card.Body>
+                                </Card>
                             </Card.Body>
                         </Card>
                     </Col>
