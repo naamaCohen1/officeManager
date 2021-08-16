@@ -1,5 +1,7 @@
-﻿using System;
+﻿using officeManager.constants;
+using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -45,5 +47,31 @@ namespace officeManager.Controllers.Entities
             this.HotSpotPlaces = HotSpotPlaces;
             this.ID = Id;
         }
+        public void getOfficeFromUser(string orgID)
+        {
+            try
+            {
+                string sql = string.Format("select *  from tlbOffice WHERE id = '{0}' ", orgID);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
+                connection.Open();
+                SqlCommand command = new SqlCommand(sql, connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    this.ParkingAmount = dataReader["ParkingAmount"].ToString().Trim();
+                    this.OfficeCapacity= dataReader["OfficeCapacity"].ToString().Trim();
+                    this.ID = dataReader["ID"].ToString().Trim();
+                }
+                dataReader.Close();
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Fail to enter DB " + e.Message);
+            }
+            
+        }
+
     }
 }
