@@ -110,7 +110,20 @@ namespace officeManager.Controllers
                     calendar.EmployeesArriving = employeesName;
                     return new OkObjectResult(JsonConvert.SerializeObject(calendar));
                 }
-                return BadRequest();
+                else
+                {
+                    Office office = new Office();
+                    office.getOfficeFromUser(orgID);
+                    calendar.orgID = office.ID;
+                    calendar.ParkingCapacity = office.ParkingAmount;
+                    calendar.SittingCapacity = office.OfficeCapacity;
+                    calendar.EmployeesArriving += string.Format("{0};", calendarUser.Id);
+                    calendar.insertDate();
+                    string employeesName = calendarUser.GetEmployeeName(connection, orgID) + ',';
+                    calendar.EmployeesArriving = employeesName;
+                    return new OkObjectResult(JsonConvert.SerializeObject(calendar));
+                }
+                //return BadRequest();
             }
             catch (Exception e)
             {
