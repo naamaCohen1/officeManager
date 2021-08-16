@@ -19,14 +19,14 @@ namespace officeManager.Controllers
     [ApiController]
     public class uploadController : ControllerBase
     {
-
-        //[HttpPost("{id}")]
-        //public IActionResult Post([FromRoute] string id,[FromBody] IFormCollection file)
-
+        /// <summary>
+        /// This methos reads the given file and creates new employees
+        /// </summary>
+        /// <param name="file"> File to read</param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult<string> Post(IFormFile file)
         {
-
             try
             {
                 if (file == null || file.Length == 0)
@@ -39,7 +39,6 @@ namespace officeManager.Controllers
                 using (var stream = new FileStream(path, FileMode.Create))
                 {
                     file.CopyTo(stream);
-
                 }
 
                 var csvTable = new DataTable();
@@ -50,7 +49,6 @@ namespace officeManager.Controllers
                 List<User> employees = new List<User>();
                 for (int i = 0; i < csvTable.Rows.Count; i++)
                 {
-                   
                     User employee = new User
                     {
                         ID = csvTable.Rows[i][0].ToString().Trim('\t'),
@@ -67,13 +65,11 @@ namespace officeManager.Controllers
                     };
                     if (string.IsNullOrEmpty(employee.CarNumber))
                         employee.CarNumber = null;
-                    if(employee.checkIfUserExistInDateBase()==false)
+                    if (employee.checkIfUserExistInDateBase() == false)
                         employee.insertUserToDataBase();
-                    
                 }
 
                 return new OkResult();
-
             }
             catch (Exception e)
             {
@@ -82,4 +78,3 @@ namespace officeManager.Controllers
         }
     }
 }
-
