@@ -316,7 +316,7 @@ namespace officeManager.Controllers
                     connection.Close();
                     return new OkResult();
                 }
-                sql = string.Format("insert into tlbCalendar values('{0}',null,6,6,null)", date);
+                sql = string.Format("insert into tlbCalendar values('{0}',null,6,6,null,{1})", date, orgID);
                 command = new SqlCommand(sql, connection);
                 dataReader = command.ExecuteReader();
                 command.Dispose();
