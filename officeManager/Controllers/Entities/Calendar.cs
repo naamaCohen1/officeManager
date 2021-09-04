@@ -1,5 +1,7 @@
-﻿using System;
+﻿using officeManager.constants;
+using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -46,6 +48,26 @@ namespace officeManager.Controllers.Entities
             this.ParkingCapacity = parkingCapacity;
             this.WaitingList = WaitingList;
             this.orgID = orgID;
+        }
+
+        public void insertDate()
+        {
+            try
+            {
+                string sql = string.Format("insert into tlbCalendar values('{0}','{1}',{2},{3},'{4}',{5})", Date, EmployeesArriving, SittingCapacity, ParkingCapacity, WaitingList, orgID);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
+                connection.Open();
+                SqlCommand command = new SqlCommand(sql, connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                dataReader.Close();
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Fail to enter DB " + e.Message);
+            }
+
         }
     }
 }
