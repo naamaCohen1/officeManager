@@ -53,7 +53,7 @@ export default function OfficeInfo() {
                 'Accept': 'application/json'
             }
         };
-        var url = "https://localhost:44375/api/offices/" + id;
+        var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/offices/" + id;
         handleRequest(url, requestOptions)
     }
 
@@ -135,7 +135,7 @@ export default function OfficeInfo() {
                 "id": id
             })
         };
-        var response = await fetch("https://localhost:44375/api/offices/" + id, requestOptions);
+        var response = await fetch("http://officemanager.us-east-1.elasticbeanstalk.com/api/offices/" + id, requestOptions);
         if (response.status == 204) {
             setTitle("Info")
             setMessage("Organiztion was updated.")

@@ -13,7 +13,7 @@ namespace officeManager.Controllers
     public class SearchController : ControllerBase
     {
         /// <summary>
-        /// Performs POST request to https://localhost:44375/api/search/{orgID}/{Id}
+        /// Performs POST request to http://officemanager.us-east-1.elasticbeanstalk.com/api/search/{orgID}/{Id}
         /// Gets employees names according to the requested filter
         /// </summary>
         /// <param name="orgID"> Organization ID </param>

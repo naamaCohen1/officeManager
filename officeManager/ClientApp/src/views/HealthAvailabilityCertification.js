@@ -43,7 +43,7 @@ export default function HealthAvailabilityCertification() {
                 'Accept': 'application/json'
             }
         };
-        const response = await fetch("https://localhost:44375/api/gmail/" + id, requestOptions)
+        const response = await fetch("http://officemanager.us-east-1.elasticbeanstalk.com/api/gmail/" + id, requestOptions)
         if (response.status == 200) {
             setTitle("Info")
             setMessage("Health Availability Certification was sent to HR.")

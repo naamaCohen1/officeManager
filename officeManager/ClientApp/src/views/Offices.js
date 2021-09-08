@@ -63,7 +63,7 @@ export default function Offices() {
                 'Accept': 'application/json'
             }
         };
-        var url = "https://localhost:44375/api/offices/";
+        var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/offices/";
         handleRequest(url, requestOptions)
     }
 
@@ -144,7 +144,7 @@ export default function Offices() {
                 "id": id
             })
         };
-        var url = "https://localhost:44375/api/offices/" + id;
+        var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/offices/" + id;
         const response = await fetch(url, requestOptions);
         if (response.status == 204) {
             setMessage("Office was updated.")
@@ -171,7 +171,7 @@ export default function Offices() {
                 'Accept': 'application/json'
             }
         };
-        var url = "https://localhost:44375/api/offices/" + id;
+        var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/offices/" + id;
         const response = await fetch(url, requestOptions);
         if (response.status == 204) {
             setMessage("Office was Deleted.")
@@ -219,7 +219,7 @@ export default function Offices() {
                 "id": id
             })
         };
-        var url = "https://localhost:44375/api/offices";
+        var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/offices";
         const response = await fetch(url, requestOptions);
         if (response.status == 201) {
             setMessage("Office was Created.")

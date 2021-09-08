@@ -90,7 +90,7 @@ namespace officeManager.Controllers.Entities
         }
 
         /// <summary>
-        /// Performs GET request to https://localhost:44375/api/users/{orgID}/{id}
+        /// Performs GET request to http://officemanager.us-east-1.elasticbeanstalk.com/api/users/{orgID}/{id}
         /// Gets a specific user's details
         /// </summary>
         /// <param name="orgID"> Organization ID </param>
@@ -134,7 +134,7 @@ namespace officeManager.Controllers.Entities
         }
 
         /// <summary>
-        /// Performs GET request to https://localhost:44375/api/calendar/{orgID}
+        /// Performs GET request to http://officemanager.us-east-1.elasticbeanstalk.com/api/calendar/{orgID}
         /// Gets all events from calendar
         /// </summary>
         /// <param name="orgID"> Organization ID </param>

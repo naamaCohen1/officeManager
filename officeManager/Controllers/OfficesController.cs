@@ -18,7 +18,7 @@ namespace officeManager.Controllers
     public class OfficesController : ControllerBase
     {
         /// <summary>
-        /// Performs GET request to https://localhost:44375/api/offices
+        /// Performs GET request to http://officemanager.us-east-1.elasticbeanstalk.com/api/offices
         /// Gets all offices in DB
         /// </summary>
         /// <returns> List of offices as <see cref="Office"/></returns>
@@ -66,7 +66,7 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs GET request to https://localhost:44375/api/offices/{id}
+        /// Performs GET request to http://officemanager.us-east-1.elasticbeanstalk.com/api/offices/{id}
         /// Gets a specific organizations
         /// </summary>
         /// <param name="id"> Organization ID to get </param>
@@ -112,7 +112,7 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs POST request to https://localhost:44375/api/offices
+        /// Performs POST request to http://officemanager.us-east-1.elasticbeanstalk.com/api/offices
         /// Add new organization to DB
         /// </summary>
         /// <param name="office">Organization to add as <see cref="Office"/></param>
@@ -145,7 +145,7 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs PUT request to https://localhost:44375/api/offices/{id}
+        /// Performs PUT request to http://officemanager.us-east-1.elasticbeanstalk.com/api/offices/{id}
         /// Update an exist organization
         /// </summary>
         /// <param name="updated_office"> Updated organization as <see cref="Office"/></param>
@@ -186,7 +186,7 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs DELETE request to https://localhost:44375/api/offices/{id}
+        /// Performs DELETE request to http://officemanager.us-east-1.elasticbeanstalk.com/api/offices/{id}
         /// remove an exist organization
         /// </summary>
         /// <param name="id">Organization ID to remove</param>

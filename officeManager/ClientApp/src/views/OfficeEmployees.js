@@ -67,7 +67,7 @@ export default function OfficeEmployees() {
                 'Accept': 'application/json'
             }
         };
-        var url = "https://localhost:44375/api/users/" + orgID;
+        var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users/" + orgID;
         handleRequest(url, requestOptions)
     }
 
@@ -152,7 +152,7 @@ export default function OfficeEmployees() {
                 "orgid": orgID
             })
         };
-        var url = "https://localhost:44375/api/users/" + orgID + "/" + id;
+        var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users/" + orgID + "/" + id;
         const response = await fetch(url, requestOptions);
         if (response.status == 204) {
             setMessage("Employee was updated.")
@@ -179,7 +179,7 @@ export default function OfficeEmployees() {
                 'Accept': 'application/json'
             }
         };
-        var url = "https://localhost:44375/api/users/" + orgID + "/" + id;
+        var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users/" + orgID + "/" + id;
         const response = await fetch(url, requestOptions);
         if (response.status == 204) {
             setMessage("Employee was Deleted.")
@@ -227,7 +227,7 @@ export default function OfficeEmployees() {
                 "orgid": orgID
             })
         };
-        var url = "https://localhost:44375/api/users";
+        var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users";
         const response = await fetch(url, requestOptions);
         if (response.status == 201) {
             setMessage("Employee was Created.")
@@ -244,8 +244,8 @@ export default function OfficeEmployees() {
         console.log(fileName)
         data.append('file', fileName)
         console.log(data)
-        console.log("https://localhost:44375/api/upload")
-        axios.post("https://localhost:44375/api/upload", data, { // receive two parameter endpoint url ,form data 
+        console.log("http://officemanager.us-east-1.elasticbeanstalk.com/api/upload")
+        axios.post("http://officemanager.us-east-1.elasticbeanstalk.com/api/upload", data, { // receive two parameter endpoint url ,form data 
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
