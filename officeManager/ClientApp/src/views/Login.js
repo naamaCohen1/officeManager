@@ -108,7 +108,7 @@ export default function Login() {
                 "department": department
             })
         };
-        var url = "https://localhost:44375/api/users";
+        var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users";
         const response = await fetch(url, requestOptions);
         if (response.status == 201) {
             { handleCloseAddUser() }
@@ -153,7 +153,7 @@ export default function Login() {
             })
         };
         console.log(requestOptions)
-        var response = await fetch("https://localhost:44375/api/offices", requestOptions);
+        var response = await fetch("http://officemanager.us-east-1.elasticbeanstalk.com/api/offices", requestOptions);
         if (response.status == 201) {
             { handleCloseAddOffice() }
             { handleShowAddUser() }
@@ -168,9 +168,9 @@ export default function Login() {
     async function refreshPage() {
         { handleClose() }   
         if (sessionStorage.getItem("super_admin") === 'true')
-            window.location.replace("https://localhost:44375/admin/offices");
+            window.location.replace("http://officemanager.us-east-1.elasticbeanstalk.com/admin/offices");
         else
-            window.location.replace("https://localhost:44375/admin/user");
+            window.location.replace("http://officemanager.us-east-1.elasticbeanstalk.com/admin/user");
     }
 
     async function login() {
@@ -185,7 +185,7 @@ export default function Login() {
                 "password": password
             })
         };
-        const response = await fetch("https://localhost:44375/api/login/", requestOptions)
+        const response = await fetch("http://officemanager.us-east-1.elasticbeanstalk.com/api/login/", requestOptions)
         if (response.status != 200) {
             setTitle("Error")
             setMessage("Invalid Email or Password. Please try again")

@@ -8,7 +8,7 @@
     "@fortawesome/react-fontawesome": "^0.1.14",
     "bootstrap": "4.6.0",
     "chartist": "0.10.1",
-    "gulp": "4.0.2",
+    "gulp": "^4.0.2",
     "gulp-append-prepend": "1.0.8",
     "node-sass": "4.14.1",
     "react": "17.0.1",
@@ -18,7 +18,7 @@
     "react-notification-alert": "0.0.13",
     "react-router": "5.2.0",
     "react-router-dom": "5.2.0",
-    "react-scripts": "4.0.1"
+    "react-scripts": "^4.0.1"
   },
   "optionalDependencies": {
     "jquery": "3.5.1",

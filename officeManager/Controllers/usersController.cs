@@ -17,7 +17,7 @@ namespace officeManager.Controllers
     public class UsersController : ControllerBase
     {
         /// <summary>
-        /// Performs GET request to https://localhost:44375/api/users/
+        /// Performs GET request to http://officemanager.us-east-1.elasticbeanstalk.com/api/users/
         /// Gets all employees 
         /// </summary>
         /// <returns> Returns all employees </returns>
@@ -65,7 +65,7 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs GET request to https://localhost:44375/api/users/{orgID}
+        /// Performs GET request to http://officemanager.us-east-1.elasticbeanstalk.com/api/users/{orgID}
         /// Gets all employees of specific orgID
         /// </summary>
         /// <param name="orgID"> Organization ID </param>
@@ -114,7 +114,7 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs GET request to https://localhost:44375/api/users/{orgID}/{id}
+        /// Performs GET request to http://officemanager.us-east-1.elasticbeanstalk.com/api/users/{orgID}/{id}
         /// Gets specific employee
         /// </summary>
         /// <param name="orgID"> Organization ID </param>
@@ -160,7 +160,7 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs POST request to https://localhost:44375/api/users/.
+        /// Performs POST request to http://officemanager.us-east-1.elasticbeanstalk.com/api/users/.
         /// Adding new employee to DB
         /// </summary>
         /// <param name="user"> Employee to Add as <see cref="User"/> </param>
@@ -194,7 +194,7 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs PUT request to https://localhost:44375/api/users/{orgID}/{id}
+        /// Performs PUT request to http://officemanager.us-east-1.elasticbeanstalk.com/api/users/{orgID}/{id}
         /// </summary>
         /// <param name="updated_user"> Updated employee as <see cref="User"/> </param>
         /// <param name="orgID"> Organization ID </param>
@@ -241,7 +241,7 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs DELETE request to https://localhost:44375/api/users/{orgID}/{id}
+        /// Performs DELETE request to http://officemanager.us-east-1.elasticbeanstalk.com/api/users/{orgID}/{id}
         /// </summary>
         /// <param name="orgID"> Organization ID </param>
         /// <param name="id"> Employee's ID to delete </param>

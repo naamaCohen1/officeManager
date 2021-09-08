@@ -78,7 +78,7 @@ namespace officeManager
                 "in order to login to the organisation using the below link , use these details:\n" +
                 "Username: " + this.Email + "\n" +
                 "Password: " + this.ID + "\n" +
-                "Link: https://localhost:44375/admin/login \n\n" +
+                "Link: http://officemanager.us-east-1.elasticbeanstalk.com/admin/login \n\n" +
                 "If you have any problems, please contact your administrator.";
             new GmailController().SendMail(gmailMessage);
         }

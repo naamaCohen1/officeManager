@@ -71,7 +71,7 @@ export default class Statistics extends React.Component {
                 'Accept': 'application/json'
             }
         }
-        const result = fetch("https://localhost:44375/api/Statistics/" + this.state.orgID + "/" + this.state.Amount, requestOptions).then(response => response.json())
+        const result = fetch("http://officemanager.us-east-1.elasticbeanstalk.com/api/Statistics/" + this.state.orgID + "/" + this.state.Amount, requestOptions).then(response => response.json())
             .then(data => {
                 this.setTotalAmount(data);
                 if (this.state.statOption === 'Departments') {
@@ -207,7 +207,7 @@ export default class Statistics extends React.Component {
                 ids
             )
         };
-        const results = await fetch("https://localhost:44375/api/statistics/" + this.state.orgID, requestOptions).then(response => response.json())
+        const results = await fetch("http://officemanager.us-east-1.elasticbeanstalk.com/api/statistics/" + this.state.orgID, requestOptions).then(response => response.json())
             .then(names => {
                 this.setState({ employeesName: names });
             });
@@ -221,7 +221,7 @@ export default class Statistics extends React.Component {
                 'Accept': 'application/json'
             }
         }
-        const result = fetch("https://localhost:44375/api/Statistics/" + this.state.orgID + "/7", requestOptions).then(response => response.json())
+        const result = fetch("http://officemanager.us-east-1.elasticbeanstalk.com/api/Statistics/" + this.state.orgID + "/7", requestOptions).then(response => response.json())
             .then(dataWeek => {
                 this.setTotalWeek(dataWeek);
                 const department = this.calculateDepartment(dataWeek);
@@ -233,7 +233,7 @@ export default class Statistics extends React.Component {
                 this.state.dataRolesWeek = roles;
                 this.setState({ dataEmployeesWeek: employees });
             });
-        const result1 = fetch("https://localhost:44375/api/Statistics/" + this.state.orgID + "/30", requestOptions).then(response => response.json())
+        const result1 = fetch("http://officemanager.us-east-1.elasticbeanstalk.com/api/Statistics/" + this.state.orgID + "/30", requestOptions).then(response => response.json())
             .then(dataMonth => {
                 this.setTotalMonth(dataMonth);
                 const departmentMonth = this.calculateDepartment(dataMonth);

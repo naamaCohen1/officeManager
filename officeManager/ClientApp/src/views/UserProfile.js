@@ -53,7 +53,7 @@ export default function User() {
                 'Accept': 'application/json'
             }
         };
-        var url = "https://localhost:44375/api/users/" + orgID + "/" + id;
+        var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users/" + orgID + "/" + id;
         handleRequest(url, requestOptions)
     }
 
@@ -106,7 +106,7 @@ export default function User() {
                 "permissionLevel": permissionLevel
             })
         };
-        var response = await fetch("https://localhost:44375/api/users/" + orgID + "/" + id, requestOptions);
+        var response = await fetch("http://officemanager.us-east-1.elasticbeanstalk.com/api/users/" + orgID + "/" + id, requestOptions);
         if (response.status == 204) {
             setTitle("Info")
             setMessage("Profile was updated.")

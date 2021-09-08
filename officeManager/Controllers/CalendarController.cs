@@ -15,7 +15,7 @@ namespace officeManager.Controllers
     public class CalendarController : ControllerBase
     {
         /// <summary>
-        /// Performs GET request to https://localhost:44375/api/calendar/{orgID}
+        /// Performs GET request to http://officemanager.us-east-1.elasticbeanstalk.com/api/calendar/{orgID}
         /// Gets all calendar events
         /// </summary>
         /// <returns> List of all calendar events as <see cref="List{Calendar}"/> </returns>
@@ -57,7 +57,7 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs POST request to https://localhost:44375/api/calendar/{orgID}
+        /// Performs POST request to http://officemanager.us-east-1.elasticbeanstalk.com/api/calendar/{orgID}
         /// Adding employee to EmployeesArriving in the requested day 
         /// </summary>
         /// <param name="calendarUser"> Employee to be added as <see cref="CalendarUser"/> 
@@ -132,7 +132,7 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs PUT request to https://localhost:44375/api/calendar/{orgID}
+        /// Performs PUT request to http://officemanager.us-east-1.elasticbeanstalk.com/api/calendar/{orgID}
         /// Add User to Waiting list
         /// </summary>
         /// <param name="calendarUser"> User to add to waiting list as <see cref="CalendarUser"/></param>
@@ -177,7 +177,7 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs PUT request to https://localhost:44375/api/calendar/{orgID}/{date}
+        /// Performs PUT request to http://officemanager.us-east-1.elasticbeanstalk.com/api/calendar/{orgID}/{date}
         /// Update ParkingCapacity in the requested date
         /// </summary>
         /// <param name="date"> Date to update the details in </param>
@@ -225,7 +225,7 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs DELETE request to https://localhost:44375/api/calendar/{orgID}
+        /// Performs DELETE request to http://officemanager.us-east-1.elasticbeanstalk.com/api/calendar/{orgID}
         /// Delete a user from the requested day
         /// </summary>
         /// <param name="calendarUser">User to delete and a date as <see cref="CalendarUser"/></param>
@@ -293,7 +293,7 @@ namespace officeManager.Controllers
 
 
         /// <summary>
-        /// Performs GET request to https://localhost:44375/api/calendar/{orgID}/mm.dd.yyyy
+        /// Performs GET request to http://officemanager.us-east-1.elasticbeanstalk.com/api/calendar/{orgID}/mm.dd.yyyy
         /// Adding employee to EmployeesArriving in the requested day 
         /// </summary>
         /// <param name="calendarUser"> Employee to be added as <see cref="CalendarUser"/> </param>
@@ -344,7 +344,7 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// Performs POST request to https://localhost:44375/api/calendar/{orgID}/{id}
+        /// Performs POST request to http://officemanager.us-east-1.elasticbeanstalk.com/api/calendar/{orgID}/{id}
         /// Gets all dates users signed to 
         /// </summary>
         /// <param name="id">User to get his dates</param>

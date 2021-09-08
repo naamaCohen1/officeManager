@@ -79,7 +79,7 @@ export default function SendAnEmail() {
                 'Accept': 'application/json'
             }
         };
-        var url = "https://localhost:44375/api/users/" + orgID;
+        var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users/" + orgID;
         handleRequest(url, requestOptions)
     }
 
@@ -126,7 +126,7 @@ export default function SendAnEmail() {
                 "body": body,
             })
         };
-        var url = "https://localhost:44375/api/gmail";
+        var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/gmail";
         const response = await fetch(url, requestOptions);
         if (response.status == 200) {
             setTitle("Info")
@@ -149,7 +149,7 @@ export default function SendAnEmail() {
                 'Accept': 'application/json'
             }
         };
-        var url = "https://localhost:44375/api/calendar/" + orgID + "/" + date;
+        var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/calendar/" + orgID + "/" + date;
         const response = await fetch(url, requestOptions);
         if (response.status == 200) {
             const data = await response.json();

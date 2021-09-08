@@ -74,9 +74,9 @@ export default function Employees() {
             }
         };
         if (selecteOrg_1 == "All")
-            var url = "https://localhost:44375/api/users/";
+            var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users/";
         else {
-            var url = "https://localhost:44375/api/users/" + selecteOrg_1
+            var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users/" + selecteOrg_1
         }
         handleRequest(url, requestOptions)
     }
@@ -163,7 +163,7 @@ export default function Employees() {
                 "orgid": orgID
             })
         };
-        var url = "https://localhost:44375/api/users/" + orgID + "/" + id;
+        var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users/" + orgID + "/" + id;
         const response = await fetch(url, requestOptions);
         if (response.status == 204) {
             setMessage("Employee was updated.")
@@ -190,7 +190,7 @@ export default function Employees() {
                 'Accept': 'application/json'
             }
         };
-        var url = "https://localhost:44375/api/users/" + orgID + "/" + id;
+        var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users/" + orgID + "/" + id;
         const response = await fetch(url, requestOptions);
         if (response.status == 204) {
             setMessage("Employee was Deleted.")
@@ -238,7 +238,7 @@ export default function Employees() {
                 "orgid": orgID
             })
         };
-        var url = "https://localhost:44375/api/users";
+        var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users";
         const response = await fetch(url, requestOptions);
         if (response.status == 201) {
             setMessage("Employee was Created.")
@@ -258,7 +258,7 @@ export default function Employees() {
                 'Accept': 'application/json'
             }
         };
-        var url = "https://localhost:44375/api/offices/";
+        var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/offices/";
         const response = await fetch(url, requestOptions);
         if (response.status == 200) {
             const data = await response.json();
