@@ -1,7 +1,6 @@
 import React, { useState, useEffect} from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import Popup from 'react-popup';
 import {
     Button,
     Card,
@@ -420,7 +419,7 @@ export default function Results() {
                         <Modal.Title>Coming with a car?</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <p>Do you plan to come with a care to the office?</p>
+                        <p>Do you plan to come with a car to the office?</p>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="Primary" onClick={AddToParking}>Yes</Button>

@@ -80,6 +80,7 @@ export default function SendAnEmail() {
             }
         };
         var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users/" + orgID;
+        console.log(url)
         handleRequest(url, requestOptions)
     }
 

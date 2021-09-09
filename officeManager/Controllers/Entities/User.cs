@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Data.SqlClient;
-using Newtonsoft.Json;
-using Microsoft.Web.WebPages.OAuth;
 using officeManager.Controllers;
 using officeManager.Controllers.Entities;
+using officeManager.constants;
 
 namespace officeManager
 {
     public class User
     {
-        private string connetionString = @"Data Source=NAAMA-DELL;Initial Catalog=OfficeManagerDB;Integrated Security=SSPI";
         public string ID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -67,8 +62,8 @@ namespace officeManager
             }
             dataReader.Close();
             command.Dispose();
-            if (org_name == null)
-                throw new ArgumentNullException("User email can not be null");
+            //if (org_name == null)
+            //    throw new ArgumentNullException("User email can not be null");
 
             GmailMessage gmailMessage = new GmailMessage();
             gmailMessage.To = this.Email;
@@ -77,7 +72,7 @@ namespace officeManager
                 "You had just added to \"" + org_name + "\" organization.\n" +
                 "in order to login to the organisation using the below link , use these details:\n" +
                 "Username: " + this.Email + "\n" +
-                "Password: " + this.ID + "\n" +
+                "Password: your personal ID\n" +
                 "Link: http://officemanager.us-east-1.elasticbeanstalk.com/admin/login \n\n" +
                 "If you have any problems, please contact your administrator.";
             new GmailController().SendMail(gmailMessage);
@@ -88,7 +83,7 @@ namespace officeManager
             try
             {
                 string sql = null;
-                SqlConnection connection = new SqlConnection(connetionString);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
                 if(CarNumber==null)
                     sql = string.Format("insert into tlbEmployees values({0},'{1}','{2}','{3}',{4},{5},{6},'{7}','{8}',{9},{10})", ID, FirstName, LastName, Email, "NULL", Floor, RoomNumber, Role, PermissionLevel, Department, OrgID);
@@ -98,9 +93,9 @@ namespace officeManager
                 SqlDataReader dataReader = command.ExecuteReader();
                 dataReader.Close();
                 command.Dispose();
+                SendWelcomeEmail(connection);
                 connection.Close();
             }
-
             catch (Exception e)
             {
                 throw new Exception("failed to insert user");
@@ -113,9 +108,9 @@ namespace officeManager
             try
             {
                 bool isExist = false;
-                SqlConnection connection = new SqlConnection(connetionString);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
-                string sql = string.Format("SELECT * FROM tlbEmployees WHERE ID='{0}'", this.ID);
+                string sql = string.Format("SELECT * FROM tlbEmployees WHERE ID='{0}' AND OrgID = {1} ", this.ID,this.OrgID);
                 SqlCommand command = new SqlCommand(sql, connection);
                 SqlDataReader dataReader = command.ExecuteReader();
                 string name = null;

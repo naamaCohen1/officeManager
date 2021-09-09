@@ -29,12 +29,11 @@ namespace officeManager.Controllers
         {
             try
             {
-                using (SmtpClient client = new SmtpClient("smtp.gmail.com", 587))
+                using (SmtpClient client = new SmtpClient("email-smtp.us-east-2.amazonaws.com", 587))
                 {
                     client.EnableSsl = true;
-                    client.DeliveryMethod = SmtpDeliveryMethod.Network;
                     client.UseDefaultCredentials = false;
-                    client.Credentials = new NetworkCredential("officemanagerhealth@gmail.com", "Qwerty12!");
+                    client.Credentials = new NetworkCredential("AKIAZT3MGQTQDXZRZUGE", "BCZcHCiXN+309pU0JUxtOf4attqyhteoVh3RcpSFIlJV");
                     MailMessage mailMessage = new MailMessage();
                     mailMessage.To.Add("officemanagerhealth@gmail.com");
                     mailMessage.From = new MailAddress("officemanagerhealth@gmail.com");
@@ -87,12 +86,11 @@ namespace officeManager.Controllers
         {
             try
             {
-                using (SmtpClient client = new SmtpClient("smtp.gmail.com", 587))
+                using (SmtpClient client = new SmtpClient("email-smtp.us-east-2.amazonaws.com", 587))
                 {
                     client.EnableSsl = true;
-                    client.DeliveryMethod = SmtpDeliveryMethod.Network;
                     client.UseDefaultCredentials = false;
-                    client.Credentials = new NetworkCredential("officemanagerhealth@gmail.com", "Qwerty12!");
+                    client.Credentials = new NetworkCredential("AKIAZT3MGQTQDXZRZUGE", "BCZcHCiXN+309pU0JUxtOf4attqyhteoVh3RcpSFIlJV");
                     MailMessage mailMessage = new MailMessage();
                     mailMessage.To.Add(emailMessage.To);
                     mailMessage.From = new MailAddress("officemanagerhealth@gmail.com");
@@ -104,7 +102,7 @@ namespace officeManager.Controllers
             }
             catch (Exception)
             {
-                return new BadRequestResult();
+                return new BadRequestObjectResult("fail to send Email");
             }
         }
     }

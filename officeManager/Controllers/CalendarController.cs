@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Threading.Tasks;
 using officeManager.Controllers.Entities;
 using System.Data.SqlClient;
 using Newtonsoft.Json;
@@ -317,6 +316,7 @@ namespace officeManager.Controllers
                 }
                 dataReader.Close();
                 command.Dispose();
+                
                 if (calendar.Date != null)
                 {
                     if (calendar.EmployeesArriving != null)
@@ -329,11 +329,23 @@ namespace officeManager.Controllers
                     connection.Close();
                     return new OkResult();
                 }
-                sql = string.Format("insert into tlbCalendar values('{0}',null,6,6,null,{1})", date, orgID);
-                command = new SqlCommand(sql, connection);
-                dataReader = command.ExecuteReader();
-                command.Dispose();
-                connection.Close();
+                else
+                    connection.Close();
+                Office office = new Office();
+                office.getOfficeFromUser(orgID);
+                calendar.orgID = office.ID;
+                calendar.Date = date;
+                calendar.ParkingCapacity = office.ParkingAmount;
+                calendar.SittingCapacity = office.OfficeCapacity;
+                calendar.EmployeesArriving = null;
+                calendar.WaitingList = null;
+                calendar.insertDate();
+                
+                //sql = string.Format("insert into tlbCalendar values('{0}',null,6,6,null,{1})", date, orgID);
+                //command = new SqlCommand(sql, connection);
+                //dataReader = command.ExecuteReader();
+                //command.Dispose();
+                //connection.Close();
                 //add date to calendar. defualt values
                 return NotFound();
             }

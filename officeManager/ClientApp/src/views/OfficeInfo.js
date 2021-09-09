@@ -233,7 +233,7 @@ export default function OfficeInfo() {
 
                                         <Form.Group as={Col}>
                                             <Form.Label>Office Capacity</Form.Label>
-                                            <Form.Control type="text" placeholder="Enter the allowed office capacity percentage" required
+                                            <Form.Control type="text" placeholder="Enter the allowed office capacity employees" required
                                                 value={officeCapacity}
                                                 onChange={(e) => setOfficeCapacity(e.target.value)}
                                             />
