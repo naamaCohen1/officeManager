@@ -18,7 +18,7 @@
     "officeManager": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "http://officemanager.us-east-1.elasticbeanstalk.com;http://localhost:5000",
+      "applicationUrl": "http://officemanager.us-east-1.elasticbeanstalk.com",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

@@ -348,7 +348,7 @@ export default function Login() {
 
                             <Form.Group as={Col}>
                                 <Form.Label>Office Capacity</Form.Label>
-                                <Form.Control type="text" placeholder="Office capacity percentage" required
+                                <Form.Control type="text" placeholder="Office capacity" required
                                     onChange={(e) => setOfficeCapacity(e.target.value)}
                                 />
                                 <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>
