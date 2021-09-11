@@ -1,8 +1,4 @@
 import React, { useEffect, useState, Component } from "react";
-import { Multiselect } from 'multiselect-react-dropdown';
-import DropdownMultiselect from "react-multiselect-dropdown-bootstrap";
-
-//import { colourOptions } from '../data';
 // react-bootstrap components
 import {
     Button,
@@ -13,8 +9,6 @@ import {
     Col,
     Modal
 } from "react-bootstrap";
-
-
 
 export default function SendAnEmail() {
     const [employeesArray, setEmployeesArray] = useState([]);
@@ -232,10 +226,10 @@ export default function SendAnEmail() {
                                     <Row>
                                         <Form.Group as={Col}>
                                             <Form.Label>Mail Body</Form.Label>
-                                            <Form.Control required type="text" placeholder="Please enter mail body"
+                                            <textarea required class="form-control rounded-0" id="exampleFormControlTextarea1" rows="10" placeholder="Please enter mail body"
                                                 value={body}
                                                 onChange={(e) => setBody(e.target.value)}
-                                            />
+                                            ></textarea>
                                             <Form.Control.Feedback type="invalid"> This field is required.</Form.Control.Feedback>
                                         </Form.Group>
                                     </Row>
@@ -334,11 +328,3 @@ export default function SendAnEmail() {
         </>
     );
 }
-//<Multiselect
-//    data={['Australia', 'Canada', 'USA', 'Poland', 'Spain', 'France']}
-//    //onChange={getUserNames()} value={selecedValue}
-//    //onChange={handleChange}
-//    value={value}
-//    onChange={value => console.log(value)}
-////isObject={false}
-///>
