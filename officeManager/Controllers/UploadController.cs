@@ -65,8 +65,8 @@ namespace officeManager.Controllers
                     };
                     if (string.IsNullOrEmpty(employee.CarNumber))
                         employee.CarNumber = null;
-                    if (employee.checkIfUserExistInDateBase() == false)
-                        employee.insertUserToDataBase();
+                    if (employee.CheckIfUserExistInDateBase() == false)
+                        employee.InsertUserToDataBase();
                 }
 
                 return new OkResult();

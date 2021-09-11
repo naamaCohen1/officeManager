@@ -62,8 +62,6 @@ namespace officeManager
             }
             dataReader.Close();
             command.Dispose();
-            //if (org_name == null)
-            //    throw new ArgumentNullException("User email can not be null");
 
             GmailMessage gmailMessage = new GmailMessage();
             gmailMessage.To = this.Email;
@@ -78,21 +76,22 @@ namespace officeManager
             new GmailController().SendMail(gmailMessage);
         }
 
-        public void insertUserToDataBase()
+        public void InsertUserToDataBase()
         {
             try
             {
                 string sql = null;
                 SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
-                if(CarNumber==null)
+                if (CarNumber == null)
                     sql = string.Format("insert into tlbEmployees values({0},'{1}','{2}','{3}',{4},{5},{6},'{7}','{8}',{9},{10})", ID, FirstName, LastName, Email, "NULL", Floor, RoomNumber, Role, PermissionLevel, Department, OrgID);
-                  else
+                else
                     sql = string.Format("insert into tlbEmployees values({0},'{1}','{2}','{3}',{4},{5},{6},'{7}','{8}',{9},{10})", ID, FirstName, LastName, Email, CarNumber, Floor, RoomNumber, Role, PermissionLevel, Department, OrgID);
                 SqlCommand command = new SqlCommand(sql, connection);
                 SqlDataReader dataReader = command.ExecuteReader();
                 dataReader.Close();
                 command.Dispose();
+                new Office().IncreaseOrgEmployees(OrgID);
                 SendWelcomeEmail(connection);
                 connection.Close();
             }
@@ -100,17 +99,16 @@ namespace officeManager
             {
                 throw new Exception("failed to insert user");
             }
-            
         }
 
-        public bool checkIfUserExistInDateBase()
+        public bool CheckIfUserExistInDateBase()
         {
             try
             {
                 bool isExist = false;
                 SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
-                string sql = string.Format("SELECT * FROM tlbEmployees WHERE ID='{0}' AND OrgID = {1} ", this.ID,this.OrgID);
+                string sql = string.Format("SELECT * FROM tlbEmployees WHERE ID='{0}' AND OrgID = {1} ", this.ID, this.OrgID);
                 SqlCommand command = new SqlCommand(sql, connection);
                 SqlDataReader dataReader = command.ExecuteReader();
                 string name = null;
@@ -128,7 +126,6 @@ namespace officeManager
                 connection.Close();
                 return isExist;
             }
-
             catch (Exception e)
             {
                 throw new Exception("failed to read from DB");
