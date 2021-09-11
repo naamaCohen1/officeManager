@@ -112,7 +112,7 @@ namespace officeManager.Controllers
                 else
                 {
                     Office office = new Office();
-                    office.getOfficeFromUser(orgID);
+                    office.GetOfficeFromUser(orgID);
                     calendar.orgID = office.ID;
                     calendar.ParkingCapacity = office.ParkingAmount;
                     calendar.SittingCapacity = office.OfficeCapacity;
@@ -332,7 +332,7 @@ namespace officeManager.Controllers
                 else
                     connection.Close();
                 Office office = new Office();
-                office.getOfficeFromUser(orgID);
+                office.GetOfficeFromUser(orgID);
                 calendar.orgID = office.ID;
                 calendar.Date = date;
                 calendar.ParkingCapacity = office.ParkingAmount;
@@ -340,13 +340,6 @@ namespace officeManager.Controllers
                 calendar.EmployeesArriving = null;
                 calendar.WaitingList = null;
                 calendar.insertDate();
-                
-                //sql = string.Format("insert into tlbCalendar values('{0}',null,6,6,null,{1})", date, orgID);
-                //command = new SqlCommand(sql, connection);
-                //dataReader = command.ExecuteReader();
-                //command.Dispose();
-                //connection.Close();
-                //add date to calendar. defualt values
                 return NotFound();
             }
             catch (Exception)

@@ -2,12 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Net;
-using System.Net.Http;
-using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using officeManager.constants;
+using officeManager.Controllers.Entities;
 
 namespace officeManager.Controllers
 {
@@ -180,7 +178,7 @@ namespace officeManager.Controllers
                 SqlCommand command = new SqlCommand(sql, connection);
                 command.ExecuteNonQuery();
                 command.Dispose();
-
+                new Office().IncreaseOrgEmployees(user.OrgID);
                 user.SendWelcomeEmail(connection);
                 connection.Close();
 
@@ -250,22 +248,43 @@ namespace officeManager.Controllers
         [HttpDelete("{orgID}/{id}")]
         public async Task<IActionResult> Delete(string orgID, string id)
         {
-            var user = Get(orgID, id);
-            if (user.Result.Result.ToString().Contains("NotFoundResult"))
-                return new NotFoundObjectResult("User with ID [" + id + "] was not found");
-            if (!user.Result.Result.ToString().Contains("OkObjectResult"))
-                return new BadRequestResult();
-
-            string sql = string.Format("DELETE FROM tlbEmployees WHERE ID={0} and OrgID={1}", id, orgID);
+            string sql = null;
+            SqlCommand command = null;
             try
             {
                 SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
-                SqlCommand command = new SqlCommand(sql, connection);
+
+                if (orgID.Equals("null"))
+                {
+                    sql = string.Format("select * from tlbEmployees");
+                    command = new SqlCommand(sql, connection);
+                    SqlDataReader dataReader = command.ExecuteReader();
+                    while (dataReader.Read())
+                    {
+                        string ID = dataReader["ID"].ToString().Trim();
+                        if (ID.Equals(id))
+                        {
+                            orgID = dataReader["OrgID"].ToString().Trim();
+                            break;
+                        }
+                    }
+                    dataReader.Close();
+                    command.Dispose();
+                }
+                var user = Get(orgID, id);
+                if (user.Result.Result.ToString().Contains("NotFoundResult"))
+                    return new NotFoundObjectResult("User with ID [" + id + "] was not found");
+                if (!user.Result.Result.ToString().Contains("OkObjectResult"))
+                    return new BadRequestResult();
+
+                sql = string.Format("DELETE FROM tlbEmployees WHERE ID={0} and OrgID={1}", id, orgID);
+                command = new SqlCommand(sql, connection);
                 command.ExecuteNonQuery();
                 command.Dispose();
                 connection.Close();
 
+                new Office().DecreaseOrgEmployees(orgID);
                 return NoContent();
             }
             catch (Exception)

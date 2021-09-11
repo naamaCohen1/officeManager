@@ -47,7 +47,7 @@ namespace officeManager.Controllers.Entities
             this.HotSpotPlaces = HotSpotPlaces;
             this.ID = Id;
         }
-        public void getOfficeFromUser(string orgID)
+        public void GetOfficeFromUser(string orgID)
         {
             try
             {
@@ -59,7 +59,7 @@ namespace officeManager.Controllers.Entities
                 while (dataReader.Read())
                 {
                     this.ParkingAmount = dataReader["ParkingAmount"].ToString().Trim();
-                    this.OfficeCapacity= dataReader["OfficeCapacity"].ToString().Trim();
+                    this.OfficeCapacity = dataReader["OfficeCapacity"].ToString().Trim();
                     this.ID = dataReader["ID"].ToString().Trim();
                 }
                 dataReader.Close();
@@ -70,8 +70,75 @@ namespace officeManager.Controllers.Entities
             {
                 throw new Exception("Fail to enter DB " + e.Message);
             }
-            
         }
 
+        private string getNumOfEmployees(string orgID)
+        {
+            try
+            {
+                string numOfEmployees = null;
+                string sql = string.Format("select *  from tlbOffice WHERE id = '{0}'", orgID);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
+                connection.Open();
+                SqlCommand command = new SqlCommand(sql, connection);
+                SqlDataReader dataReader = command.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    numOfEmployees = dataReader["NumOfEmployees"].ToString().Trim();
+                }
+                dataReader.Close();
+                command.Dispose();
+                connection.Close();
+                return numOfEmployees;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Fail to get num of employees for Org ID [" + orgID + "]\n" + e.Message);
+            }
+        }
+
+        public void IncreaseOrgEmployees(string orgID)
+        {
+            try
+            {
+                int numOfEmployees = int.Parse(getNumOfEmployees(orgID));
+                updateOrgEmployees(orgID, ++numOfEmployees);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Fail to increase Num of employees for OrgID [" + orgID + "]\n" + e.Message);
+            }
+        }
+
+        public void DecreaseOrgEmployees(string orgID)
+        {
+            try
+            {
+                int numOfEmployees = int.Parse(getNumOfEmployees(orgID));
+                updateOrgEmployees(orgID, --numOfEmployees);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Fail to increase Num of employees for OrgID [" + orgID + "]\n" + e.Message);
+            }
+        }
+
+        private void updateOrgEmployees(string orgID, int updatedNum)
+        {
+            try
+            {
+                string sql = string.Format("UPDATE tlbOffice SET NumOfEmployees = '{0}' WHERE id = '{1}'", updatedNum, orgID);
+                SqlConnection connection = new SqlConnection(Params.connetionString);
+                connection.Open();
+                SqlCommand command = new SqlCommand(sql, connection);
+                command.ExecuteNonQuery();
+                command.Dispose();
+                connection.Close();
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Fail to update Num of employees for OrgID [" + orgID + "]\n" + e.Message);
+            }
+        }
     }
 }

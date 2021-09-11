@@ -190,7 +190,10 @@ export default function Employees() {
                 'Accept': 'application/json'
             }
         };
+
         var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users/" + orgID + "/" + id;
+        if (!orgID || orgID.length === 0)
+             url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users/null/" + id;
         const response = await fetch(url, requestOptions);
         if (response.status == 204) {
             setMessage("Employee was Deleted.")
