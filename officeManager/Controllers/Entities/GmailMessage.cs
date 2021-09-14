@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace officeManager.Controllers.Entities
 {
@@ -13,7 +10,7 @@ namespace officeManager.Controllers.Entities
         public string Body { get; set; }
 
         /// <summary>
-        /// Constructor
+        /// Default Constructor
         /// </summary>
         public GmailMessage()
         {

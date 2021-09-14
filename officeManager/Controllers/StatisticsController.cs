@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
 using officeManager.Controllers.Entities;
@@ -28,7 +26,7 @@ namespace officeManager.Controllers
             try
             {
                 int intDaysAgo = int.Parse(daysAgo);
-                ArrivalStatistics arrivalStatistics = statistics.GetLastActivities(orgID,intDaysAgo);
+                ArrivalStatistics arrivalStatistics = statistics.GetLastActivities(orgID, intDaysAgo);
                 string json = JsonConvert.SerializeObject(arrivalStatistics);
                 return new OkObjectResult(json);
             }

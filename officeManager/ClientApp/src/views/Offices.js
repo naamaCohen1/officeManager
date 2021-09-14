@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// react-bootstrap components
 import {
     Button,
     Card,
@@ -231,7 +230,6 @@ export default function Offices() {
         }
     }
 
-    // Calling the function on component mount
     useEffect(() => {
         getOffices();
     }, []);
@@ -484,7 +482,7 @@ export default function Offices() {
                                 <Form.Group as={Col}>
                                     <Form.Label>Name</Form.Label>
                                     <Form.Control required type="text" placeholder="Name"
-                                        value={ name}
+                                        value={name}
                                         onChange={(e) => setName(e.target.value)}
                                     />
                                     <Form.Control.Feedback type="invalid"> This field is required.</Form.Control.Feedback>

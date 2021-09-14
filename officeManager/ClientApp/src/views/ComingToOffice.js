@@ -17,6 +17,7 @@ import {
 } from "react-bootstrap";
 
 var date;
+
 class NameForm extends React.Component {
     constructor(props) {
         super(props);
@@ -31,14 +32,6 @@ class NameForm extends React.Component {
 
     handleChange(event) {
         let value = event.target.value;
-        //if (this.state.label == 'Floor' && event.keyCode != 8) {
-        //    let isnum = /^\d+$/.test(value);
-        //    console.log(isnum)
-        //    if (isnum === false) {
-        //        alert('in Floor label you need to enter only numbers');
-        //        value = '';
-        //    } 
-        //}
         this.setState({ value: value });
     }
 
@@ -105,6 +98,7 @@ class NameForm extends React.Component {
             );
         }
     }
+
     render() {
         return (
             <Form onSubmit={this.handleSubmit}>
@@ -135,7 +129,6 @@ class NameForm extends React.Component {
 }
 
 export default function Results() {
-    // set states of calendar date
     const [calDate, setCalDate] = useState(new Date())
     const [DateIsClick, setDateIsClick] = useState(false);
     const [people, setPeople] = useState([]);
@@ -170,7 +163,7 @@ export default function Results() {
                 'Accept': 'application/json'
             }
         };
-        const response = await fetch("http://officemanager.us-east-1.elasticbeanstalk.com/api/calendar/" + orgID  + "/" + id, requestOptions)
+        const response = await fetch("http://officemanager.us-east-1.elasticbeanstalk.com/api/calendar/" + orgID + "/" + id, requestOptions)
         if (response.status == 200) {
             var datesArr = await response.json()
             setDates(datesArr)
@@ -289,7 +282,7 @@ export default function Results() {
             })
         };
         setDateIsClick(true)
-        handleRequest("http://officemanager.us-east-1.elasticbeanstalk.com/api/calendar/" + orgID , requestOptions)
+        handleRequest("http://officemanager.us-east-1.elasticbeanstalk.com/api/calendar/" + orgID, requestOptions)
     }
 
     function showPeopleCame() {

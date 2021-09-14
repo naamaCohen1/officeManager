@@ -1,9 +1,6 @@
 ﻿using officeManager.constants;
 using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace officeManager.Controllers.Entities
 {
@@ -22,7 +19,7 @@ namespace officeManager.Controllers.Entities
         public string ID { get; set; }
 
         /// <summary>
-        /// Constructor
+        /// Default Constructor
         /// </summary>
         public Office()
         {
@@ -47,7 +44,8 @@ namespace officeManager.Controllers.Entities
             this.HotSpotPlaces = HotSpotPlaces;
             this.ID = Id;
         }
-        public void GetOfficeFromUser(string orgID)
+
+        public void GetOfficeById(string orgID)
         {
             try
             {
@@ -68,7 +66,7 @@ namespace officeManager.Controllers.Entities
             }
             catch (Exception e)
             {
-                throw new Exception("Fail to enter DB " + e.Message);
+                throw new Exception("Fail to get office with ID [" + orgID + "]\n" + e.Message);
             }
         }
 

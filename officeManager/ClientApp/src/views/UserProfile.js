@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// react-bootstrap components
 import {
     Button,
     Card,

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// react-bootstrap components
 import {
     Button,
     Card,
@@ -65,7 +64,6 @@ export default function Employees() {
     }
 
     async function getEmployees(selecteOrg_1) {
-        console.log(selecteOrg_1)
         const requestOptions = {
             method: 'GET',
             headers: {
@@ -193,7 +191,7 @@ export default function Employees() {
 
         var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users/" + orgID + "/" + id;
         if (!orgID || orgID.length === 0)
-             url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users/null/" + id;
+            url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users/null/" + id;
         const response = await fetch(url, requestOptions);
         if (response.status == 204) {
             setMessage("Employee was Deleted.")
@@ -287,7 +285,6 @@ export default function Employees() {
         }
     }
 
-    // Calling the function on component mount
     useEffect(() => {
         getOffices();
         getEmployees(selecteOrg);

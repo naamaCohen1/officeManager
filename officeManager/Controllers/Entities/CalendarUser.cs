@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using officeManager.Controllers.Entities;
 using System.Data.SqlClient;
 
 namespace officeManager.Controllers.Entities
@@ -11,6 +7,13 @@ namespace officeManager.Controllers.Entities
     {
         public string Id { get; set; }
         public string Date { get; set; }
+
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
+        public CalendarUser()
+        {
+        }
 
         /// <summary>
         /// Constructor
@@ -22,14 +25,7 @@ namespace officeManager.Controllers.Entities
         }
 
         /// <summary>
-        /// Constructor
-        /// </summary>
-        public CalendarUser()
-        {
-        }
-
-        /// <summary>
-        /// This method sends an email for the added user
+        /// This method sends an email for the added user from the waiting list to the office
         /// </summary>
         /// <param name="connection"><see cref="SqlConnection"/></param>
         /// <param name="id">User ID to send the email to</param>
@@ -53,7 +49,7 @@ namespace officeManager.Controllers.Entities
             GmailMessage gmailMessage = new GmailMessage();
             DateTime date = Convert.ToDateTime(calendar_date);
             gmailMessage.To = email;
-            gmailMessage.Subject = "you have been added to the office at " + date.ToShortDateString();
+            gmailMessage.Subject = "You have been added to the office at " + date.ToShortDateString();
             gmailMessage.Body = "You are lucky!\n" +
                 "Someone has just canceled his arriving at " + date.ToShortDateString() + ", We Added you instead.\n" +
                 "Enjoy (:";
@@ -61,7 +57,7 @@ namespace officeManager.Controllers.Entities
         }
 
         /// <summary>
-        /// This method update the waiting list
+        /// This method updates the waiting list
         /// </summary>
         /// <param name="connection"> <see cref="SqlConnection"/></param>
         /// <param name="names">Update waiting list value</param>
@@ -144,7 +140,7 @@ namespace officeManager.Controllers.Entities
         /// <param name="orgID"> Organization ID </param>
         public void UpdateCapacity(SqlConnection connection, int capacity, string orgID)
         {
-            string sql = string.Format("UPDATE tlbCalendar SET SittingCapacity = {0} where date = '{1}' and OrgID={2}", capacity.ToString(), Date,orgID);
+            string sql = string.Format("UPDATE tlbCalendar SET SittingCapacity = {0} where date = '{1}' and OrgID={2}", capacity.ToString(), Date, orgID);
             try
             {
                 SqlCommand command = new SqlCommand(sql, connection);
@@ -180,7 +176,7 @@ namespace officeManager.Controllers.Entities
                         continue;
                     CalendarUser user = new CalendarUser();
                     user.Id = employeeID;
-                    string name = user.GetEmployeeName(connection,orgID);
+                    string name = user.GetEmployeeName(connection, orgID);
                     comingEmployees += name + ',';
                 }
             }

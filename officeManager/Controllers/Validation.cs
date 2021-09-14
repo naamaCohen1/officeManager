@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace officeManager.Controllers
 {
@@ -15,7 +10,7 @@ namespace officeManager.Controllers
         /// <param name="username"> user's email </param>
         /// <param name="password"> user's id </param>
         /// <returns> True if email and password are in a valid format </returns>
-        static public bool CheckValidationUserLogin(string username, string password)
+        public static bool CheckValidationUserLogin(string username, string password)
         {
             if (string.IsNullOrEmpty(password))
                 return false;
@@ -26,16 +21,6 @@ namespace officeManager.Controllers
             bool isValidUsername = addr.Address == username;
 
             return isValidPassword && isValidUsername;
-        }
-
-        static public bool ValidateEmployee(DataTable csvTable)
-        {
-            return true;
-        }
-
-        static public bool ValidateHeader(DataTable csvTable)
-        {
-            return true;
         }
     }
 }

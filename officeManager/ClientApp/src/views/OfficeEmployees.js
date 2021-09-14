@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-
-// react-bootstrap components
 import {
     Button,
     Card,
@@ -55,7 +53,6 @@ export default function OfficeEmployees() {
 
     async function refreshPage() {
         { handleCloseInfo() }
-        //window.location.reload();
         getEmployees()
     }
 
@@ -241,11 +238,8 @@ export default function OfficeEmployees() {
 
     function sendFile() {
         const data = new FormData()
-        console.log(fileName)
         data.append('file', fileName)
-        console.log(data)
-        console.log("http://officemanager.us-east-1.elasticbeanstalk.com/api/upload")
-        axios.post("http://officemanager.us-east-1.elasticbeanstalk.com/api/upload", data, { // receive two parameter endpoint url ,form data 
+        axios.post("http://officemanager.us-east-1.elasticbeanstalk.com/api/upload", data, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -265,7 +259,6 @@ export default function OfficeEmployees() {
         })
     };
 
-    // Calling the function on component mount
     useEffect(() => {
         getEmployees();
     }, []);

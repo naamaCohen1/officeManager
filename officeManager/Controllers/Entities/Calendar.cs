@@ -1,9 +1,6 @@
 ﻿using officeManager.constants;
 using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace officeManager.Controllers.Entities
 {
@@ -14,10 +11,10 @@ namespace officeManager.Controllers.Entities
         public string SittingCapacity { get; set; }
         public string ParkingCapacity { get; set; }
         public string WaitingList { get; set; }
-        public string orgID { get; set; }
+        public string OrgID { get; set; }
 
         /// <summary>
-        /// Constructor
+        /// Default Constructor
         /// </summary>
         public Calendar()
         {
@@ -33,7 +30,7 @@ namespace officeManager.Controllers.Entities
             this.SittingCapacity = sittingCapacity;
             this.ParkingCapacity = parkingCapacity;
             this.WaitingList = String.Empty;
-            this.orgID = orgID;
+            this.OrgID = orgID;
         }
 
         /// <summary>
@@ -47,14 +44,18 @@ namespace officeManager.Controllers.Entities
             this.SittingCapacity = sittingCapacity;
             this.ParkingCapacity = parkingCapacity;
             this.WaitingList = WaitingList;
-            this.orgID = orgID;
+            this.OrgID = orgID;
         }
 
-        public void insertDate()
+        /// <summary>
+        /// This method insert a new date to the calendar.
+        /// </summary>
+        public void InsertDate()
         {
             try
             {
-                string sql = string.Format("insert into tlbCalendar values('{0}','{1}',{2},{3},'{4}',{5})", Date, EmployeesArriving, SittingCapacity, ParkingCapacity, WaitingList, orgID);
+                string sql = string.Format("insert into tlbCalendar values('{0}','{1}',{2},{3},'{4}',{5})",
+                    Date, EmployeesArriving, SittingCapacity, ParkingCapacity, WaitingList, OrgID);
                 SqlConnection connection = new SqlConnection(Params.connetionString);
                 connection.Open();
                 SqlCommand command = new SqlCommand(sql, connection);
@@ -65,9 +66,8 @@ namespace officeManager.Controllers.Entities
             }
             catch (Exception e)
             {
-                throw new Exception("Fail to enter DB " + e.Message);
+                throw new Exception("Fail to insert date [" + Date + "] to Calendar under office ID [" + OrgID + "]\n" + e.Message);
             }
-
         }
     }
 }

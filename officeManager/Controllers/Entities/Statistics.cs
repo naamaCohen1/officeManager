@@ -1,32 +1,25 @@
-﻿using Newtonsoft.Json;
-using officeManager.constants;
+﻿using officeManager.constants;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace officeManager.Controllers.Entities
 {
     public class Statistics
     {
-        //        public static int Compare(DateTime d1, DateTime d2);
-        //        <0 − If date1 is earlier than date2
-        //        0 − If date1 is the same as date2
-        //        >0 − If date1 is later than date2
-
         /// <summary>
         /// This method gets all the events in the requested reriod of time
         /// </summary>
         /// <param name="orgID"> Organization ID </param>
         /// <param name="periodToGet"> Amount of days to get</param>
         /// <returns>Data as <see cref="ArrivalStatistics"/></returns>
-        /// <seealso cref="getCalendar(string)"/>
+        /// <seealso cref="GetCalendar(string)"/>
         /// <seealso cref="updateLists(ArrivalStatistics, string, string)"/>
         public ArrivalStatistics GetLastActivities(string orgID, int periodToGet)
         {
             ArrivalStatistics arrivalStatistics = new ArrivalStatistics();
-            var events = getCalendar(orgID);
+            var events = GetCalendar(orgID);
             DateTime today_date = DateTime.Today;
             DateTime week_ago = DateTime.Today.AddDays(-periodToGet);
             try
@@ -139,10 +132,10 @@ namespace officeManager.Controllers.Entities
         /// </summary>
         /// <param name="orgID"> Organization ID </param>
         /// <returns>All Calendar events as list of <see cref="Calendar"/></returns>
-        public List<Calendar> getCalendar(string orgID)
+        public List<Calendar> GetCalendar(string orgID)
         {
             List<Calendar> calendars = new List<Calendar>();
-            string sql = string.Format("select * from tlbCalendar where OrgID={0}",orgID);
+            string sql = string.Format("select * from tlbCalendar where OrgID={0}", orgID);
             try
             {
                 SqlConnection connection = new SqlConnection(Params.connetionString);

@@ -112,17 +112,16 @@ namespace officeManager.Controllers
                 else
                 {
                     Office office = new Office();
-                    office.GetOfficeFromUser(orgID);
-                    calendar.orgID = office.ID;
+                    office.GetOfficeById(orgID);
+                    calendar.OrgID = office.ID;
                     calendar.ParkingCapacity = office.ParkingAmount;
                     calendar.SittingCapacity = office.OfficeCapacity;
                     calendar.EmployeesArriving += string.Format("{0};", calendarUser.Id);
-                    calendar.insertDate();
+                    calendar.InsertDate();
                     string employeesName = calendarUser.GetEmployeeName(connection, orgID) + ',';
                     calendar.EmployeesArriving = employeesName;
                     return new OkObjectResult(JsonConvert.SerializeObject(calendar));
                 }
-                //return BadRequest();
             }
             catch (Exception e)
             {
@@ -212,7 +211,7 @@ namespace officeManager.Controllers
                         return NoContent();
                     }
                     else
-                        return new OkObjectResult("no parking left");
+                        return new OkObjectResult("No parking place left");
                 }
                 connection.Close();
                 return NoContent();
@@ -253,9 +252,7 @@ namespace officeManager.Controllers
                 {
                     intCap = int.Parse(calendar.SittingCapacity);
                     if (calendar.EmployeesArriving == null || !calendar.EmployeesArriving.Contains(calendarUser.Id))
-                    {
                         return NotFound();
-                    }
                     else
                     {
                         calendarUser.UpdateCapacity(connection, ++intCap, orgID);
@@ -275,7 +272,6 @@ namespace officeManager.Controllers
                             calendarUser.SendWaitingListEmail(connection, waitId, calendar.Date, orgID);
                         }
                     }
-
                     string employeesName = calendarUser.GetComingEmployeesNames(calendar.EmployeesArriving, connection, orgID);
                     command.Dispose();
                     connection.Close();
@@ -289,7 +285,6 @@ namespace officeManager.Controllers
                 return new BadRequestObjectResult(e.Message);
             }
         }
-
 
         /// <summary>
         /// Performs GET request to http://officemanager.us-east-1.elasticbeanstalk.com/api/calendar/{orgID}/mm.dd.yyyy
@@ -316,7 +311,7 @@ namespace officeManager.Controllers
                 }
                 dataReader.Close();
                 command.Dispose();
-                
+
                 if (calendar.Date != null)
                 {
                     if (calendar.EmployeesArriving != null)
@@ -332,14 +327,14 @@ namespace officeManager.Controllers
                 else
                     connection.Close();
                 Office office = new Office();
-                office.GetOfficeFromUser(orgID);
-                calendar.orgID = office.ID;
+                office.GetOfficeById(orgID);
+                calendar.OrgID = office.ID;
                 calendar.Date = date;
                 calendar.ParkingCapacity = office.ParkingAmount;
                 calendar.SittingCapacity = office.OfficeCapacity;
                 calendar.EmployeesArriving = null;
                 calendar.WaitingList = null;
-                calendar.insertDate();
+                calendar.InsertDate();
                 return NotFound();
             }
             catch (Exception)

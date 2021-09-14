@@ -21,7 +21,7 @@ namespace officeManager
         public string OrgID { get; set; }
 
         /// <summary>
-        /// Constructor
+        /// Default Constructor
         /// </summary>
         public User()
         {
@@ -47,7 +47,7 @@ namespace officeManager
         }
 
         /// <summary>
-        /// This method sends an email for the added user
+        /// This method sends an email for the new added user
         /// </summary>
         public void SendWelcomeEmail(SqlConnection connection)
         {
@@ -68,7 +68,7 @@ namespace officeManager
             gmailMessage.Subject = "Welcome to " + org_name + "!";
             gmailMessage.Body = "Welcome!\n" +
                 "You had just added to \"" + org_name + "\" organization.\n" +
-                "in order to login to the organisation using the below link , use these details:\n" +
+                "In order to login to the organization using the below link , use these details:\n" +
                 "Username: " + this.Email + "\n" +
                 "Password: your personal ID\n" +
                 "Link: http://officemanager.us-east-1.elasticbeanstalk.com/admin/login \n\n" +
@@ -97,7 +97,7 @@ namespace officeManager
             }
             catch (Exception e)
             {
-                throw new Exception("failed to insert user");
+                throw new Exception("Failed to insert user user [" + ID + "] to DB\n" + e.Message);
             }
         }
 
@@ -128,7 +128,7 @@ namespace officeManager
             }
             catch (Exception e)
             {
-                throw new Exception("failed to read from DB");
+                throw new Exception("Failed to check if user [" + ID + "] exists in DB\n" + e.Message);
             }
         }
     }

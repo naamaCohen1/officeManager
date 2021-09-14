@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using System.Net.Http;
-using System.IO;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using Newtonsoft.Json;
 
 namespace officeManager.Controllers
 {

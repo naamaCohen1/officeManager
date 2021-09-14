@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-
-// react-bootstrap components
 import {
     Button,
     Card,
@@ -184,7 +182,6 @@ export default function HealthAvailabilityCertification() {
                             </Card.Body>
                         </Card>
                     </Col>
-
                 </Row>
 
                 <Modal show={show} onHide={handleClose}>

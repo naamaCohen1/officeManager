@@ -1,5 +1,4 @@
 import React, { useEffect, useState, Component } from "react";
-// react-bootstrap components
 import {
     Button,
     Card,
@@ -17,19 +16,10 @@ export default function SendAnEmail() {
     const [orgID, setOrgID] = useState(sessionStorage.getItem("org_id"));
     const [date, setDate] = useState("");
 
-
-    const [value, setValue] = useState(['orange', 'red'])
-
-    // handle onChange event of the dropdown
-    const handleChange = (e) => {
-        setSelectedValue(Array.isArray(e) ? e.map(x => x.value) : []);
-        console.log(selectedValue)
-    }
-
     const [subject, setSubject] = useState("");
     const [body, setBody] = useState("");
     const [to, setTo] = useState("");
- 
+
     const [validatedEdit, setValidatedEdit] = useState(false);
 
     const [message, setMessage] = useState();
@@ -65,7 +55,6 @@ export default function SendAnEmail() {
 
     async function getEmployees() {
         employeesArray.length = 0;
-
         const requestOptions = {
             method: 'GET',
             headers: {
@@ -74,7 +63,6 @@ export default function SendAnEmail() {
             }
         };
         var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users/" + orgID;
-        console.log(url)
         handleRequest(url, requestOptions)
     }
 
@@ -134,7 +122,7 @@ export default function SendAnEmail() {
             { handleShow() }
         }
     }
-    
+
     async function getDate() {
         dateEmployeesArray.length = 0;
         const requestOptions = {
@@ -194,7 +182,7 @@ export default function SendAnEmail() {
     return (
         <>
             <Container fluid>
-                
+
                 <Row>
                     <Col md="12">
                         <Card>

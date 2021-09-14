@@ -12,15 +12,8 @@ namespace officeManager.Controllers
     [ApiController]
     public class GmailController : ControllerBase
     {
-        // user: 'officemanagerhealth@gmail.com',
-        // pass: 'Qwerty12!'
-        // API Client - 425121669393-9gno5mtu3csnnu9n3oc9skbq4oj8f70n.apps.googleusercontent.com
-        // Client Secret - Yn_mg_jRWehQgfwVFpBpZEQE
-        // RefreshToken - 1//04xzCRP0pE5qpCgYIARAAGAQSNwF-L9IrZxumQG_ti_91FWUMQJ46oi8Oq4qLskWXI8ZhoquvoEaAn3i9tHLEvkMr-EHSUGCaX6k
-
-
         /// <summary>
-        /// This methos sends an email using Gmail to officemanagerhealth@gmail.com
+        /// This methos sends an email using SES to officemanagerhealth@gmail.com
         /// </summary>
         /// <param name="id"> User ID which fill the Health Availability Certification</param>
         /// <returns><<see cref="IActionResult"/>/returns>
@@ -50,7 +43,7 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// This methos sends an email using Gmail to the requested users
+        /// This methos sends an email using SES to the requested users
         /// </summary>
         /// <param name="emailMessage"> Email parameters as <see cref="GmailMessage"/></param>
         /// <returns><see cref="ActionResult"/></returns>
@@ -78,7 +71,7 @@ namespace officeManager.Controllers
         }
 
         /// <summary>
-        /// This method sends a gmail message with the requested details.
+        /// This method sends an email message with the requested details.
         /// </summary>
         /// <param name="emailMessage"> Email message parameters as <see cref="GmailMessage"/></param>
         /// <returns><see cref="ActionResult"/></returns>
@@ -102,7 +95,7 @@ namespace officeManager.Controllers
             }
             catch (Exception)
             {
-                return new BadRequestObjectResult("fail to send Email");
+                return new BadRequestObjectResult("Fail to send Email");
             }
         }
     }

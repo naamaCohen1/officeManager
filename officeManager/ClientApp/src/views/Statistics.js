@@ -189,7 +189,6 @@ export default class Statistics extends React.Component {
         }
         { this.getEmployeesNames(employees) }
         var dataReturn = {
-            //labels: this.state.employeesName,
             labels: employees,
             series: [seriesVals]
         }

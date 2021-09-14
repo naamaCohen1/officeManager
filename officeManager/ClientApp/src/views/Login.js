@@ -152,7 +152,6 @@ export default function Login() {
                 "id": orgId
             })
         };
-        console.log(requestOptions)
         var response = await fetch("http://officemanager.us-east-1.elasticbeanstalk.com/api/offices", requestOptions);
         if (response.status == 201) {
             { handleCloseAddOffice() }
@@ -166,7 +165,7 @@ export default function Login() {
     }
 
     async function refreshPage() {
-        { handleClose() }   
+        { handleClose() }
         if (sessionStorage.getItem("super_admin") === 'true')
             window.location.replace("http://officemanager.us-east-1.elasticbeanstalk.com/admin/offices");
         else
@@ -194,7 +193,7 @@ export default function Login() {
         else {
             sessionStorage.setItem("id", password)
             sessionStorage.setItem("loggedin", true)
-            sessionStorage.setItem("selected_org","All")
+            sessionStorage.setItem("selected_org", "All")
             let permissionAndOrgid = await response.json()
             var arr = permissionAndOrgid.split(",")
             var permission = arr[0]

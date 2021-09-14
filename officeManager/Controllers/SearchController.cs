@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using officeManager.Controllers.Entities;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
 namespace officeManager.Controllers
 {
     [Route("api/[controller]")]
@@ -42,17 +38,17 @@ namespace officeManager.Controllers
                 if (searchObject.Category.Equals("Floor"))
                 {
                     int floor = int.Parse(searchObject.Input);
-                    List<string> employees = searchObject.GetEmployeeByFloor(floor,orgID);
+                    List<string> employees = searchObject.GetEmployeeByFloor(floor, orgID);
                     return new OkObjectResult(employees);
                 }
                 else if (searchObject.Category.Equals("Department"))
                 {
-                    List<string> employees = searchObject.GetEmployeeByDeparment(searchObject.Input,orgID);
+                    List<string> employees = searchObject.GetEmployeeByDeparment(searchObject.Input, orgID);
                     return new OkObjectResult(employees);
                 }
                 else if (searchObject.Category.Equals("EmployeeName"))
                 {
-                    List<string> employees = searchObject.GetEmployeeByName(searchObject.Input,orgID);
+                    List<string> employees = searchObject.GetEmployeeByName(searchObject.Input, orgID);
                     return new OkObjectResult(employees);
                 }
                 else
