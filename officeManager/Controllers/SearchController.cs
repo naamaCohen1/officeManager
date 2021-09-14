@@ -32,23 +32,25 @@ namespace officeManager.Controllers
         public ActionResult<string> Post(string orgID, string id, SearchObject searchObject)
         {
             searchObject.Id = id.Replace("\"", "");
+            List<string> employees = null;
+
             try
             {
                 Console.WriteLine(searchObject.Date);
                 if (searchObject.Category.Equals("Floor"))
                 {
                     int floor = int.Parse(searchObject.Input);
-                    List<string> employees = searchObject.GetEmployeeByFloor(floor, orgID);
+                    employees = searchObject.GetEmployeeByFloor(floor, orgID);
                     return new OkObjectResult(employees);
                 }
                 else if (searchObject.Category.Equals("Department"))
                 {
-                    List<string> employees = searchObject.GetEmployeeByDeparment(searchObject.Input, orgID);
+                    employees = searchObject.GetEmployeeByDeparment(searchObject.Input, orgID);
                     return new OkObjectResult(employees);
                 }
                 else if (searchObject.Category.Equals("EmployeeName"))
                 {
-                    List<string> employees = searchObject.GetEmployeeByName(searchObject.Input, orgID);
+                    employees = searchObject.GetEmployeeByName(searchObject.Input, orgID);
                     return new OkObjectResult(employees);
                 }
                 else

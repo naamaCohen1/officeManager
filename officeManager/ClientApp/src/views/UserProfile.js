@@ -61,8 +61,8 @@ export default function User() {
         if (response.status == 200) {
             const data = await response.json();
             if (data != "null") {
-                var dataChnage = data.replace("}", "")
-                var params = dataChnage.split(",")
+                var dataChange = data.replace("}", "")
+                var params = dataChange.split(",")
                 var dictionary = []
                 for (var index in params) {
                     var temp = params[index].split(":")

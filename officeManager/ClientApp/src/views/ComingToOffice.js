@@ -3,11 +3,9 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import {
     Button,
-    Card,
     ListGroup,
     Container,
     Row,
-    Col,
     Modal,
     Form,
     InputGroup,
@@ -55,12 +53,12 @@ class NameForm extends React.Component {
             if (this.state.label == 'Floor') {
                 let isnum = /^\d+$/.test(this.state.value);
                 if (isnum === false) {
-                    alert('in Floor label you need to enter only numbers');
+                    alert('Invalid value. Floor should contains only numbers');
                     this.setState({ value: '' })
                 }
             }
             var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/search/" + this.state.orgID + "/" + this.state.id
-            var test = fetch(url, requestOptions).then(response => {
+            var response = fetch(url, requestOptions).then(response => {
                 if (response.status == 200) {
                     var data = response.json().then(data => {
                         this.setState({ people: data });
@@ -123,14 +121,13 @@ class NameForm extends React.Component {
                     </InputGroup>
                 </Form.Group>
             </Form>
-
         );
     }
 }
 
 export default function Results() {
     const [calDate, setCalDate] = useState(new Date())
-    const [DateIsClick, setDateIsClick] = useState(false);
+    const [DateIsClicked, setDateIsClick] = useState(false);
     const [people, setPeople] = useState([]);
     const [buttons, setButtons] = useState(true);
     const [id, setId] = React.useState(sessionStorage.getItem("id"));
@@ -178,14 +175,14 @@ export default function Results() {
 
     function showSearchBar() {
         let button;
-        if (DateIsClick) {
+        if (DateIsClicked) {
             button = <NameForm></NameForm>;
         }
         return button;
     }
 
     function showAddButton() {
-        if (DateIsClick && buttons == true) {
+        if (DateIsClicked && buttons == true) {
             return (
                 <>
                     <Button variant="primary" style={{ margin: '10px' }} onClick={clickSubmit} >Submit</Button>
@@ -227,13 +224,13 @@ export default function Results() {
             if (data == "no space")
                 return data
             var obj = JSON.parse(data)
-            var dataChnage = obj["EmployeesArriving"]
-            if (dataChnage == null) {
+            var dataChange = obj["EmployeesArriving"]
+            if (dataChange == null) {
                 setPeople(peopleList)
             }
-            if (dataChnage != null) {
-                dataChnage = dataChnage.slice(0, -1)
-                peopleList = dataChnage.split(",")
+            if (dataChange != null) {
+                dataChange = dataChange.slice(0, -1)
+                peopleList = dataChange.split(",")
                 setPeople(peopleList)
             }
         }
@@ -301,11 +298,11 @@ export default function Results() {
 
     function showUpcomingDates() {
         if (dates.length > 0) {
-            var testDates = JSON.parse(dates)
+            var obj = JSON.parse(dates)
             return (
                 < React.Fragment >
                     <ListGroup>
-                        {testDates.map(listitem => (
+                        {obj.map(listitem => (
                             <ListGroup.Item sm='4'>
                                 {listitem}
                             </ListGroup.Item >

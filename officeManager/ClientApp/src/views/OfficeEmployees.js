@@ -73,10 +73,10 @@ export default function OfficeEmployees() {
         if (response.status == 200) {
             const data = await response.json();
             if (data != "null") {
-                var dataChnage = data.replace("[", "")
-                dataChnage = dataChnage.replace("]", "")
-                var employees = dataChnage.split("},")
-                var array = []
+                var dataChange = data.replace("[", "")
+                dataChange = dataChange.replace("]", "")
+                var employees = dataChange.split("},")
+                var empArray = []
                 for (var employee in employees) {
                     var dictionary = []
                     var employeeParams = (employees[employee]).split(",")
@@ -92,9 +92,9 @@ export default function OfficeEmployees() {
                     else
                         dictionary[8] = "STANDARD"
 
-                    array.push(dictionary)
+                    empArray.push(dictionary)
                 }
-                setEmployeesArray(array)
+                setEmployeesArray(empArray)
             }
         }
     }

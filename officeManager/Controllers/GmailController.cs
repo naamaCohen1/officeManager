@@ -20,26 +20,12 @@ namespace officeManager.Controllers
         [HttpPost("{id}")]
         public ActionResult<List<string>> Post(string id)
         {
-            try
-            {
-                using (SmtpClient client = new SmtpClient("email-smtp.us-east-2.amazonaws.com", 587))
-                {
-                    client.EnableSsl = true;
-                    client.UseDefaultCredentials = false;
-                    client.Credentials = new NetworkCredential("AKIAZT3MGQTQDXZRZUGE", "BCZcHCiXN+309pU0JUxtOf4attqyhteoVh3RcpSFIlJV");
-                    MailMessage mailMessage = new MailMessage();
-                    mailMessage.To.Add("officemanagerhealth@gmail.com");
-                    mailMessage.From = new MailAddress("officemanagerhealth@gmail.com");
-                    mailMessage.Subject = "Health Availability Certification - " + id;
-                    mailMessage.Body = "Health Availability Certification for " + id + " in " + DateTime.Today.ToShortDateString() + " was submitted sucssesfully";
-                    client.Send(mailMessage);
-                }
-                return new OkResult();
-            }
-            catch (Exception)
-            {
-                return new BadRequestResult();
-            }
+            GmailMessage message = new GmailMessage();
+            message.To = "officemanagerhealth@gmail.com";
+            message.Subject = "Health Availability Certification - " + id;
+            message.Body = "Health Availability Certification for " + id + " in " + DateTime.Today.ToShortDateString() + " was submitted sucssesfully";
+
+            return SendMail(message);
         }
 
         /// <summary>

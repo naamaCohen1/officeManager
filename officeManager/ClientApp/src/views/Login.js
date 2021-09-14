@@ -127,7 +127,6 @@ export default function Login() {
         var open = "False"
         if (openSpace === 'Yes')
             open = "True"
-
         var hot = "False"
         if (hotSpot === 'Yes')
             hot = "True"
@@ -165,7 +164,7 @@ export default function Login() {
     }
 
     async function refreshPage() {
-        { handleClose() }
+        { handleClose() }   
         if (sessionStorage.getItem("super_admin") === 'true')
             window.location.replace("http://officemanager.us-east-1.elasticbeanstalk.com/admin/offices");
         else
@@ -195,9 +194,9 @@ export default function Login() {
             sessionStorage.setItem("loggedin", true)
             sessionStorage.setItem("selected_org", "All")
             let permissionAndOrgid = await response.json()
-            var arr = permissionAndOrgid.split(",")
-            var permission = arr[0]
-            var orgID = arr[1]
+            var splitedPermissionAndOrgID = permissionAndOrgid.split(",")
+            var permission = splitedPermissionAndOrgID[0]
+            var orgID = splitedPermissionAndOrgID[1]
             sessionStorage.setItem("org_id", orgID)
 
             if (permission == 0) {

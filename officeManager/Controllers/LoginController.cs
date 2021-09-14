@@ -22,8 +22,8 @@ namespace officeManager.Controllers
         {
             if (Validation.CheckValidationUserLogin(loginUser.Username, loginUser.Password))
             {
-                List<bool> res = loginUser.CheckUser();
-                if (res[0] == false || res[1] == false)
+                List<bool> validationResults = loginUser.CheckUser();
+                if (validationResults[0] == false || validationResults[1] == false)
                 {
                     return new NotFoundObjectResult("Invalid username or password");
                 }

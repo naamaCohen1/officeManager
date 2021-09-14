@@ -71,10 +71,10 @@ export default function Offices() {
         if (response.status == 200) {
             const data = await response.json();
             if (data != "null") {
-                var dataChnage = data.replace("[", "")
-                dataChnage = dataChnage.replace("]", "")
-                var offices = dataChnage.split("},")
-                var array = []
+                var dataChange = data.replace("[", "")
+                dataChange = dataChange.replace("]", "")
+                var offices = dataChange.split("},")
+                var offArray = []
                 for (var office in offices) {
                     var dictionary = []
                     var officeParams = (offices[office]).split(",")
@@ -85,9 +85,9 @@ export default function Offices() {
                         temp[1] = temp[1].replace("\"", "")
                         dictionary.push(temp[1].trim())
                     }
-                    array.push(dictionary)
+                    offArray.push(dictionary)
                 }
-                setOfficesArray(array)
+                setOfficesArray(offArray)
             }
         }
     }

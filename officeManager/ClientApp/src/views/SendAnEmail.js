@@ -71,9 +71,9 @@ export default function SendAnEmail() {
         if (response.status == 200) {
             const data = await response.json();
             if (data != "null") {
-                var dataChnage = data.replace("[", "")
-                dataChnage = dataChnage.replace("]", "")
-                var employees = dataChnage.split("},")
+                var dataChange = data.replace("[", "")
+                dataChange = dataChange.replace("]", "")
+                var employees = dataChange.split("},")
                 for (var employee in employees) {
                     var dictionary = []
                     var employeeParams = (employees[employee]).split(",")
@@ -137,13 +137,13 @@ export default function SendAnEmail() {
         if (response.status == 200) {
             const data = await response.json();
             var obj = JSON.parse(data)
-            var dataChnage = obj["EmployeesArriving"]
-            if (dataChnage == null) {
+            var dataChange = obj["EmployeesArriving"]
+            if (dataChange == null) {
                 dateEmployeesArray.length = 0;
             }
-            if (dataChnage != null) {
-                dataChnage = dataChnage.slice(0, -1)
-                var employees = dataChnage.split(",")
+            if (dataChange != null) {
+                dataChange = dataChange.slice(0, -1)
+                var employees = dataChange.split(",")
                 employees.forEach(employee => {
                     var arr = []
                     var id = getID(employee);
