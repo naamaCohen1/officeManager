@@ -58,7 +58,7 @@ class NameForm extends React.Component {
                 }
             }
             var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/search/" + this.state.orgID + "/" + this.state.id
-            var response = fetch(url, requestOptions).then(response => {
+            var test = fetch(url, requestOptions).then(response => {
                 if (response.status == 200) {
                     var data = response.json().then(data => {
                         this.setState({ people: data });
