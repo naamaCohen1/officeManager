@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// react-bootstrap components
 import {
     Button,
     Card,
@@ -29,7 +28,6 @@ export default function Employees() {
     const [permissionLevel, setPermissionLevel] = useState("")
     const [department, setDepartment] = useState("")
     const [orgID, setOrgID] = useState("")
-
 
     const [showWarning, setShowWarning] = useState(false);
     const handleCloseWarning = () => setShowWarning(false);
@@ -64,8 +62,7 @@ export default function Employees() {
         getEmployees(event.target.value)
     }
 
-    async function getEmployees(selecteOrg_1) {
-        console.log(selecteOrg_1)
+    async function getEmployees(chosenSelecteOrg) {
         const requestOptions = {
             method: 'GET',
             headers: {
@@ -73,10 +70,10 @@ export default function Employees() {
                 'Accept': 'application/json'
             }
         };
-        if (selecteOrg_1 == "All")
+        if (chosenSelecteOrg == "All")
             var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users/";
         else {
-            var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users/" + selecteOrg_1
+            var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users/" + chosenSelecteOrg
         }
         handleRequest(url, requestOptions)
     }
@@ -86,10 +83,10 @@ export default function Employees() {
         if (response.status == 200) {
             const data = await response.json();
             if (data != "null") {
-                var dataChnage = data.replace("[", "")
-                dataChnage = dataChnage.replace("]", "")
-                var employees = dataChnage.split("},")
-                var array = []
+                var dataChange = data.replace("[", "")
+                dataChange = dataChange.replace("]", "")
+                var employees = dataChange.split("},")
+                var empArray = []
                 for (var employee in employees) {
                     var dictionary = []
                     var employeeParams = (employees[employee]).split(",")
@@ -105,9 +102,9 @@ export default function Employees() {
                     else
                         dictionary[8] = "STANDARD"
 
-                    array.push(dictionary)
+                    empArray.push(dictionary)
                 }
-                setEmployeesArray(array)
+                setEmployeesArray(empArray)
             }
         }
     }
@@ -193,7 +190,7 @@ export default function Employees() {
 
         var url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users/" + orgID + "/" + id;
         if (!orgID || orgID.length === 0)
-             url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users/null/" + id;
+            url = "http://officemanager.us-east-1.elasticbeanstalk.com/api/users/null/" + id;
         const response = await fetch(url, requestOptions);
         if (response.status == 204) {
             setMessage("Employee was Deleted.")
@@ -266,10 +263,10 @@ export default function Employees() {
         if (response.status == 200) {
             const data = await response.json();
             if (data != "null") {
-                var dataChnage = data.replace("[", "")
-                dataChnage = dataChnage.replace("]", "")
-                var offices = dataChnage.split("},")
-                var array = []
+                var dataChange = data.replace("[", "")
+                dataChange = dataChange.replace("]", "")
+                var offices = dataChange.split("},")
+                var offArray = []
                 for (var office in offices) {
                     var dictionary = []
                     var officeParams = (offices[office]).split(",")
@@ -280,14 +277,13 @@ export default function Employees() {
                         temp[1] = temp[1].replace("\"", "")
                         dictionary.push(temp[1].trim())
                     }
-                    array.push(dictionary)
+                    offArray.push(dictionary)
                 }
-                setOfficesArray(array)
+                setOfficesArray(offArray)
             }
         }
     }
 
-    // Calling the function on component mount
     useEffect(() => {
         getOffices();
         getEmployees(selecteOrg);

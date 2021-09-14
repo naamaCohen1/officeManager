@@ -3,9 +3,6 @@ using officeManager.Controllers.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Net;
-using System.Net.Http;
-using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using officeManager.constants;
@@ -35,20 +32,20 @@ namespace officeManager.Controllers
                 SqlDataReader dataReader = command.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    string Name = dataReader["Name"].ToString();
-                    string NumOfEmployees = dataReader["NumOfEmployees"].ToString();
-                    string ParkingAmount = dataReader["ParkingAmount"].ToString();
-                    string FloorsAmount = dataReader["FloorsAmount"].ToString();
-                    string RoomsAmount = dataReader["RoomsAmount"].ToString();
-                    string MeetingRoomsAmount = dataReader["MeetingRoomsAmount"].ToString();
-                    string OfficeCapacity = dataReader["OfficeCapacity"].ToString();
-                    string OpenSpace = dataReader["OpenSpace"].ToString();
-                    string HotSpot = dataReader["HotSpot"].ToString();
-                    string HotSpotPlaces = dataReader["HotSpotPlaces"].ToString();
-                    string ID = dataReader["ID"].ToString();
+                    string name = dataReader["Name"].ToString();
+                    string numOfEmployees = dataReader["NumOfEmployees"].ToString();
+                    string parkingAmount = dataReader["ParkingAmount"].ToString();
+                    string floorsAmount = dataReader["FloorsAmount"].ToString();
+                    string roomsAmount = dataReader["RoomsAmount"].ToString();
+                    string meetingRoomsAmount = dataReader["MeetingRoomsAmount"].ToString();
+                    string officeCapacity = dataReader["OfficeCapacity"].ToString();
+                    string openSpace = dataReader["OpenSpace"].ToString();
+                    string hotSpot = dataReader["HotSpot"].ToString();
+                    string hotSpotPlaces = dataReader["HotSpotPlaces"].ToString();
+                    string id = dataReader["ID"].ToString();
 
-                    offices.Add(new Office(Name, NumOfEmployees, ParkingAmount, FloorsAmount,
-                        RoomsAmount, MeetingRoomsAmount, OfficeCapacity, OpenSpace, HotSpot, HotSpotPlaces, ID));
+                    offices.Add(new Office(name, numOfEmployees, parkingAmount, floorsAmount,
+                        roomsAmount, meetingRoomsAmount, officeCapacity, openSpace, hotSpot, hotSpotPlaces, id));
                 }
                 dataReader.Close();
                 command.Dispose();

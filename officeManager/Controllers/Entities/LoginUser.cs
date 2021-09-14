@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Data.SqlClient;
-using Newtonsoft.Json;
-using Microsoft.Web.WebPages.OAuth;
-using officeManager.Controllers;
 using officeManager.constants;
 
 namespace officeManager
@@ -16,19 +11,19 @@ namespace officeManager
         public string Password { get; set; }
 
         /// <summary>
+        /// Default Constructor
+        /// </summary>
+        public LoginUser()
+        {
+        }
+
+        /// <summary>
         /// Constructor
         /// </summary>
         public LoginUser(string username, string password)
         {
             this.Username = username;
             this.Password = password;
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public LoginUser()
-        {
         }
 
         /// <summary>

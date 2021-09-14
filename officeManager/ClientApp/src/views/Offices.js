@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// react-bootstrap components
 import {
     Button,
     Card,
@@ -72,10 +71,10 @@ export default function Offices() {
         if (response.status == 200) {
             const data = await response.json();
             if (data != "null") {
-                var dataChnage = data.replace("[", "")
-                dataChnage = dataChnage.replace("]", "")
-                var offices = dataChnage.split("},")
-                var array = []
+                var dataChange = data.replace("[", "")
+                dataChange = dataChange.replace("]", "")
+                var offices = dataChange.split("},")
+                var offArray = []
                 for (var office in offices) {
                     var dictionary = []
                     var officeParams = (offices[office]).split(",")
@@ -86,9 +85,9 @@ export default function Offices() {
                         temp[1] = temp[1].replace("\"", "")
                         dictionary.push(temp[1].trim())
                     }
-                    array.push(dictionary)
+                    offArray.push(dictionary)
                 }
-                setOfficesArray(array)
+                setOfficesArray(offArray)
             }
         }
     }
@@ -231,7 +230,6 @@ export default function Offices() {
         }
     }
 
-    // Calling the function on component mount
     useEffect(() => {
         getOffices();
     }, []);
@@ -484,7 +482,7 @@ export default function Offices() {
                                 <Form.Group as={Col}>
                                     <Form.Label>Name</Form.Label>
                                     <Form.Control required type="text" placeholder="Name"
-                                        value={ name}
+                                        value={name}
                                         onChange={(e) => setName(e.target.value)}
                                     />
                                     <Form.Control.Feedback type="invalid"> This field is required.</Form.Control.Feedback>

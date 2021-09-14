@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using System.Net.Http;
-using System.IO;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using Newtonsoft.Json;
 
 namespace officeManager.Controllers
 {
@@ -27,8 +22,8 @@ namespace officeManager.Controllers
         {
             if (Validation.CheckValidationUserLogin(loginUser.Username, loginUser.Password))
             {
-                List<bool> res = loginUser.CheckUser();
-                if (res[0] == false || res[1] == false)
+                List<bool> validationResults = loginUser.CheckUser();
+                if (validationResults[0] == false || validationResults[1] == false)
                 {
                     return new NotFoundObjectResult("Invalid username or password");
                 }

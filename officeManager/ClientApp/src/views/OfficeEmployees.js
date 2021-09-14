@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
-
-// react-bootstrap components
 import {
     Button,
     Card,
@@ -55,7 +53,6 @@ export default function OfficeEmployees() {
 
     async function refreshPage() {
         { handleCloseInfo() }
-        //window.location.reload();
         getEmployees()
     }
 
@@ -76,10 +73,10 @@ export default function OfficeEmployees() {
         if (response.status == 200) {
             const data = await response.json();
             if (data != "null") {
-                var dataChnage = data.replace("[", "")
-                dataChnage = dataChnage.replace("]", "")
-                var employees = dataChnage.split("},")
-                var array = []
+                var dataChange = data.replace("[", "")
+                dataChange = dataChange.replace("]", "")
+                var employees = dataChange.split("},")
+                var empArray = []
                 for (var employee in employees) {
                     var dictionary = []
                     var employeeParams = (employees[employee]).split(",")
@@ -95,9 +92,9 @@ export default function OfficeEmployees() {
                     else
                         dictionary[8] = "STANDARD"
 
-                    array.push(dictionary)
+                    empArray.push(dictionary)
                 }
-                setEmployeesArray(array)
+                setEmployeesArray(empArray)
             }
         }
     }
@@ -241,11 +238,8 @@ export default function OfficeEmployees() {
 
     function sendFile() {
         const data = new FormData()
-        console.log(fileName)
         data.append('file', fileName)
-        console.log(data)
-        console.log("http://officemanager.us-east-1.elasticbeanstalk.com/api/upload")
-        axios.post("http://officemanager.us-east-1.elasticbeanstalk.com/api/upload", data, { // receive two parameter endpoint url ,form data 
+        axios.post("http://officemanager.us-east-1.elasticbeanstalk.com/api/upload", data, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -265,7 +259,6 @@ export default function OfficeEmployees() {
         })
     };
 
-    // Calling the function on component mount
     useEffect(() => {
         getEmployees();
     }, []);

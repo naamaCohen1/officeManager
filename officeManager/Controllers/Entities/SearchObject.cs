@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace officeManager.Controllers.Entities
 {
@@ -14,10 +12,10 @@ namespace officeManager.Controllers.Entities
         public string Date { get; set; }
         public string Category { get; set; }
         public string Input { get; set; }
-        private Statistics statistics;
+        private Statistics Statistics;
 
         /// <summary>
-        /// Constructor
+        /// Default Constructor
         /// </summary>
         public SearchObject()
         {
@@ -41,37 +39,11 @@ namespace officeManager.Controllers.Entities
         /// </summary>
         private void updateCalendar()
         {
-            statistics = new Statistics();
+            Statistics = new Statistics();
         }
 
         /// <summary>
-        /// This method gets a date and fix to correct format
-        /// </summary>
-        /// <returns> Fixed date</returns>
-        private string fixDateFormat()
-        {
-            char[] dateIndex = Date.ToArray<char>();
-            string newDate = null;
-            for (int i = 0; i < dateIndex.Length; i++)
-            {
-                if (dateIndex[i] == '.')
-                {
-                    if (i - 1 == 0)
-                    {
-                        newDate = newDate.Insert(0, "0");
-                    }
-                    else if (dateIndex[i - 2] == '.')
-                    {
-                        newDate = newDate.Insert(i, "0");
-                    }
-                }
-                newDate += dateIndex[i];
-            }
-            return newDate;
-        }
-
-        /// <summary>
-        /// This method gets the employees arriving the this day
+        /// This method gets the arriving employees in the requested day
         /// </summary>
         /// <param name="orgID"> Organization ID </param>
         /// <returns>Arriving Enployees as <see cref="Calendar"/></returns>
@@ -95,7 +67,7 @@ namespace officeManager.Controllers.Entities
             }
             catch (Exception e)
             {
-                throw new Exception("Fail to search by floor " + e.Message);
+                throw new Exception("Fail to get date [" + Date + "] for office with ID [" + orgID + "]\n" + e.Message);
             }
             return calendar;
         }
@@ -125,7 +97,7 @@ namespace officeManager.Controllers.Entities
                     {
                         if (employee.Equals("") || employee.Equals(Id))
                             continue;
-                        string sql = string.Format("select *  from tlbEmployees WHERE id = '{0}' and OrgID={1}", employee,orgID);
+                        string sql = string.Format("select *  from tlbEmployees WHERE id = '{0}' and OrgID={1}", employee, orgID);
                         SqlCommand command = new SqlCommand(sql, connection);
                         SqlDataReader dataReader = command.ExecuteReader();
                         while (dataReader.Read())
@@ -149,7 +121,7 @@ namespace officeManager.Controllers.Entities
             }
             catch (Exception e)
             {
-                throw new Exception("Fail to search by floor " + e.Message);
+                throw new Exception("Fail to get arriving employees by floor [" + floor + "] for org ID [" + orgID + "]\n" + e.Message);
             }
         }
 
@@ -198,7 +170,7 @@ namespace officeManager.Controllers.Entities
             }
             catch (Exception e)
             {
-                throw new Exception("Fail to get  to search by name  " + e.Message);
+                throw new Exception("Fail to get arriving employees by Name [" + name + "] for org ID [" + orgID + "]\n" + e.Message);
             }
         }
 
@@ -225,7 +197,7 @@ namespace officeManager.Controllers.Entities
                     {
                         if (employee.Equals("") || employee.Equals(Id))
                             continue;
-                        string sql = string.Format("select *  from tlbEmployees WHERE id = '{0}' and OrgID={1}", employee, orgID );
+                        string sql = string.Format("select *  from tlbEmployees WHERE id = '{0}' and OrgID={1}", employee, orgID);
                         SqlCommand command = new SqlCommand(sql, connection);
                         SqlDataReader dataReader = command.ExecuteReader();
                         while (dataReader.Read())
@@ -248,7 +220,7 @@ namespace officeManager.Controllers.Entities
             }
             catch (Exception e)
             {
-                throw new Exception("Fail to get  to search by name  " + e.Message);
+                throw new Exception("Fail get arriving employees by Department [" + department + "] for org ID [" + orgID + "]\n" + e.Message);
             }
         }
 

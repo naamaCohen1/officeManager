@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-
-// react-bootstrap components
 import {
     Button,
     Card,
@@ -62,8 +60,8 @@ export default function OfficeInfo() {
         if (response.status == 200) {
             const data = await response.json();
             if (data != "null") {
-                var dataChnage = data.replace("}", "")
-                var params = dataChnage.split(",")
+                var dataChange = data.replace("}", "")
+                var params = dataChange.split(",")
                 var dictionary = []
                 for (var index in params) {
                     var temp = params[index].split(":")
@@ -80,15 +78,12 @@ export default function OfficeInfo() {
         var parking = dictionary[2]
         if (dictionary[2] === '' || dictionary[2] === 'null')
             parking = "0"
-
         var spots = dictionary[9]
         if (dictionary[9] === 'null')
             spots = ""
-
         var open = "Yes"
         if (dictionary[7] === 'False')
             open = "No"
-
         var hot = "Yes"
         if (dictionary[8] === 'False')
             hot = "No"
@@ -110,7 +105,6 @@ export default function OfficeInfo() {
         var open = "False"
         if (openSpace === 'Yes')
             open = "True"
-
         var hot = "False"
         if (hotSpot === 'Yes')
             hot = "True"

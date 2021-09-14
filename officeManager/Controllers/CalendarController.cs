@@ -31,14 +31,14 @@ namespace officeManager.Controllers
                 SqlDataReader dataReader = command.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    string EmployeesArriving = dataReader["EmployeesArriving"].ToString().Trim();
-                    string SittingCapacity = dataReader["SittingCapacity"].ToString().Trim();
-                    string ParkingCapacity = dataReader["ParkingCapacity"].ToString().Trim();
-                    string WaitingList = dataReader["WaitingList"].ToString().Trim();
-                    string Date = dataReader["Date"].ToString().Trim();
+                    string employeesArriving = dataReader["EmployeesArriving"].ToString().Trim();
+                    string sittingCapacity = dataReader["SittingCapacity"].ToString().Trim();
+                    string parkingCapacity = dataReader["ParkingCapacity"].ToString().Trim();
+                    string waitingList = dataReader["WaitingList"].ToString().Trim();
+                    string date = dataReader["Date"].ToString().Trim();
 
                     calendars.Add(new Calendar(
-                        Date, EmployeesArriving, SittingCapacity, ParkingCapacity, WaitingList, orgID));
+                        date, employeesArriving, sittingCapacity, parkingCapacity, waitingList, orgID));
                 }
                 dataReader.Close();
                 command.Dispose();
@@ -73,7 +73,8 @@ namespace officeManager.Controllers
         {
             string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}' and OrgID={1}", calendarUser.Date, orgID);
             Calendar calendar = new Calendar();
-            int intCapacity;
+            int capacity;
+            string employeesName = null;
 
             try
             {
@@ -92,14 +93,14 @@ namespace officeManager.Controllers
                 command.Dispose();
                 if (calendar.Date != null)
                 {
-                    intCapacity = int.Parse(calendar.SittingCapacity);
-                    if (intCapacity == 0)
+                    capacity = int.Parse(calendar.SittingCapacity);
+                    if (capacity == 0)
                         return new OkObjectResult("no space");
-                    string employeesName = calendarUser.GetComingEmployeesNames(calendar.EmployeesArriving, connection, orgID);
+                    employeesName = calendarUser.GetComingEmployeesNames(calendar.EmployeesArriving, connection, orgID);
 
                     if (calendar.EmployeesArriving == null || !calendar.EmployeesArriving.Contains(calendarUser.Id))
                     {
-                        calendarUser.UpdateCapacity(connection, --intCapacity, orgID);
+                        calendarUser.UpdateCapacity(connection, --capacity, orgID);
                         calendar.EmployeesArriving += string.Format("{0};", calendarUser.Id);
                         calendarUser.UpdateArrivingID(connection, calendar.EmployeesArriving, orgID);
                         employeesName += calendarUser.GetEmployeeName(connection, orgID) + ',';
@@ -112,17 +113,16 @@ namespace officeManager.Controllers
                 else
                 {
                     Office office = new Office();
-                    office.GetOfficeFromUser(orgID);
-                    calendar.orgID = office.ID;
+                    office.GetOfficeById(orgID);
+                    calendar.OrgID = office.ID;
                     calendar.ParkingCapacity = office.ParkingAmount;
                     calendar.SittingCapacity = office.OfficeCapacity;
                     calendar.EmployeesArriving += string.Format("{0};", calendarUser.Id);
-                    calendar.insertDate();
-                    string employeesName = calendarUser.GetEmployeeName(connection, orgID) + ',';
+                    calendar.InsertDate();
+                    employeesName = calendarUser.GetEmployeeName(connection, orgID) + ',';
                     calendar.EmployeesArriving = employeesName;
                     return new OkObjectResult(JsonConvert.SerializeObject(calendar));
                 }
-                //return BadRequest();
             }
             catch (Exception e)
             {
@@ -185,8 +185,8 @@ namespace officeManager.Controllers
         public ActionResult Put(string orgID, string date)
         {
             string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}' and OrgID={1}", date, orgID);
-            string parkigCapacity = null, dateCal = null;
-            int intPark;
+            string parkigCapacity = null, calendarDate = null;
+            int parking;
             try
             {
                 SqlConnection connection = new SqlConnection(Params.connetionString);
@@ -195,24 +195,24 @@ namespace officeManager.Controllers
                 SqlDataReader dataReader = command.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    dateCal = dataReader["Date"].ToString().Trim();
+                    calendarDate = dataReader["Date"].ToString().Trim();
                     parkigCapacity = dataReader["ParkingCapacity"].ToString().Trim();
                 }
                 dataReader.Close();
                 command.Dispose();
-                if (dateCal != null)
+                if (calendarDate != null)
                 {
-                    intPark = int.Parse(parkigCapacity);
-                    if (intPark > 0)
+                    parking = int.Parse(parkigCapacity);
+                    if (parking > 0)
                     {
-                        sql = string.Format("update tlbCalendar set ParkingCapacity={0} WHERE date = '{1}'", --intPark, date);
+                        sql = string.Format("update tlbCalendar set ParkingCapacity={0} WHERE date = '{1}'", --parking, date);
                         command = new SqlCommand(sql, connection);
                         command.ExecuteNonQuery();
                         command.Dispose();
                         return NoContent();
                     }
                     else
-                        return new OkObjectResult("no parking left");
+                        return new OkObjectResult("No parking place left");
                 }
                 connection.Close();
                 return NoContent();
@@ -234,7 +234,8 @@ namespace officeManager.Controllers
         {
             Calendar calendar = new Calendar();
             string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}' and orgID={1}", calendarUser.Date, orgID);
-            int intCap;
+            int capacity;
+
             try
             {
                 SqlConnection connection = new SqlConnection(Params.connetionString);
@@ -251,31 +252,28 @@ namespace officeManager.Controllers
                 dataReader.Close();
                 if (calendar.Date != null)
                 {
-                    intCap = int.Parse(calendar.SittingCapacity);
+                    capacity = int.Parse(calendar.SittingCapacity);
                     if (calendar.EmployeesArriving == null || !calendar.EmployeesArriving.Contains(calendarUser.Id))
-                    {
                         return NotFound();
-                    }
                     else
                     {
-                        calendarUser.UpdateCapacity(connection, ++intCap, orgID);
-                        string removeId = string.Format("{0};", calendarUser.Id);
-                        calendar.EmployeesArriving = calendar.EmployeesArriving.Replace(removeId, "");
+                        calendarUser.UpdateCapacity(connection, ++capacity, orgID);
+                        string idToRemove = string.Format("{0};", calendarUser.Id);
+                        calendar.EmployeesArriving = calendar.EmployeesArriving.Replace(idToRemove, "");
                         calendarUser.UpdateArrivingID(connection, calendar.EmployeesArriving, orgID);
 
                         if (!string.IsNullOrEmpty(calendar.WaitingList))
                         {
-                            calendarUser.UpdateCapacity(connection, --intCap, orgID);
-                            string waitId = calendar.WaitingList.Split(";")[0];
-                            string addId = string.Format("{0};", waitId);
-                            calendar.EmployeesArriving += addId;
+                            calendarUser.UpdateCapacity(connection, --capacity, orgID);
+                            string idFromWaitingList = calendar.WaitingList.Split(";")[0];
+                            string idToAdd = string.Format("{0};", idFromWaitingList);
+                            calendar.EmployeesArriving += idToAdd;
                             calendarUser.UpdateArrivingID(connection, calendar.EmployeesArriving, orgID);
-                            calendar.WaitingList = calendar.WaitingList.Replace(addId, "");
+                            calendar.WaitingList = calendar.WaitingList.Replace(idToAdd, "");
                             calendarUser.UpdateWaitingList(connection, calendar.WaitingList, orgID);
-                            calendarUser.SendWaitingListEmail(connection, waitId, calendar.Date, orgID);
+                            calendarUser.SendWaitingListEmail(connection, idFromWaitingList, calendar.Date, orgID);
                         }
                     }
-
                     string employeesName = calendarUser.GetComingEmployeesNames(calendar.EmployeesArriving, connection, orgID);
                     command.Dispose();
                     connection.Close();
@@ -290,17 +288,16 @@ namespace officeManager.Controllers
             }
         }
 
-
         /// <summary>
         /// Performs GET request to http://officemanager.us-east-1.elasticbeanstalk.com/api/calendar/{orgID}/mm.dd.yyyy
         /// Adding employee to EmployeesArriving in the requested day 
         /// </summary>
         /// <param name="calendarUser"> Employee to be added as <see cref="CalendarUser"/> </param>
-        /// <returns> ???????? </returns>
+        /// <returns> <see cref="Calendar"/> </returns>
         [HttpGet("{orgID}/{date}")]
         public ActionResult<Calendar> Get(string orgID, string date)
         {
-            string sql = string.Format("select *  from tlbCalendar WHERE date = '{0}' and OrgID={1}", date, orgID);
+            string sql = string.Format("select * from tlbCalendar WHERE date = '{0}' and OrgID={1}", date, orgID);
             Calendar calendar = new Calendar();
 
             try
@@ -316,13 +313,13 @@ namespace officeManager.Controllers
                 }
                 dataReader.Close();
                 command.Dispose();
-                
+
                 if (calendar.Date != null)
                 {
                     if (calendar.EmployeesArriving != null)
                     {
-                        CalendarUser calUser = new CalendarUser();
-                        calendar.EmployeesArriving = calUser.GetComingEmployeesNames(calendar.EmployeesArriving, connection, orgID);
+                        CalendarUser user = new CalendarUser();
+                        calendar.EmployeesArriving = user.GetComingEmployeesNames(calendar.EmployeesArriving, connection, orgID);
                         connection.Close();
                         return new OkObjectResult(JsonConvert.SerializeObject(calendar));
                     }
@@ -331,15 +328,16 @@ namespace officeManager.Controllers
                 }
                 else
                     connection.Close();
+
                 Office office = new Office();
-                office.GetOfficeFromUser(orgID);
-                calendar.orgID = office.ID;
+                office.GetOfficeById(orgID);
+                calendar.OrgID = office.ID;
                 calendar.Date = date;
                 calendar.ParkingCapacity = office.ParkingAmount;
                 calendar.SittingCapacity = office.OfficeCapacity;
                 calendar.EmployeesArriving = null;
                 calendar.WaitingList = null;
-                calendar.insertDate();
+                calendar.InsertDate();
                 return NotFound();
             }
             catch (Exception)
@@ -370,8 +368,8 @@ namespace officeManager.Controllers
                 while (dataReader.Read())
                 {
                     string date = dataReader["Date"].ToString().Trim();
-                    DateTime curr = Convert.ToDateTime(date);
-                    if (DateTime.Compare(today_date, curr) <= 0)
+                    DateTime curr_date = Convert.ToDateTime(date);
+                    if (DateTime.Compare(today_date, curr_date) <= 0)
                         dates.Add(date.Split(" ")[0]);
                 }
                 dataReader.Close();
