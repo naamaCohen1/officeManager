@@ -1,1 +1,0 @@
-﻿insert into tlbCalendar (Date,EmployeesArriving,SittingCapacity,ParkingCapacity,WaitingList) values('2021-05-21','chen tevet',50,30,'avi');
