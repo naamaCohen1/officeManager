@@ -11,8 +11,7 @@ class Footer extends Component {
             </ul>
             <p className="copyright text-center">
               © {new Date().getFullYear()}{" "}
-              <a>Office Manager</a>, made with
-              love for a better web
+              <a>Office Manager</a>, Chen Tevet & Naama Cohen
             </p>
           </nav>
         </Container>
